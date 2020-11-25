@@ -1,0 +1,16 @@
+package chpp
+
+// MatchRule ...
+type MatchRule uint
+
+// List of MatchRule constants.
+const (
+	// MatchRuleNoRules ...
+	MatchRuleNoRules MatchRule = 0
+	// MatchRuleHomegrown ...
+	MatchRuleHomegrown MatchRule = 1
+	// MatchRuleUnderEqual20 ...
+	MatchRuleUnderEqual20 MatchRule = 2
+	// MatchRuleOverEq3ual3 ...
+	MatchRuleOverEq3ual3 MatchRule = 3
+)
