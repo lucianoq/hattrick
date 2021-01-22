@@ -65,7 +65,7 @@ type MatchLineup struct {
 		StartingLineup struct {
 			Player []struct {
 				PlayerID  id.Player        `xml:"PlayerID"`
-				RoleID    id.Role          `xml:"RoleID"`
+				RoleID    MatchRole        `xml:"RoleID"`
 				FirstName string           `xml:"FirstName"`
 				LastName  string           `xml:"LastName"`
 				NickName  string           `xml:"NickName"`
@@ -109,11 +109,12 @@ type MatchLineup struct {
 			Player []struct {
 				PlayerID id.Player `xml:"PlayerID"`
 
-				// An integer indicating which formal 'slot' (Role) the player has filled in the match. All games are 553 based.
-				RoleID    id.Role `xml:"RoleID"`
-				FirstName string  `xml:"FirstName"`
-				LastName  string  `xml:"LastName"`
-				NickName  string  `xml:"NickName"`
+				// An integer indicating which formal 'slot' (Role) the player
+				// has filled in the match. All games are 553 based.
+				RoleID    MatchRole `xml:"RoleID"`
+				FirstName string    `xml:"FirstName"`
+				LastName  string    `xml:"LastName"`
+				NickName  string    `xml:"NickName"`
 
 				// The number of stars the player is rated for.
 				RatingStars float64 `xml:"RatingStars"`
