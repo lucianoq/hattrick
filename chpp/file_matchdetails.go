@@ -30,16 +30,23 @@ type MatchDetailsXML struct {
 
 // MatchDetails ...
 type MatchDetails struct {
-	MatchID        id.Match     `xml:"MatchID"`
-	MatchType      MatchType    `xml:"MatchType"`
-	MatchContextID string       `xml:"MatchContextId"`
-	MatchRuleID    MatchRule    `xml:"MatchRuleId"`
-	CupLevel       uint         `xml:"CupLevel"`
-	CupLevelIndex  uint         `xml:"CupLevelIndex"`
-	MatchDate      HattrickTime `xml:"MatchDate"`
-	FinishedDate   HattrickTime `xml:"FinishedDate"`
-	AddedMinutes   int          `xml:"AddedMinutes"`
-	HomeTeam       struct {
+	MatchID   id.Match  `xml:"MatchID"`
+	MatchType MatchType `xml:"MatchType"`
+
+	// This will be either
+	// LeagueLevelUnitId (for League),
+	// CupId (Cup, Hattrick Masters, World Cup and U-20 World Cup),
+	// LadderId, TournamentId, or 0 for friendly, qualification,
+	// single matches and preparation matches.
+	MatchContextID uint `xml:"MatchContextId"`
+
+	MatchRuleID   MatchRule    `xml:"MatchRuleId"`
+	CupLevel      uint         `xml:"CupLevel"`
+	CupLevelIndex uint         `xml:"CupLevelIndex"`
+	MatchDate     HattrickTime `xml:"MatchDate"`
+	FinishedDate  HattrickTime `xml:"FinishedDate"`
+	AddedMinutes  int          `xml:"AddedMinutes"`
+	HomeTeam      struct {
 		HomeTeamID   id.Team `xml:"HomeTeamID"`
 		HomeTeamName string  `xml:"HomeTeamName"`
 		DressURI     string  `xml:"DressURI"`

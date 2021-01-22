@@ -14,8 +14,8 @@
 # Dependency directories
 vendor/
 
-# IDE
-.idea
+# IDE project folder
+.idea/
 
 # Development secrets
 examples/secrets.go

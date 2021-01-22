@@ -48,9 +48,11 @@ type Client interface {
 	GetCupMatchesLast(cup id.Cup) ([]*chpp.CupMatch, error)
 	GetCupMatches(cup id.Cup, season, round uint) ([]*chpp.CupMatch, error)
 
-	GetMatchDetails(mID id.Match) (*chpp.MatchDetails, error)
+	GetMatchDetails(matchID id.Match) (*chpp.MatchDetails, error)
 	GetMatchesArchive(teamID id.Team, start, end time.Time) ([]*chpp.Match, error)
 	GetMyMatchesArchive(start, end time.Time) ([]*chpp.Match, error)
+	GetMatchLineup(matchID id.Match, teamID id.Team) (*chpp.MatchLineup, error)
+	GetMyMatchLineup(matchID id.Match) (*chpp.MatchLineup, error)
 
 	GetCurrentBids() ([]*chpp.BidItem, error)
 	IgnoreTransfer(transferID id.Transfer, category chpp.TrackingTypeID) error
