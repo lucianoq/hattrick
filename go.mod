@@ -1,6 +1,6 @@
 module github.com/lucianoq/hattrick
 
-go 1.16
+go 1.18
 
 require (
 	github.com/dustin/go-humanize v1.0.0

@@ -1,4 +1,4 @@
-package hattrick
+package main
 
 import (
 	"time"
@@ -79,6 +79,9 @@ type Client interface {
 
 	GetMyMatches() ([]*chpp.Match, error)
 	GetMyYouthMatches() ([]*chpp.Match, error)
+
+	GetWorldDetails() ([]*chpp.Country, error)
+	GetCountryDetails(country id.Country) (*chpp.Country, error)
 }
 
 // NewClient ...

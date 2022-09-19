@@ -7,7 +7,7 @@ import (
 // XML file name and version.
 const (
 	WorldDetailsAPIFile    = "worlddetails"
-	WorldDetailsAPIVersion = "1.8"
+	WorldDetailsAPIVersion = "1.9"
 )
 
 // WorldDetailsXML ...
@@ -24,34 +24,38 @@ type WorldDetailsXML struct {
 	Request   string    `xml:"Request"`
 
 	LeagueList struct {
-		Leagues []*struct {
-			LeagueID    id.League `xml:"LeagueID"`
-			LeagueName  string    `xml:"LeagueName"`
-			Season      uint      `xml:"Season"`
-			MatchRound  uint      `xml:"MatchRound"`
-			ShortName   string    `xml:"ShortName"`
-			Continent   string    `xml:"Continent"`
-			ZoneName    string    `xml:"ZoneName"`
-			EnglishName string    `xml:"EnglishName"`
-			Country     struct {
-				Available           string     `xml:"Available,attr"`
-				CountryID           id.Country `xml:"CountryID"`
-				CountryName         string     `xml:"CountryName"`
-				CurrencyName        string     `xml:"CurrencyName"`
-				CurrencyRate        string     `xml:"CurrencyRate"`
-				CurrencyRateFloat64 float64
-			} `xml:"Country"`
-			Cup struct {
-				CupID   id.Cup `xml:"CupID"`
-				CupName string `xml:"CupName"`
-			} `xml:"Cup"`
-			ActiveUsers     uint         `xml:"ActiveUsers"`
-			WaitingUsers    uint         `xml:"WaitingUsers"`
-			TrainingDate    HattrickTime `xml:"TrainingDate"`
-			EconomyDate     HattrickTime `xml:"EconomyDate"`
-			CupMatchDate    HattrickTime `xml:"CupMatchDate"`
-			SeriesMatchDate HattrickTime `xml:"SeriesMatchDate"`
-			NumberOfLevels  uint         `xml:"NumberOfLevels"`
-		} `xml:"League"`
+		Leagues []*Country `xml:"League"`
 	} `xml:"LeagueList"`
+}
+
+type Country struct {
+	LeagueID     id.League `xml:"LeagueID"`
+	LeagueName   string    `xml:"LeagueName"`
+	Season       uint      `xml:"Season"`
+	MatchRound   uint      `xml:"MatchRound"`
+	ShortName    string    `xml:"ShortName"`
+	Continent    string    `xml:"Continent"`
+	ZoneName     string    `xml:"ZoneName"`
+	EnglishName  string    `xml:"EnglishName"`
+	LanguageId   uint      `xml:"LanguageId"`
+	LanguageName string    `xml:"LanguageName"`
+	Country      struct {
+		Available           string     `xml:"Available,attr"`
+		CountryID           id.Country `xml:"CountryID"`
+		CountryName         string     `xml:"CountryName"`
+		CurrencyName        string     `xml:"CurrencyName"`
+		CurrencyRate        string     `xml:"CurrencyRate"`
+		CurrencyRateFloat64 float64
+	} `xml:"Country"`
+	Cup struct {
+		CupID   id.Cup `xml:"CupID"`
+		CupName string `xml:"CupName"`
+	} `xml:"Cup"`
+	ActiveUsers     uint         `xml:"ActiveUsers"`
+	WaitingUsers    uint         `xml:"WaitingUsers"`
+	TrainingDate    HattrickTime `xml:"TrainingDate"`
+	EconomyDate     HattrickTime `xml:"EconomyDate"`
+	CupMatchDate    HattrickTime `xml:"CupMatchDate"`
+	SeriesMatchDate HattrickTime `xml:"SeriesMatchDate"`
+	NumberOfLevels  uint         `xml:"NumberOfLevels"`
 }
