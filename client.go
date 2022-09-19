@@ -1,4 +1,4 @@
-package main
+package hattrick
 
 import (
 	"time"
