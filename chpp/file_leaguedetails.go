@@ -7,7 +7,7 @@ import (
 // XML file name and version.
 const (
 	LeagueDetailsAPIFile    = "leaguedetails"
-	LeagueDetailsAPIVersion = "1.5"
+	LeagueDetailsAPIVersion = "1.6"
 )
 
 // LeagueDetailsXML contains data about a League Level Unit (series)
@@ -34,6 +34,8 @@ type League struct {
 	MaxLevel            uint               `xml:"MaxLevel"`
 	LeagueLevelUnitID   id.LeagueLevelUnit `xml:"LeagueLevelUnitID"`
 	LeagueLevelUnitName string             `xml:"LeagueLevelUnitName"`
+	CurrentMatchRound   string             `xml:"CurrentMatchRound"`
+	Rank                uint               `xml:"Rank"`
 	Teams               []*struct {
 		UserID         id.User        `xml:"UserId"`
 		TeamID         id.Team        `xml:"TeamID"`
