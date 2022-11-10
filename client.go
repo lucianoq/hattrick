@@ -34,10 +34,10 @@ type Client interface {
 
 	GetBookmarks(bookmarkType chpp.BookmarkType) ([]*chpp.Bookmark, error)
 
-	GetChallenges() ([]*chpp.ChallengeByMe, []*chpp.OffersByOthers, error)
-	IsChallengeable(teamID id.Team) (bool, error)
-	AreChallengeable(teamIDs ...id.Team) ([]bool, error)
-	Challenge(opponentTeam id.Team, friendlyType chpp.FriendlyType, matchPlace chpp.MatchPlace, otherArena id.Arena) error
+	GetChallenges(weekend bool) ([]*chpp.ChallengeByMe, []*chpp.OffersByOthers, error)
+	IsChallengeable(weekend bool, teamID id.Team) (bool, error)
+	AreChallengeable(weekend bool, teamIDs ...id.Team) ([]bool, error)
+	Challenge(opponentTeam id.Team, friendlyType chpp.FriendlyType, matchPlace chpp.MatchPlace, otherArena id.Arena, weekend bool) error
 	AcceptChallenge(friendlyMatchID id.FriendlyMatch) error
 	DeclineChallenge(friendlyMatchID id.FriendlyMatch) error
 	WithdrawChallenge(friendlyMatchID id.FriendlyMatch) error

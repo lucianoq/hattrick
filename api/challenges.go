@@ -9,9 +9,13 @@ import (
 )
 
 // GetChallenges ...
-func (a *API) GetChallenges() ([]*chpp.ChallengeByMe, []*chpp.OffersByOthers, error) {
+func (a *API) GetChallenges(weekend bool) ([]*chpp.ChallengeByMe, []*chpp.OffersByOthers, error) {
 	values := map[string]string{
 		"actionType": "view",
+	}
+
+	if weekend {
+		values["isWeekendFriendly"] = "1"
 	}
 
 	res, err := a.parsed.GetChallengesXML(values)
@@ -22,10 +26,14 @@ func (a *API) GetChallenges() ([]*chpp.ChallengeByMe, []*chpp.OffersByOthers, er
 }
 
 // IsChallengeable ...
-func (a *API) IsChallengeable(teamID id.Team) (bool, error) {
+func (a *API) IsChallengeable(weekend bool, teamID id.Team) (bool, error) {
 	values := map[string]string{
 		"actionType":       "challengeable",
 		"suggestedTeamIds": teamID.String(),
+	}
+
+	if weekend {
+		values["isWeekendFriendly"] = "1"
 	}
 
 	ch, err := a.parsed.GetChallengesXML(values)
@@ -41,7 +49,7 @@ func (a *API) IsChallengeable(teamID id.Team) (bool, error) {
 }
 
 // AreChallengeable ...
-func (a *API) AreChallengeable(teamIDs ...id.Team) ([]bool, error) {
+func (a *API) AreChallengeable(weekend bool, teamIDs ...id.Team) ([]bool, error) {
 	strIDs := make([]string, len(teamIDs))
 	for i, t := range teamIDs {
 		strIDs[i] = t.String()
@@ -50,6 +58,10 @@ func (a *API) AreChallengeable(teamIDs ...id.Team) ([]bool, error) {
 	values := map[string]string{
 		"actionType":       "challengeable",
 		"suggestedTeamIds": strings.Join(strIDs, ","),
+	}
+
+	if weekend {
+		values["isWeekendFriendly"] = "1"
 	}
 
 	ch, err := a.parsed.GetChallengesXML(values)
@@ -70,7 +82,7 @@ func (a *API) AreChallengeable(teamIDs ...id.Team) ([]bool, error) {
 }
 
 // Challenge ...
-func (a *API) Challenge(opponentTeam id.Team, friendlyType chpp.FriendlyType, matchPlace chpp.MatchPlace, otherArena id.Arena) error {
+func (a *API) Challenge(opponentTeam id.Team, friendlyType chpp.FriendlyType, matchPlace chpp.MatchPlace, otherArena id.Arena, weekend bool) error {
 	values := map[string]string{
 		"actionType":     "challenge",
 		"opponentTeamId": opponentTeam.String(),
@@ -80,6 +92,10 @@ func (a *API) Challenge(opponentTeam id.Team, friendlyType chpp.FriendlyType, ma
 
 	if matchPlace == chpp.MatchPlaceNeutral {
 		values["neutralArenaId"] = otherArena.String()
+	}
+
+	if weekend {
+		values["isWeekendFriendly"] = "1"
 	}
 
 	_, err := a.parsed.GetChallengesXML(values)
