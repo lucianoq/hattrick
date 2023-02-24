@@ -7,7 +7,7 @@ import (
 // XML file name and version.
 const (
 	AchievementsAPIFile    = "achievements"
-	AchievementsAPIVersion = "1.1"
+	AchievementsAPIVersion = "1.2"
 )
 
 // AchievementsXML ...
@@ -37,6 +37,9 @@ type Achievement struct {
 	// The AchievementTypeID (integer). NOTE. We do not provide a list of
 	// available achievements.
 	AchievementTypeID id.AchievementID `xml:"AchievementTypeID"`
+
+	// The title for the achievement
+	AchievementTitle string `xml:"AchievementTitle"`
 
 	// The text describing the achievement
 	AchievementText string `xml:"AchievementText"`
