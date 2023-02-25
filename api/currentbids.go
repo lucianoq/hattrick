@@ -45,7 +45,7 @@ func (a *API) DeleteAllFinishedBids() error {
 // (Requires "place_bid" scope.)
 //
 //    transferId : unsigned Integer
-//    Id of the transfer to be ignored.
+//    ID of the transfer to be ignored.
 //
 //    trackingTypeId : trackingTypeId
 //    Tracking type (category) of the transfer to be ignored. Only values 5, 8

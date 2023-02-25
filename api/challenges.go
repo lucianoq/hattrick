@@ -22,7 +22,7 @@ func (a *API) GetChallenges(weekend bool) ([]*chpp.ChallengeByMe, []*chpp.Offers
 	if err != nil {
 		return nil, nil, err
 	}
-	return res.Team.ChallengesByMe.Challenge, res.Team.OffersByOthers.Offer, nil
+	return res.Team.ChallengesByMe, res.Team.OffersByOthers, nil
 }
 
 // IsChallengeable ...

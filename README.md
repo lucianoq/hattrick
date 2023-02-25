@@ -41,7 +41,7 @@ func main() {
 	// handle err
 
 	for _, p := range players {
-		fmt.Printf("%d %s %s\n", p.PlayerNumber, p.FirstName, p.LastName)
+		fmt.Printf("%d %s %s\n", p.Number, p.FirstName, p.LastName)
 	}
 }
 ```

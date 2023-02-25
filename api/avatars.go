@@ -13,7 +13,7 @@ func (a *API) GetAvatarsMyPlayers() ([]*chpp.PlayerAvatars, error) {
 	if err != nil {
 		return nil, err
 	}
-	return avatars.Team.Players.Player, nil
+	return avatars.Team.Players, nil
 
 }
 
@@ -26,7 +26,7 @@ func (a *API) GetAvatarsPlayers(teamID id.Team) ([]*chpp.PlayerAvatars, error) {
 	if err != nil {
 		return nil, err
 	}
-	return avatars.Team.Players.Player, nil
+	return avatars.Team.Players, nil
 }
 
 // GetAvatarsMyHallOfFame ...
@@ -37,7 +37,7 @@ func (a *API) GetAvatarsMyHallOfFame() ([]*chpp.PlayerAvatars, error) {
 	if err != nil {
 		return nil, err
 	}
-	return avatars.Team.Players.Player, nil
+	return avatars.Team.Players, nil
 }
 
 // GetAvatarsHallOfFame ...
@@ -49,5 +49,5 @@ func (a *API) GetAvatarsHallOfFame(teamID id.Team) ([]*chpp.PlayerAvatars, error
 	if err != nil {
 		return nil, err
 	}
-	return avatars.Team.Players.Player, nil
+	return avatars.Team.Players, nil
 }

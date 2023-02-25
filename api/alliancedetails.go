@@ -43,7 +43,7 @@ func (a *API) GetAllianceDetailsMembers(allianceID id.Alliance) ([]*chpp.Allianc
 	if err != nil {
 		return nil, err
 	}
-	return allianceDetails.Alliance.Members.Members, nil
+	return allianceDetails.Alliance.Members, nil
 }
 
 // GetAllianceDetailsMembersSubset ...
@@ -59,5 +59,5 @@ func (a *API) GetAllianceDetailsMembersSubset(allianceID id.Alliance, subset uin
 	if err != nil {
 		return nil, err
 	}
-	return allianceDetails.Alliance.Members.Members, nil
+	return allianceDetails.Alliance.Members, nil
 }

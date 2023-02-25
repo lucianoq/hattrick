@@ -23,7 +23,7 @@ type BookmarksXML struct {
 	Server    string    `xml:"Server"`
 	Request   string    `xml:"Request"`
 
-	BookmarkList []*Bookmark `xml:"BookmarkList>Bookmark"`
+	Bookmarks []*Bookmark `xml:"BookmarkList>Bookmark"`
 }
 
 // Bookmark ...

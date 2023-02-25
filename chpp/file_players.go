@@ -28,27 +28,25 @@ type PlayersXML struct {
 	ActionType        string        `xml:"ActionType"`
 	IsPlayingMatch    bool          `xml:"IsPlayingMatch"`
 	Team              struct {
-		TeamID     id.Team `xml:"TeamID"`
-		TeamName   string  `xml:"TeamName"`
-		PlayerList struct {
-			Players []*Player `xml:"Player"`
-		} `xml:"PlayerList"`
+		ID      id.Team   `xml:"TeamID"`
+		Name    string    `xml:"TeamName"`
+		Players []*Player `xml:"PlayerList>Player"`
 	} `xml:"Team"`
 }
 
 // Player ...
 type Player struct {
-	PlayerID           id.Player            `xml:"PlayerID"`
+	ID                 id.Player            `xml:"PlayerID"`
 	FirstName          string               `xml:"FirstName"`
 	NickName           string               `xml:"NickName"`
 	LastName           string               `xml:"LastName"`
-	PlayerNumber       uint                 `xml:"PlayerNumber"`
+	Number             uint                 `xml:"PlayerNumber"`
 	Age                uint                 `xml:"Age"`
 	AgeDays            uint                 `xml:"AgeDays"`
 	ArrivalDate        HattrickTime         `xml:"ArrivalDate"`
 	OwnerNotes         string               `xml:"OwnerNotes"`
 	TSI                TSI                  `xml:"TSI"`
-	PlayerForm         SkillLevel           `xml:"PlayerForm"`
+	Form               SkillLevel           `xml:"PlayerForm"`
 	Statement          string               `xml:"Statement"`
 	Experience         SkillLevel           `xml:"Experience"`
 	Loyalty            SkillLevel           `xml:"Loyalty"`
@@ -68,7 +66,7 @@ type Player struct {
 	GoalsCurrentTeam   uint                 `xml:"GoalsCurrentTeam"`
 	Specialty          SpecialtyID          `xml:"Specialty"`
 	TransferListed     bool                 `xml:"TransferListed"`
-	NationalTeamID     *id.NationalTeam     `xml:"NationalTeamID"`
+	NationalTeamID     id.NationalTeam      `xml:"NationalTeamID"`
 	CountryID          id.Country           `xml:"CountryID"`
 	Caps               uint                 `xml:"Caps"`
 	CapsU20            uint                 `xml:"CapsU20"`
@@ -82,7 +80,7 @@ type Player struct {
 	WingerSkill        SkillLevel           `xml:"WingerSkill"`
 	DefenderSkill      SkillLevel           `xml:"DefenderSkill"`
 	SetPiecesSkill     SkillLevel           `xml:"SetPiecesSkill"`
-	PlayerCategoryID   PlayerCategoryID     `xml:"PlayerCategoryId"`
+	CategoryID         PlayerCategoryID     `xml:"PlayerCategoryId"`
 
 	// Container for the skills that relate to coach/trainer ability. Only
 	// provided if the player has been made into a trainer, 'has gained trainer
@@ -95,8 +93,8 @@ type Player struct {
 	// Last played match. If MatchId = 0 it either means that the player has not
 	// played a match yet, or that he's in a bot team.
 	LastMatch struct {
+		ID              id.Match     `xml:"MatchId"`
 		Date            HattrickTime `xml:"Date"`
-		MatchID         id.Match     `xml:"MatchId"`
 		PositionCode    MatchRole    `xml:"PositionCode"`
 		PlayedMinutes   uint         `xml:"PlayedMinutes"`
 		Rating          float64      `xml:"Rating"`

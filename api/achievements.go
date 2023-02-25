@@ -11,7 +11,7 @@ func (a *API) GetMyAchievements() ([]*chpp.Achievement, error) {
 	if err != nil {
 		return nil, err
 	}
-	return achievements.AchievementList.Achievement, nil
+	return achievements.Achievements, nil
 }
 
 // GetAchievements returns the Achievements of a specific user.
@@ -24,5 +24,5 @@ func (a *API) GetAchievements(userID id.User) ([]*chpp.Achievement, error) {
 	if err != nil {
 		return nil, err
 	}
-	return achievements.AchievementList.Achievement, nil
+	return achievements.Achievements, nil
 }

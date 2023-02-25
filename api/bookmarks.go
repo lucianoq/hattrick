@@ -16,5 +16,5 @@ func (a *API) GetBookmarks(bookmarkType m.BookmarkType) ([]*chpp.Bookmark, error
 		return nil, err
 	}
 
-	return res.BookmarkList.Bookmarks, nil
+	return res.Bookmarks, nil
 }

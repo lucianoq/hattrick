@@ -26,24 +26,22 @@ type MatchesXML struct {
 	IsYouth bool `xml:"IsYouth"`
 
 	Team struct {
-		TeamID        id.Team `xml:"TeamID"`
-		TeamName      string  `xml:"TeamName"`
-		ShortTeamName string  `xml:"ShortTeamName"`
+		ID        id.Team `xml:"TeamID"`
+		Name      string  `xml:"TeamName"`
+		ShortName string  `xml:"ShortTeamName"`
 
 		League struct {
-			LeagueID   id.League `xml:"LeagueID"`
-			LeagueName string    `xml:"LeagueName"`
+			ID   id.League `xml:"LeagueID"`
+			Name string    `xml:"LeagueName"`
 		} `xml:"League"`
 
 		LeagueLevelUnit struct {
-			LeagueLevelUnitID   id.LeagueLevelUnit `xml:"LeagueLevelUnitID"`
-			LeagueLevelUnitName string             `xml:"LeagueLevelUnitName"`
-			LeagueLevel         uint               `xml:"LeagueLevel"`
+			ID    id.LeagueLevelUnit `xml:"LeagueLevelUnitID"`
+			Name  string             `xml:"LeagueLevelUnitName"`
+			Level uint               `xml:"LeagueLevel"`
 		} `xml:"LeagueLevelUnit"`
 
-		MatchList struct {
-			Match []*Match `xml:"Match"`
-		} `xml:"MatchList"`
+		Matches []*Match `xml:"MatchList>Match"`
 	} `xml:"Team"`
 }
 
@@ -53,15 +51,15 @@ type Match struct {
 	MatchID id.Match `xml:"MatchID"`
 
 	HomeTeam struct {
-		HomeTeamID            id.Team `xml:"HomeTeamID"`
-		HomeTeamName          string  `xml:"HomeTeamName"`
-		HomeTeamNameShortName string  `xml:"HomeTeamNameShortName"`
+		ID        id.Team `xml:"HomeTeamID"`
+		Name      string  `xml:"HomeTeamName"`
+		ShortName string  `xml:"HomeTeamNameShortName"`
 	} `xml:"HomeTeam"`
 
 	AwayTeam struct {
-		AwayTeamID            id.Team `xml:"AwayTeamID"`
-		AwayTeamName          string  `xml:"AwayTeamName"`
-		AwayTeamNameShortName string  `xml:"AwayTeamNameShortName"`
+		ID        id.Team `xml:"AwayTeamID"`
+		Name      string  `xml:"AwayTeamName"`
+		ShortName string  `xml:"AwayTeamNameShortName"`
 	} `xml:"AwayTeam"`
 
 	MatchDate HattrickTime `xml:"MatchDate"`

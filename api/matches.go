@@ -14,7 +14,7 @@ func (a *API) GetMyMatches() ([]*chpp.Match, error) {
 		return nil, err
 	}
 
-	return res.Team.MatchList.Match, nil
+	return res.Team.Matches, nil
 }
 
 // GetMyYouthMatches ...
@@ -27,5 +27,5 @@ func (a *API) GetMyYouthMatches() ([]*chpp.Match, error) {
 		return nil, err
 	}
 
-	return res.Team.MatchList.Match, nil
+	return res.Team.Matches, nil
 }

@@ -46,13 +46,13 @@ func (a *API) getPaginatedCupMatches(values map[string]string) ([]*chpp.CupMatch
 			return nil, err
 		}
 
-		list = append(list, res.Cup.MatchList.Match...)
+		list = append(list, res.Cup.Matches...)
 
-		if len(res.Cup.MatchList.Match) < 256 {
+		if len(res.Cup.Matches) < 256 {
 			break
 		}
 
-		values["StartAfterMatchID"] = res.Cup.MatchList.Match[255].MatchID.String()
+		values["StartAfterMatchID"] = res.Cup.Matches[255].MatchID.String()
 	}
 
 	return list, nil

@@ -51,7 +51,7 @@ func getMatchesArchive(ht hattrick.Client) {
 	for _, m := range matches {
 		fmt.Printf("%d %s VS %s  (%d - %d)\n",
 			m.MatchID,
-			m.HomeTeam.HomeTeamName, m.AwayTeam.AwayTeamName,
+			m.HomeTeam.Name, m.AwayTeam.Name,
 			m.HomeGoals, m.AwayGoals,
 		)
 	}
@@ -64,6 +64,6 @@ func getMyPlayers(ht hattrick.Client) {
 	}
 
 	for _, p := range players {
-		fmt.Printf("%d %s %s\n", p.PlayerNumber, p.FirstName, p.LastName)
+		fmt.Printf("%d %s %s\n", p.Number, p.FirstName, p.LastName)
 	}
 }

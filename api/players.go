@@ -17,7 +17,7 @@ func (a *API) GetMyPlayers() ([]*chpp.Player, error) {
 		return nil, err
 	}
 
-	return ps.Team.PlayerList.Players, nil
+	return ps.Team.Players, nil
 }
 
 // GetPlayers ...
@@ -33,5 +33,5 @@ func (a *API) GetPlayers(teamID id.Team) ([]*chpp.Player, error) {
 		return nil, err
 	}
 
-	return ps.Team.PlayerList.Players, nil
+	return ps.Team.Players, nil
 }
