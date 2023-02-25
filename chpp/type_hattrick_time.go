@@ -29,18 +29,7 @@ func (h *HattrickTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 		return err
 	}
 
-	*h = HattrickTime(
-		time.Date(
-			t.Year(),
-			t.Month(),
-			t.Day(),
-			t.Hour(),
-			t.Minute(),
-			t.Second(),
-			t.Nanosecond(),
-			location,
-		),
-	)
+	*h = HattrickTime(t.In(location))
 
 	return nil
 }
