@@ -6,7 +6,7 @@ import (
 )
 
 // GetMyTeamDetails ...
-func (a API) GetMyTeamDetails() (*chpp.TeamDetails, error) {
+func (a *API) GetMyTeamDetails() (*chpp.TeamDetails, error) {
 	e, err := a.parsed.GetTeamDetailsXML(
 		map[string]string{
 			"includeDomesticFlags": "true",
@@ -22,7 +22,7 @@ func (a API) GetMyTeamDetails() (*chpp.TeamDetails, error) {
 }
 
 // GetTeamDetails ...
-func (a API) GetTeamDetails(teamID id.Team) (*chpp.TeamDetails, error) {
+func (a *API) GetTeamDetails(teamID id.Team) (*chpp.TeamDetails, error) {
 	e, err := a.parsed.GetTeamDetailsXML(
 		map[string]string{
 			// What team/user to show the data for. teamID and userID generates
@@ -44,7 +44,7 @@ func (a API) GetTeamDetails(teamID id.Team) (*chpp.TeamDetails, error) {
 }
 
 // GetTeamDetailsByUser ...
-func (a API) GetTeamDetailsByUser(userID id.User) (*chpp.TeamDetails, error) {
+func (a *API) GetTeamDetailsByUser(userID id.User) (*chpp.TeamDetails, error) {
 	e, err := a.parsed.GetTeamDetailsXML(
 		map[string]string{
 			// What team/user to show the data for. teamID and userID generates

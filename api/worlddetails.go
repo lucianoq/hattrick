@@ -6,7 +6,7 @@ import (
 )
 
 // GetWorldDetails ...
-func (a API) GetWorldDetails() ([]*chpp.Country, error) {
+func (a *API) GetWorldDetails() ([]*chpp.Country, error) {
 	wd, err := a.parsed.GetWorldDetailsXML(
 		map[string]string{
 			"includeRegions": "false",
@@ -20,7 +20,7 @@ func (a API) GetWorldDetails() ([]*chpp.Country, error) {
 }
 
 // GetCountryDetails ...
-func (a API) GetCountryDetails(country id.Country) (*chpp.Country, error) {
+func (a *API) GetCountryDetails(country id.Country) (*chpp.Country, error) {
 	e, err := a.parsed.GetWorldDetailsXML(
 		map[string]string{
 			"includeRegions": "false",
