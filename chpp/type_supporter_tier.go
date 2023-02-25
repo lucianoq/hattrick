@@ -15,7 +15,7 @@ const (
 
 func (t SupporterTier) String() string {
 	switch t {
-	
+
 	case SupporterTierEmpty, SupporterTierNone:
 		return "none"
 
