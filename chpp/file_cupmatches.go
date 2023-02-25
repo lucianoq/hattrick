@@ -29,13 +29,11 @@ type CupMatchesXML struct {
 
 // Cup ...
 type Cup struct {
-	CupID     id.Cup `xml:"CupID"`
-	CupSeason uint   `xml:"CupSeason"`
-	CupRound  uint   `xml:"CupRound"`
-	CupName   string `xml:"CupName"`
-	MatchList struct {
-		Match []*CupMatch `xml:"Match"`
-	} `xml:"MatchList"`
+	ID      id.Cup      `xml:"CupID"`
+	Season  uint        `xml:"CupSeason"`
+	Round   uint        `xml:"CupRound"`
+	Name    string      `xml:"CupName"`
+	Matches []*CupMatch `xml:"MatchList>Match"`
 }
 
 // CupMatch ...
@@ -43,12 +41,12 @@ type CupMatch struct {
 	MatchID   id.Match     `xml:"MatchID"`
 	MatchDate HattrickTime `xml:"MatchDate"`
 	HomeTeam  struct {
-		TeamID   id.Team `xml:"TeamId"`
-		TeamName string  `xml:"TeamName"`
+		ID   id.Team `xml:"TeamId"`
+		Name string  `xml:"TeamName"`
 	} `xml:"HomeTeam"`
 	AwayTeam struct {
-		TeamID   id.Team `xml:"TeamId"`
-		TeamName string  `xml:"TeamName"`
+		ID   id.Team `xml:"TeamId"`
+		Name string  `xml:"TeamName"`
 	} `xml:"AwayTeam"`
 	MatchResult struct {
 		Available bool `xml:"Available,attr"`

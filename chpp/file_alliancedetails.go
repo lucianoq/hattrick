@@ -53,13 +53,10 @@ type Alliance struct {
 	// Container for the list of languages the federation has declared As used
 	// languages. An Attribute named Count
 	// specifies how many federations it contains.
-	Languages struct {
-		// Container for a language. An Attribute named Index works as a counter
-		Language struct {
-			LanguageID   uint   `xml:"LanguageID"`
-			LanguageName string `xml:"LanguageName"`
-		} `xml:"Language"`
-	} `xml:"Languages"`
+	Languages []struct {
+		ID   uint   `xml:"LanguageID"`
+		Name string `xml:"LanguageName"`
+	} `xml:"Languages>Language"`
 	Message string `xml:"Message"`
 
 	// Internal message to members of federation. Only present if indata
@@ -82,20 +79,18 @@ type Alliance struct {
 	ListSubset string `xml:"ListSubset"`
 
 	// Container for the list of members, or a subset thereof, of the federation
-	Members struct {
-		Members []*AllianceMember `xml:"Member"`
-	} `xml:"Members"`
+	Members []*AllianceMember `xml:"Members>Member"`
 }
 
 // AllianceRole ...
 type AllianceRole struct {
-	RoleID          id.Role `xml:"RoleId"`
-	RoleName        string  `xml:"RoleName"`
-	RoleRank        uint    `xml:"RoleRank"`
-	RoleMemberCount uint    `xml:"RoleMemberCount"`
-	RoleMaxMember   uint    `xml:"RoleMaxMember"`
-	RoleRequestType uint    `xml:"RoleRequestType"`
-	RoleDescription string  `xml:"RoleDescription"`
+	ID          id.Role `xml:"RoleId"`
+	Name        string  `xml:"RoleName"`
+	Rank        uint    `xml:"RoleRank"`
+	MemberCount uint    `xml:"RoleMemberCount"`
+	MaxMember   uint    `xml:"RoleMaxMember"`
+	RequestType uint    `xml:"RoleRequestType"`
+	Description string  `xml:"RoleDescription"`
 }
 
 // AllianceMember ...

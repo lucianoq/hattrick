@@ -35,20 +35,20 @@ type Arena struct {
 
 	// Container for the data about the team owning this arena.
 	Team struct {
-		TeamID   id.Team `xml:"TeamID"`
-		TeamName string  `xml:"TeamName"`
+		ID   id.Team `xml:"TeamID"`
+		Name string  `xml:"TeamName"`
 	} `xml:"Team"`
 
 	// Container for the data about the league of the arena's team.
 	League struct {
-		LeagueID   id.League `xml:"LeagueID"`
-		LeagueName string    `xml:"LeagueName"`
+		ID   id.League `xml:"LeagueID"`
+		Name string    `xml:"LeagueName"`
 	} `xml:"League"`
 
 	// Container for the data about the region of the arena.
 	Region struct {
-		RegionID   id.Region `xml:"RegionID"`
-		RegionName string    `xml:"RegionName"`
+		ID   id.Region `xml:"RegionID"`
+		Name string    `xml:"RegionName"`
 	} `xml:"Region"`
 
 	// Container for the data about the current capacity of the arena.

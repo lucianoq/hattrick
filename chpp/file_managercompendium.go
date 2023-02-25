@@ -77,24 +77,7 @@ type Manager struct {
 	} `xml:"NationalTeamAssistant"`
 
 	// Container for the elements to build the avatar.
-	Avatar struct {
-
-		// The URL to the card background-image.
-		// This will show a silouette for non-supporter teams.
-		BackgroundImage string `xml:"BackgroundImage"`
-
-		// The container for each avatar bodypart item.
-		// Two attribute named X and Y indicates where the item should be positioned.
-		// There are several of this container for each player.
-		// This container will not be provided for non-supporter team.
-		Layers []AvatarLayer `xml:"Layer"`
-	} `xml:"Avatar"`
-}
-
-type AvatarLayer struct {
-	X     uint   `xml:"x,attr"`
-	Y     uint   `xml:"y,attr"`
-	Image string `xml:"Image"`
+	Avatar Avatar `xml:"Avatar"`
 }
 
 // ManagerTeam Container for the data about a particular Team.

@@ -24,32 +24,13 @@ type AvatarsXML struct {
 	Request   string    `xml:"Request"`
 
 	Team struct {
-		TeamID  id.Team `xml:"TeamId"`
-		Players struct {
-			Player []*PlayerAvatars `xml:"Player"`
-		} `xml:"Players"`
+		ID      id.Team          `xml:"TeamId"`
+		Players []*PlayerAvatars `xml:"Players>Player"`
 	} `xml:"Team"`
 }
 
 // PlayerAvatars is a container for a player.
 type PlayerAvatars struct {
 	PlayerID id.Player `xml:"PlayerID"`
-	Avatar   struct {
-
-		// The URL to the card background-image. This will show a silhouette for
-		// non-supporter teams.
-		BackgroundImage string `xml:"BackgroundImage"`
-
-		// The container for each avatar bodypart item. Two attribute named X
-		// and Y indicates where the item should be positioned. There are
-		// several of this container for each player. This container will not be
-		// provided for non-supporter team.
-		Layers []*struct {
-			X uint `xml:"x"`
-			Y uint `xml:"y"`
-
-			// The URL to the bodypart item.
-			Image string `xml:"Image"`
-		} `xml:"Layer"`
-	} `xml:"Avatar"`
+	Avatar   Avatar    `xml:"Avatar"`
 }

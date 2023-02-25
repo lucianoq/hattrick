@@ -24,19 +24,15 @@ type ChallengesXML struct {
 	Request   string    `xml:"Request"`
 
 	Team struct {
-		TeamID   id.Team `xml:"TeamID"`
-		TeamName string  `xml:"TeamName"`
+		ID   id.Team `xml:"TeamID"`
+		Name string  `xml:"TeamName"`
 
 		// Container for the challenges that the user has done.
-		ChallengesByMe struct {
-			Challenge []*ChallengeByMe `xml:"Challenge"`
-		} `xml:"ChallengesByMe"`
+		ChallengesByMe []*ChallengeByMe `xml:"ChallengesByMe>Challenge"`
 
 		// Container for the offers of friendlies that other teams have given to
 		// the logged on user's team.
-		OffersByOthers struct {
-			Offer []*OffersByOthers `xml:"Offer"`
-		} `xml:"OffersByOthers"`
+		OffersByOthers []*OffersByOthers `xml:"OffersByOthers>Offer"`
 
 		ChallengeableResult *struct {
 			Opponent []*struct {
@@ -65,14 +61,14 @@ type ChallengeByMe struct {
 		LogoURL string `xml:"LogoURL"`
 
 		Arena struct {
-			ArenaID   id.Arena `xml:"ArenaID"`
-			ArenaName string   `xml:"ArenaName"`
+			ID   id.Arena `xml:"ArenaID"`
+			Name string   `xml:"ArenaName"`
 		} `xml:"Arena"`
 
 		// TODO check League or Country. Inconsistency.
 		Country struct {
-			CountryID   id.Country `xml:"CountryID"`
-			CountryName string     `xml:"CountryName"`
+			ID   id.Country `xml:"CountryID"`
+			Name string     `xml:"CountryName"`
 		} `xml:"Country"`
 
 		// Indicating whether the challenge/offer has been accepted
@@ -94,14 +90,14 @@ type OffersByOthers struct {
 		LogoURL  string  `xml:"LogoURL"`
 
 		Arena struct {
-			ArenaID   id.Arena `xml:"ArenaID"`
-			ArenaName string   `xml:"ArenaName"`
+			ID   id.Arena `xml:"ArenaID"`
+			Name string   `xml:"ArenaName"`
 		} `xml:"Arena"`
 
 		// TODO check League or Country. Inconsistency.
 		League struct {
-			LeagueID   id.League `xml:"LeagueID"`
-			LeagueName string    `xml:"LeagueName"`
+			ID   id.League `xml:"LeagueID"`
+			Name string    `xml:"LeagueName"`
 		} `xml:"League"`
 
 		// Indicating whether the challenge/offer has been accepted

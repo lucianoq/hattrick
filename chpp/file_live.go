@@ -23,9 +23,7 @@ type LiveXML struct {
 	Server    string    `xml:"Server"`
 	Request   string    `xml:"Request"`
 
-	MatchList struct {
-		Match *LiveMatchInfo `xml:"Match"`
-	} `xml:"MatchList"`
+	Matches *LiveMatchInfo `xml:"MatchList>Match"`
 }
 
 // LiveMatchInfo ...
@@ -33,18 +31,21 @@ type LiveMatchInfo struct {
 	SourceSystem string       `xml:"SourceSystem"`
 	MatchID      id.Match     `xml:"MatchID"`
 	MatchDate    HattrickTime `xml:"MatchDate"`
-	HomeTeam     struct {
-		HomeTeamID        id.Team        `xml:"HomeTeamID"`
-		HomeTeamName      string         `xml:"HomeTeamName"`
-		HomeTeamShortName string         `xml:"HomeTeamShortName"`
-		StartingLineup    StartingLineUp `xml:"StartingLineup"`
+
+	HomeTeam struct {
+		ID             id.Team        `xml:"HomeTeamID"`
+		Name           string         `xml:"HomeTeamName"`
+		ShortName      string         `xml:"HomeTeamShortName"`
+		StartingLineup StartingLineUp `xml:"StartingLineup"`
 	} `xml:"HomeTeam"`
+
 	AwayTeam struct {
-		AwayTeamID        id.Team        `xml:"AwayTeamID"`
-		AwayTeamName      string         `xml:"AwayTeamName"`
-		AwayTeamShortName string         `xml:"AwayTeamShortName"`
-		StartingLineup    StartingLineUp `xml:"StartingLineup"`
+		ID             id.Team        `xml:"AwayTeamID"`
+		Name           string         `xml:"AwayTeamName"`
+		ShortName      string         `xml:"AwayTeamShortName"`
+		StartingLineup StartingLineUp `xml:"StartingLineup"`
 	} `xml:"AwayTeam"`
+
 	Substitutions struct {
 		Substitutions []*struct {
 			TeamID id.Team `xml:"TeamID"`
@@ -63,6 +64,7 @@ type LiveMatchInfo struct {
 			MatchMinute          uint             `xml:"MatchMinute"`
 		} `xml:"Substitution"`
 	} `xml:"Substitutions"`
+
 	EventList struct {
 		HomeGoals uint `xml:"HomeGoals"`
 		AwayGoals uint `xml:"AwayGoals"`

@@ -27,25 +27,23 @@ type AchievementsXML struct {
 	MaxPoints uint `xml:"MaxPoints"`
 
 	// Container for the data about a particular Achievement.
-	AchievementList struct {
-		Achievement []*Achievement `xml:"Achievement"`
-	} `xml:"AchievementList"`
+	Achievements []*Achievement `xml:"AchievementList>Achievement"`
 }
 
 // Achievement ...
 type Achievement struct {
 	// The AchievementTypeID (integer). NOTE. We do not provide a list of
 	// available achievements.
-	AchievementTypeID id.AchievementID `xml:"AchievementTypeID"`
+	ID id.AchievementID `xml:"AchievementTypeID"`
 
 	// The title for the achievement
-	AchievementTitle string `xml:"AchievementTitle"`
+	Title string `xml:"AchievementTitle"`
 
 	// The text describing the achievement
-	AchievementText string `xml:"AchievementText"`
+	Text string `xml:"AchievementText"`
 
 	// The CategoryID (integer) the achievement belongs to
-	CategoryID AchievementCategory `xml:"CategoryID"`
+	Category AchievementCategory `xml:"CategoryID"`
 
 	// The date when achievement was awarded
 	EventDate HattrickTime `xml:"EventDate"`
