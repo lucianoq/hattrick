@@ -1,8 +1,6 @@
 package api
 
-import (
-	"github.com/lucianoq/hattrick/parsed"
-)
+import "github.com/lucianoq/hattrick/parsed"
 
 // NewAPI ...
 func NewAPI(

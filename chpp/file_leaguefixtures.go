@@ -28,7 +28,7 @@ type LeagueFixturesXML struct {
 
 // LeagueFixtures ...
 type LeagueFixtures struct {
-	LeagueLevelUnitID   id.LeagueLevelUnit     `xml:"LeagueLevelUnitID"`
+	LeagueLevelUnitID   id.LeagueLevelUnit     `xml:"LeagueLevelUnitId"`
 	LeagueLevelUnitName string                 `xml:"LeagueLevelUnitName"`
 	Season              uint                   `xml:"Season"`
 	Matches             []*LeagueFixturesMatch `xml:"Match"`
@@ -37,21 +37,21 @@ type LeagueFixtures struct {
 // LeagueFixturesMatch ...
 type LeagueFixturesMatch struct {
 	// The globally unique match identifier.
-	MatchID id.Match `xml:"MatchID"`
+	MatchID id.Match `xml:"MatchId"`
 
 	// MatchRound that the match is part of.
 	MatchRound uint `xml:"MatchRound"`
 
 	// The home team container.
 	HomeTeam struct {
-		HomeTeamID   id.Team `xml:"HomeTeamID"`
-		HomeTeamName string  `xml:"HomeTeamName"`
+		ID   id.Team `xml:"HomeTeamId"`
+		Name string  `xml:"HomeTeamName"`
 	} `xml:"HomeTeam"`
 
 	// The away team container.
 	AwayTeam struct {
-		AwayTeamID   id.Team `xml:"AwayTeamID"`
-		AwayTeamName string  `xml:"AwayTeamName"`
+		ID   id.Team `xml:"AwayTeamId"`
+		Name string  `xml:"AwayTeamName"`
 	} `xml:"AwayTeam"`
 
 	// The date indicating when kick-off takes/took place.

@@ -42,6 +42,9 @@ type Client interface {
 	DeclineChallenge(friendlyMatchID id.FriendlyMatch) error
 	WithdrawChallenge(friendlyMatchID id.FriendlyMatch) error
 
+	GetMyManagerDetails() (*chpp.Manager, error)
+	GetManagerDetails(uID id.User) (*chpp.Manager, error)
+
 	GetMyClub() (*chpp.Club, error)
 	GetClubByID(teamID id.Team) (*chpp.Club, error)
 
