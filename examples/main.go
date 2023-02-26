@@ -28,13 +28,13 @@ func main() {
 }
 
 func getMyLeague(ht hattrick.Client) {
-	league, err := ht.GetMyLeague()
+	league, err := ht.GetMySeries()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, t := range league.Teams {
-		fmt.Printf("%d %s %s\n", t.Position, t.TeamID, t.TeamName)
+		fmt.Printf("%d %s %s\n", t.Position, t.ID, t.Name)
 	}
 }
 

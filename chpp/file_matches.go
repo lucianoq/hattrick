@@ -35,10 +35,10 @@ type MatchesXML struct {
 			Name string    `xml:"LeagueName"`
 		} `xml:"League"`
 
-		LeagueLevelUnit struct {
-			ID    id.LeagueLevelUnit `xml:"LeagueLevelUnitID"`
-			Name  string             `xml:"LeagueLevelUnitName"`
-			Level uint               `xml:"LeagueLevel"`
+		Series struct {
+			ID    id.Series `xml:"LeagueLevelUnitID"`
+			Name  string    `xml:"LeagueLevelUnitName"`
+			Level uint      `xml:"LeagueLevel"`
 		} `xml:"LeagueLevelUnit"`
 
 		Matches []*Match `xml:"MatchList>Match"`

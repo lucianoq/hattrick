@@ -70,7 +70,7 @@ type TeamDetailsUser struct {
 	// team is ownerless.
 	LastLoginDate HattrickTime `xml:"LastLoginDate"`
 
-	// Whether or not the user has received the manager license
+	// Whether the user has received the manager license
 	HasManagerLicense bool `xml:"HasManagerLicense"`
 
 	// Container for the national teams.
@@ -188,9 +188,9 @@ type TeamDetailsTeam struct {
 
 	// Data about the team's LeagueLevelUnit ('series'). If the league
 	// is playing qualification matches the tag will be empty.
-	LeagueLevelUnit struct {
+	Series struct {
 		// The globally unique LeagueLevelUnitID.
-		ID id.LeagueLevelUnit `xml:"LeagueLevelUnitID"`
+		ID id.Series `xml:"LeagueLevelUnitID"`
 
 		// The name of the LeagueLevelUnit.
 		Name string `xml:"LeagueLevelUnitName"`
@@ -225,14 +225,14 @@ type TeamDetailsTeam struct {
 	// The logo URL that the team has specified.
 	LogoURL string `xml:"LogoURL"`
 
-	// This container and its elements is only shown if the user has
+	// This container and its elements are only shown if the user has
 	// supporter
 	// Container for the data about the team's guestbook.
 	Guestbook *struct {
 		NumberOfGuestbookItems uint `xml:"NumberOfGuestbookItems"`
 	} `xml:"Guestbook"`
 
-	// This container and its elements is only shown if the user has
+	// This container and its elements are only shown if the user has
 	// supporter
 	// Container for the data about the team's most recent
 	// PressAnnouncement.
@@ -248,7 +248,7 @@ type TeamDetailsTeam struct {
 		SendDate HattrickTime `xml:"SendDate"`
 	} `xml:"PressAnnouncement"`
 
-	// This container and its elements is only shown if the user has
+	// This container and its elements are only shown if the user has
 	// supporter
 	// Container for the team's club theme colors. Empty if no theme has
 	// been set for the club.
@@ -278,7 +278,7 @@ type TeamDetailsTeam struct {
 	} `xml:"BotStatus"`
 
 	// If the team has an owner, last is the League Rank, a number based
-	// on LeagueLevel, position etc, only counting teams with an owner.
+	// on LeagueLevel, position, etc., only counting teams with an owner.
 	// If the team is playing a match the tag will be empty.
 	TeamRank uint `xml:"TeamRank"`
 
@@ -304,7 +304,7 @@ type TeamDetailsTeam struct {
 		ImageURL            string       `xml:"ImageUrl"`
 	} `xml:"TrophyList>Trophy"`
 
-	// Container for the the supported teams. It will be empty if the
+	// Container for the supported teams. It will be empty if the
 	// user have no supporters and not present if the user are not a
 	// supporter. Only available, when includeSupporters=true.
 	SupportedTeams *struct {
@@ -355,8 +355,8 @@ type TeamDetailsTeam struct {
 		TotalItems *uint `xml:"TotalItems,attr"`
 		MaxItems   *uint `xml:"MaxItems,attr"`
 
-		// Container for a supported team. Not supplied if the user dont
-		// have no supporters.
+		// Container for a supported team. Not supplied if the user doesn't
+		// have supporters.
 		SupporterTeam []*SupportedTeam `xml:"SupporterTeam"`
 	} `xml:"MySupporters"`
 
@@ -373,12 +373,12 @@ type Flag struct {
 
 // SupportedTeam ...
 type SupportedTeam struct {
-	ID                  id.Team            `xml:"TeamId"`
-	Name                string             `xml:"TeamName"`
-	UserID              id.User            `xml:"UserId"`
-	LoginName           string             `xml:"LoginName"`
-	LeagueID            id.League          `xml:"LeagueID"`
-	LeagueName          string             `xml:"LeagueName"`
-	LeagueLevelUnitID   id.LeagueLevelUnit `xml:"LeagueLevelUnitID"`
-	LeagueLevelUnitName string             `xml:"LeagueLevelUnitName"`
+	ID         id.Team   `xml:"TeamId"`
+	Name       string    `xml:"TeamName"`
+	UserID     id.User   `xml:"UserId"`
+	LoginName  string    `xml:"LoginName"`
+	LeagueID   id.League `xml:"LeagueID"`
+	LeagueName string    `xml:"LeagueName"`
+	SeriesID   id.Series `xml:"LeagueLevelUnitID"`
+	SeriesName string    `xml:"LeagueLevelUnitName"`
 }

@@ -110,9 +110,9 @@ type ManagerTeam struct {
 
 	// Data about the team's LeagueLevelUnit ('series'). If the league
 	// is playing qualification matches the tag will be empty.
-	LeagueLevelUnit struct {
+	Series struct {
 		// The globally unique LeagueLevelUnitID.
-		ID id.LeagueLevelUnit `xml:"LeagueLevelUnitId"`
+		ID id.Series `xml:"LeagueLevelUnitId"`
 
 		// The name of the LeagueLevelUnit.
 		Name string `xml:"LeagueLevelUnitName"`

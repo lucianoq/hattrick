@@ -5,10 +5,7 @@ import "strconv"
 // Language ...
 type Language uint
 
-// List of Language constants.
-const (
-	AllLanguages Language = 0
-)
+const AllLanguages Language = 0
 
 // String returns a string representation of the type.
 func (l Language) String() string {
