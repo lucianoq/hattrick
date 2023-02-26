@@ -23,23 +23,23 @@ type LeagueDetailsXML struct {
 	Server    string    `xml:"Server"`
 	Request   string    `xml:"Request"`
 
-	*League
+	*Series
 }
 
-// League ...
-type League struct {
-	LeagueID            id.League          `xml:"LeagueID"`
-	LeagueName          string             `xml:"LeagueName"`
-	LeagueLevel         uint               `xml:"LeagueLevel"`
-	MaxLevel            uint               `xml:"MaxLevel"`
-	LeagueLevelUnitID   id.LeagueLevelUnit `xml:"LeagueLevelUnitID"`
-	LeagueLevelUnitName string             `xml:"LeagueLevelUnitName"`
-	CurrentMatchRound   string             `xml:"CurrentMatchRound"`
-	Rank                uint               `xml:"Rank"`
-	Teams               []*struct {
+// Series ...
+type Series struct {
+	ID                id.Series `xml:"LeagueLevelUnitID"`
+	Name              string    `xml:"LeagueLevelUnitName"`
+	LeagueID          id.League `xml:"LeagueID"`
+	LeagueName        string    `xml:"LeagueName"`
+	LeagueLevel       uint      `xml:"LeagueLevel"`
+	MaxLevel          uint      `xml:"MaxLevel"`
+	CurrentMatchRound string    `xml:"CurrentMatchRound"`
+	Rank              uint      `xml:"Rank"`
+	Teams             []*struct {
 		UserID         id.User        `xml:"UserId"`
-		TeamID         id.Team        `xml:"TeamID"`
-		TeamName       string         `xml:"TeamName"`
+		ID             id.Team        `xml:"TeamID"`
+		Name           string         `xml:"TeamName"`
 		Position       uint           `xml:"Position"`
 		PositionChange PositionChange `xml:"PositionChange"`
 		Matches        uint           `xml:"Matches"`

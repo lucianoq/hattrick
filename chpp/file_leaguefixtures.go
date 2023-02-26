@@ -23,24 +23,24 @@ type LeagueFixturesXML struct {
 	Server    string    `xml:"Server"`
 	Request   string    `xml:"Request"`
 
-	*LeagueFixtures
+	*SeriesFixtures
 }
 
-// LeagueFixtures ...
-type LeagueFixtures struct {
-	LeagueLevelUnitID   id.LeagueLevelUnit     `xml:"LeagueLevelUnitId"`
-	LeagueLevelUnitName string                 `xml:"LeagueLevelUnitName"`
-	Season              uint                   `xml:"Season"`
-	Matches             []*LeagueFixturesMatch `xml:"Match"`
+// SeriesFixtures ...
+type SeriesFixtures struct {
+	SeriesID   id.Series      `xml:"LeagueLevelUnitId"`
+	SeriesName string         `xml:"LeagueLevelUnitName"`
+	Season     uint           `xml:"Season"`
+	Matches    []*SeriesMatch `xml:"Match"`
 }
 
-// LeagueFixturesMatch ...
-type LeagueFixturesMatch struct {
+// SeriesMatch ...
+type SeriesMatch struct {
 	// The globally unique match identifier.
-	MatchID id.Match `xml:"MatchId"`
+	ID id.Match `xml:"MatchId"`
 
 	// MatchRound that the match is part of.
-	MatchRound uint `xml:"MatchRound"`
+	Round uint `xml:"MatchRound"`
 
 	// The home team container.
 	HomeTeam struct {
@@ -55,7 +55,7 @@ type LeagueFixturesMatch struct {
 	} `xml:"AwayTeam"`
 
 	// The date indicating when kick-off takes/took place.
-	MatchDate HattrickTime `xml:"MatchDate"`
+	Date HattrickTime `xml:"MatchDate"`
 
 	// The final number of goals that the home team scored. This parameter is
 	// only sent for matches that are finished.

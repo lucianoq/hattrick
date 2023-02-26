@@ -7,18 +7,18 @@ import (
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetMyLeagueFixtures ...
-func (a *API) GetMyLeagueFixtures() (*chpp.LeagueFixtures, error) {
+// GetMySeriesFixtures ...
+func (a *API) GetMySeriesFixtures() (*chpp.SeriesFixtures, error) {
 	e, err := a.parsed.GetLeagueFixturesXML(nil)
 	if err != nil {
 		return nil, err
 	}
 
-	return e.LeagueFixtures, nil
+	return e.SeriesFixtures, nil
 }
 
-// GetMyLeagueFixturesBySeason ...
-func (a *API) GetMyLeagueFixturesBySeason(season uint) (*chpp.LeagueFixtures, error) {
+// GetMySeriesFixturesBySeason ...
+func (a *API) GetMySeriesFixturesBySeason(season uint) (*chpp.SeriesFixtures, error) {
 	e, err := a.parsed.GetLeagueFixturesXML(
 		map[string]string{
 			"season": strconv.FormatUint(uint64(season), 10),
@@ -28,11 +28,11 @@ func (a *API) GetMyLeagueFixturesBySeason(season uint) (*chpp.LeagueFixtures, er
 		return nil, err
 	}
 
-	return e.LeagueFixtures, nil
+	return e.SeriesFixtures, nil
 }
 
-// GetLeagueFixtures ...
-func (a *API) GetLeagueFixtures(leagueLevelUnitID id.LeagueLevelUnit) (*chpp.LeagueFixtures, error) {
+// GetSeriesFixtures ...
+func (a *API) GetSeriesFixtures(leagueLevelUnitID id.Series) (*chpp.SeriesFixtures, error) {
 	e, err := a.parsed.GetLeagueFixturesXML(
 		map[string]string{
 			"leagueLevelUnitID": leagueLevelUnitID.String(),
@@ -42,11 +42,11 @@ func (a *API) GetLeagueFixtures(leagueLevelUnitID id.LeagueLevelUnit) (*chpp.Lea
 		return nil, err
 	}
 
-	return e.LeagueFixtures, nil
+	return e.SeriesFixtures, nil
 }
 
-// GetLeagueFixturesBySeason ...
-func (a *API) GetLeagueFixturesBySeason(leagueLevelUnitID id.LeagueLevelUnit, season uint) (*chpp.LeagueFixtures, error) {
+// GetSeriesFixturesBySeason ...
+func (a *API) GetSeriesFixturesBySeason(leagueLevelUnitID id.Series, season uint) (*chpp.SeriesFixtures, error) {
 	e, err := a.parsed.GetLeagueFixturesXML(
 		map[string]string{
 			"leagueLevelUnitID": leagueLevelUnitID.String(),
@@ -57,5 +57,5 @@ func (a *API) GetLeagueFixturesBySeason(leagueLevelUnitID id.LeagueLevelUnit, se
 		return nil, err
 	}
 
-	return e.LeagueFixtures, nil
+	return e.SeriesFixtures, nil
 }

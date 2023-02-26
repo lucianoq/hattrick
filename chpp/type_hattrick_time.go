@@ -20,7 +20,7 @@ func (h *HattrickTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 
 	t, err := time.Parse(hattrickTimeLayout, s)
 	if err != nil {
-		return err
+		t = time.Time{}
 	}
 
 	// TODO take timezone from preferences

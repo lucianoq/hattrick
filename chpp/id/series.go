@@ -2,10 +2,10 @@ package id
 
 import "strconv"
 
-// LeagueLevelUnit ...
-type LeagueLevelUnit uint
+// Series ...
+type Series uint
 
 // String returns a string representation of the type.
-func (l LeagueLevelUnit) String() string {
+func (l Series) String() string {
 	return strconv.FormatUint(uint64(l), 10)
 }

@@ -9,3 +9,9 @@ type League uint
 func (l League) String() string {
 	return strconv.FormatUint(uint64(l), 10)
 }
+
+//func (l League) Flag() string {
+//	switch l {
+//
+//	}
+//}

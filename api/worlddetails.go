@@ -6,7 +6,7 @@ import (
 )
 
 // GetWorldDetails ...
-func (a *API) GetWorldDetails() ([]*chpp.Country, error) {
+func (a *API) GetWorldDetails() ([]*chpp.League, error) {
 	wd, err := a.parsed.GetWorldDetailsXML(
 		map[string]string{
 			"includeRegions": "false",
@@ -16,11 +16,26 @@ func (a *API) GetWorldDetails() ([]*chpp.Country, error) {
 		return nil, err
 	}
 
-	return wd.LeagueList.Leagues, nil
+	return wd.Leagues, nil
+}
+
+// GetLeagueDetails ...
+func (a *API) GetLeagueDetails(league id.League) (*chpp.League, error) {
+	e, err := a.parsed.GetWorldDetailsXML(
+		map[string]string{
+			"includeRegions": "false",
+			"leagueID":       league.String(),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return e.Leagues[0], nil
 }
 
 // GetCountryDetails ...
-func (a *API) GetCountryDetails(country id.Country) (*chpp.Country, error) {
+func (a *API) GetCountryDetails(country id.Country) (*chpp.League, error) {
 	e, err := a.parsed.GetWorldDetailsXML(
 		map[string]string{
 			"includeRegions": "false",
@@ -31,5 +46,5 @@ func (a *API) GetCountryDetails(country id.Country) (*chpp.Country, error) {
 		return nil, err
 	}
 
-	return e.LeagueList.Leagues[0], nil
+	return e.Leagues[0], nil
 }

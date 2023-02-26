@@ -65,13 +65,13 @@ type Client interface {
 
 	GetHOFPlayers() ([]*chpp.HOFPlayer, error)
 
-	GetMyLeague() (*chpp.League, error)
-	GetLeague(leagueLevelUnitID id.LeagueLevelUnit) (*chpp.League, error)
+	GetMySeries() (*chpp.Series, error)
+	GetSeries(leagueLevelUnitID id.Series) (*chpp.Series, error)
 
-	GetMyLeagueFixtures() (*chpp.LeagueFixtures, error)
-	GetMyLeagueFixturesBySeason(season uint) (*chpp.LeagueFixtures, error)
-	GetLeagueFixtures(leagueLevelUnitID id.LeagueLevelUnit) (*chpp.LeagueFixtures, error)
-	GetLeagueFixturesBySeason(leagueLevelUnitID id.LeagueLevelUnit, season uint) (*chpp.LeagueFixtures, error)
+	GetMySeriesFixtures() (*chpp.SeriesFixtures, error)
+	GetMySeriesFixturesBySeason(season uint) (*chpp.SeriesFixtures, error)
+	GetSeriesFixtures(leagueLevelUnitID id.Series) (*chpp.SeriesFixtures, error)
+	GetSeriesFixturesBySeason(leagueLevelUnitID id.Series, season uint) (*chpp.SeriesFixtures, error)
 
 	GetMyPlayers() ([]*chpp.Player, error)
 	GetPlayers(teamID id.Team) ([]*chpp.Player, error)
@@ -83,8 +83,9 @@ type Client interface {
 	GetMyMatches() ([]*chpp.Match, error)
 	GetMyYouthMatches() ([]*chpp.Match, error)
 
-	GetWorldDetails() ([]*chpp.Country, error)
-	GetCountryDetails(country id.Country) (*chpp.Country, error)
+	GetWorldDetails() ([]*chpp.League, error)
+	GetLeagueDetails(leagueID id.League) (*chpp.League, error)
+	GetCountryDetails(countryID id.Country) (*chpp.League, error)
 }
 
 // NewClient ...
