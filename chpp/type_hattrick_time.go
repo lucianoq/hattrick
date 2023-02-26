@@ -35,12 +35,12 @@ func (h *HattrickTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 }
 
 // Time ...
-func (h *HattrickTime) Time() time.Time {
-	return time.Time(*h)
+func (h HattrickTime) Time() time.Time {
+	return time.Time(h)
 }
 
 // String returns a string representation of the type.
-func (h *HattrickTime) String() string {
+func (h HattrickTime) String() string {
 	return h.Time().Format(hattrickTimeLayout)
 }
 
