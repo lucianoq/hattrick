@@ -1,12 +1,13 @@
 package api
 
 import (
+	"errors"
 	"github.com/lucianoq/hattrick/chpp"
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetMyTeamDetails ...
-func (a *API) GetMyTeamDetails() (*chpp.TeamDetails, error) {
+// GetMyTeams ...
+func (a *API) GetMyTeams() ([]*chpp.Team, error) {
 	e, err := a.parsed.GetTeamDetailsXML(
 		map[string]string{
 			"includeDomesticFlags": "true",
@@ -18,11 +19,33 @@ func (a *API) GetMyTeamDetails() (*chpp.TeamDetails, error) {
 		return nil, err
 	}
 
-	return &e.TeamDetails, nil
+	return e.Teams, nil
 }
 
-// GetTeamDetails ...
-func (a *API) GetTeamDetails(teamID id.Team) (*chpp.TeamDetails, error) {
+// GetMyMainTeam ...
+func (a *API) GetMyPrimaryTeam() (*chpp.Team, error) {
+	e, err := a.parsed.GetTeamDetailsXML(
+		map[string]string{
+			"includeDomesticFlags": "true",
+			"includeFlags":         "true",
+			"includeSupporters":    "true",
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, team := range e.Teams {
+		if team.IsPrimaryClub {
+			return team, nil
+		}
+	}
+
+	return nil, errors.New("user without a team")
+}
+
+// GetTeam ...
+func (a *API) GetTeam(teamID id.Team) (*chpp.Team, error) {
 	e, err := a.parsed.GetTeamDetailsXML(
 		map[string]string{
 			// What team/user to show the data for. teamID and userID generates
@@ -40,11 +63,17 @@ func (a *API) GetTeamDetails(teamID id.Team) (*chpp.TeamDetails, error) {
 		return nil, err
 	}
 
-	return &e.TeamDetails, nil
+	for _, team := range e.Teams {
+		if team.ID == teamID {
+			return team, nil
+		}
+	}
+
+	return nil, errors.New("team not found")
 }
 
-// GetTeamDetailsByUser ...
-func (a *API) GetTeamDetailsByUser(userID id.User) (*chpp.TeamDetails, error) {
+// GetPrimaryTeamByUser ...
+func (a *API) GetPrimaryTeamByUser(userID id.User) (*chpp.Team, error) {
 	e, err := a.parsed.GetTeamDetailsXML(
 		map[string]string{
 			// What team/user to show the data for. teamID and userID generates
@@ -63,5 +92,34 @@ func (a *API) GetTeamDetailsByUser(userID id.User) (*chpp.TeamDetails, error) {
 		return nil, err
 	}
 
-	return &e.TeamDetails, nil
+	for _, team := range e.Teams {
+		if team.IsPrimaryClub {
+			return team, nil
+		}
+	}
+
+	return nil, errors.New("team not found")
+}
+
+// GetTeamsByUser ...
+func (a *API) GetTeamsByUser(userID id.User) ([]*chpp.Team, error) {
+	e, err := a.parsed.GetTeamDetailsXML(
+		map[string]string{
+			// What team/user to show the data for. teamID and userID generates
+			// the same result, except that ownerless teams can only be accessed
+			// if submitting a teamID and that users without a team can only be
+			// accessed if userID is submitted. If neither userID or teamID is
+			// supplied, userID defaults to the logged on user's userID.
+			"userID": userID.String(),
+
+			"includeDomesticFlags": "true",
+			"includeFlags":         "true",
+			"includeSupporters":    "true",
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return e.Teams, nil
 }

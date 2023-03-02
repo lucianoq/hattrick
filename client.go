@@ -23,9 +23,9 @@ type Client interface {
 	GetAlliance(searchFor id.Alliance, searchLanguageID id.Language, pageIndex uint) (*chpp.Alliance, error)
 	GetMyAlliances() ([]*chpp.Alliance, error)
 
-	GetMyArenaDetails() (*chpp.Arena, error)
-	GetArenaDetailsByArenaID(arenaID id.Arena) (*chpp.Arena, error)
-	GetArenaDetailsByTeamID(teamID id.Team) (*chpp.Arena, error)
+	GetMyArena() (*chpp.Arena, error)
+	GetArena(arenaID id.Arena) (*chpp.Arena, error)
+	GetArenaByTeamID(teamID id.Team) (*chpp.Arena, error)
 
 	GetAvatarsMyPlayers() ([]*chpp.PlayerAvatars, error)
 	GetAvatarsPlayers(teamID id.Team) ([]*chpp.PlayerAvatars, error)
@@ -42,16 +42,13 @@ type Client interface {
 	DeclineChallenge(friendlyMatchID id.FriendlyMatch) error
 	WithdrawChallenge(friendlyMatchID id.FriendlyMatch) error
 
-	GetMyManagerDetails() (*chpp.Manager, error)
-	GetManagerDetails(uID id.User) (*chpp.Manager, error)
-
 	GetMyClub() (*chpp.Club, error)
 	GetClubByID(teamID id.Team) (*chpp.Club, error)
 
 	GetCupMatchesLast(cup id.Cup) ([]*chpp.CupMatch, error)
 	GetCupMatches(cup id.Cup, season, round uint) ([]*chpp.CupMatch, error)
 
-	GetMatchDetails(matchID id.Match) (*chpp.MatchDetails, error)
+	GetMatch(matchID id.Match) (*chpp.MatchDetails, error)
 	GetMatchesArchive(teamID id.Team, start, end time.Time) ([]*chpp.Match, error)
 	GetMyMatchesArchive(start, end time.Time) ([]*chpp.Match, error)
 	GetMatchLineup(matchID id.Match, teamID id.Team) (*chpp.MatchLineup, error)
@@ -61,7 +58,8 @@ type Client interface {
 	IgnoreTransfer(transferID id.Transfer, category chpp.TrackingTypeID) error
 	DeleteAllFinishedBids() error
 
-	GetEconomy() (chpp.Economy, error)
+	GetFinancesForPrimaryTeam() (chpp.Economy, error)
+	GetFinances(teamID id.Team) (chpp.Economy, error)
 
 	GetHOFPlayers() ([]*chpp.HOFPlayer, error)
 
@@ -76,16 +74,21 @@ type Client interface {
 	GetMyPlayers() ([]*chpp.Player, error)
 	GetPlayers(teamID id.Team) ([]*chpp.Player, error)
 
-	GetMyTeamDetails() (*chpp.TeamDetails, error)
-	GetTeamDetails(teamID id.Team) (*chpp.TeamDetails, error)
-	GetTeamDetailsByUser(userID id.User) (*chpp.TeamDetails, error)
+	GetMyTeams() ([]*chpp.Team, error)
+	GetMyPrimaryTeam() (*chpp.Team, error)
+	GetTeam(teamID id.Team) (*chpp.Team, error)
+	GetPrimaryTeamByUser(userID id.User) (*chpp.Team, error)
+	GetTeamsByUser(userID id.User) ([]*chpp.Team, error)
+
+	GetMe() (*chpp.Manager, error)
+	GetManager(uID id.User) (*chpp.Manager, error)
 
 	GetMyMatches() ([]*chpp.Match, error)
 	GetMyYouthMatches() ([]*chpp.Match, error)
 
-	GetWorldDetails() ([]*chpp.League, error)
-	GetLeagueDetails(leagueID id.League) (*chpp.League, error)
-	GetCountryDetails(countryID id.Country) (*chpp.League, error)
+	GetWorld() ([]*chpp.League, error)
+	GetLeague(leagueID id.League) (*chpp.League, error)
+	GetCountry(countryID id.Country) (*chpp.League, error)
 }
 
 // NewClient ...

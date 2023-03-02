@@ -7,7 +7,7 @@ import (
 // XML file name and version.
 const (
 	ArenaDetailsAPIFile    = "arenadetails"
-	ArenaDetailsAPIVersion = "1.5"
+	ArenaDetailsAPIVersion = "1.7"
 )
 
 // ArenaDetailsXML contains Information about specific arenas, supporter
@@ -30,8 +30,9 @@ type ArenaDetailsXML struct {
 
 // Arena is a container for the data about the arena.
 type Arena struct {
-	ArenaID   id.Arena `xml:"ArenaID"`
-	ArenaName string   `xml:"ArenaName"`
+	ID    id.Arena `xml:"ArenaID"`
+	Name  string   `xml:"ArenaName"`
+	Image string   `xml:"ArenaImage"`
 
 	// Container for the data about the team owning this arena.
 	Team struct {
@@ -54,11 +55,7 @@ type Arena struct {
 	// Container for the data about the current capacity of the arena.
 	CurrentCapacity struct {
 		RebuiltDate HattrickTime `xml:"RebuiltDate"`
-		Terraces    uint         `xml:"Terraces"`
-		Basic       uint         `xml:"Basic"`
-		Roof        uint         `xml:"Roof"`
-		VIP         uint         `xml:"VIP"`
-		Total       uint         `xml:"Total"`
+		seats
 	} `xml:"CurrentCapacity"`
 
 	// Container for the data about the expanded capacity of the arena during
@@ -68,10 +65,14 @@ type Arena struct {
 	ExpandedCapacity struct {
 		Available     bool         `xml:"Available,attr"`
 		ExpansionDate HattrickTime `xml:"ExpansionDate"`
-		Terraces      uint         `xml:"Terraces"`
-		Basic         uint         `xml:"Basic"`
-		Roof          uint         `xml:"Roof"`
-		VIP           uint         `xml:"VIP"`
-		Total         uint         `xml:"Total"`
+		seats
 	} `xml:"ExpandedCapacity"`
+}
+
+type seats struct {
+	Terraces uint `xml:"Terraces"`
+	Basic    uint `xml:"Basic"`
+	Roof     uint `xml:"Roof"`
+	VIP      uint `xml:"VIP"`
+	Total    uint `xml:"Total"`
 }

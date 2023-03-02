@@ -5,8 +5,8 @@ import (
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetMyManagerDetails ...
-func (a *API) GetMyManagerDetails() (*chpp.Manager, error) {
+// GetMe ...
+func (a *API) GetMe() (*chpp.Manager, error) {
 	values := map[string]string{
 		"sourceSystem": "hattrick",
 	}
@@ -18,8 +18,8 @@ func (a *API) GetMyManagerDetails() (*chpp.Manager, error) {
 	return &details.Manager, nil
 }
 
-// GetManagerDetails ...
-func (a *API) GetManagerDetails(uID id.User) (*chpp.Manager, error) {
+// GetManager ...
+func (a *API) GetManager(uID id.User) (*chpp.Manager, error) {
 	values := map[string]string{
 		"userId":       uID.String(),
 		"sourceSystem": "hattrick",

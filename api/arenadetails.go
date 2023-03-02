@@ -5,8 +5,8 @@ import (
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetMyArenaDetails ...
-func (a *API) GetMyArenaDetails() (*chpp.Arena, error) {
+// GetMyArena ...
+func (a *API) GetMyArena() (*chpp.Arena, error) {
 	values := map[string]string{}
 	values["StatsType"] = ""
 	arenaDetails, err := a.parsed.GetArenaDetailsXML(values)
@@ -16,8 +16,8 @@ func (a *API) GetMyArenaDetails() (*chpp.Arena, error) {
 	return arenaDetails.Arena, nil
 }
 
-// GetArenaDetailsByArenaID ...
-func (a *API) GetArenaDetailsByArenaID(arenaID id.Arena) (*chpp.Arena, error) {
+// GetArena ...
+func (a *API) GetArena(arenaID id.Arena) (*chpp.Arena, error) {
 	values := map[string]string{}
 	values["StatsType"] = ""
 	values["arenaID"] = arenaID.String()
@@ -28,8 +28,8 @@ func (a *API) GetArenaDetailsByArenaID(arenaID id.Arena) (*chpp.Arena, error) {
 	return arenaDetails.Arena, nil
 }
 
-// GetArenaDetailsByTeamID ...
-func (a *API) GetArenaDetailsByTeamID(teamID id.Team) (*chpp.Arena, error) {
+// GetArenaByTeamID ...
+func (a *API) GetArenaByTeamID(teamID id.Team) (*chpp.Arena, error) {
 	values := map[string]string{}
 	values["StatsType"] = ""
 	values["teamId"] = teamID.String()

@@ -1,13 +1,11 @@
 package chpp
 
-import (
-	"github.com/lucianoq/hattrick/chpp/id"
-)
+import "github.com/lucianoq/hattrick/chpp/id"
 
 // XML file name and version.
 const (
 	TeamDetailsAPIFile    = "teamdetails"
-	TeamDetailsAPIVersion = "3.5"
+	TeamDetailsAPIVersion = "3.6"
 )
 
 // TeamDetailsXML ...
@@ -23,23 +21,18 @@ type TeamDetailsXML struct {
 	Server    string    `xml:"Server"`
 	Request   string    `xml:"Request"`
 
-	TeamDetails
+	User User `xml:"User"`
+
+	Teams []*Team `xml:"Teams>Team"`
 }
 
-// TeamDetails ...
-type TeamDetails struct {
-	User TeamDetailsUser `xml:"User"`
-
-	Teams []*TeamDetailsTeam `xml:"Teams>Team"`
-}
-
-// TeamDetailsUser ...
-type TeamDetailsUser struct {
+// User ...
+type User struct {
 	UserID id.User `xml:"UserID"`
 
 	Language struct {
-		LanguageID   id.Language `xml:"LanguageID"`
-		LanguageName string      `xml:"LanguageName"`
+		ID   id.Language `xml:"LanguageID"`
+		Name string      `xml:"LanguageName"`
 	} `xml:"Language"`
 
 	// The current level of Hattrick Supporter that the user has (including
@@ -74,20 +67,20 @@ type TeamDetailsUser struct {
 	HasManagerLicense bool `xml:"HasManagerLicense"`
 
 	// Container for the national teams.
-	NationalTeams struct {
-		NationalTeam []*struct {
-			// The globally unique identifier of the national team.
-			NationalTeamID id.NationalTeam `xml:"NationalTeamID"`
-			// The name of the national team.
-			NationalTeamName string `xml:"NationalTeamName"`
-			// The staff type id from the position the user has in the national team
-			NationalTeamStaffType NationalTeamStaffType `xml:"NationalTeamStaffType"`
-		}
-	} `xml:"NationalTeams"`
+	NationalTeams []*struct {
+		// The globally unique identifier of the national team.
+		ID id.NationalTeam `xml:"NationalTeamID"`
+
+		// The name of the national team.
+		Name string `xml:"NationalTeamName"`
+
+		// The staff type id from the position the user has in the national team
+		StaffType NationalTeamStaffType `xml:"NationalTeamStaffType"`
+	} `xml:"NationalTeams>NationalTeam"`
 }
 
-// TeamDetailsTeam ...
-type TeamDetailsTeam struct {
+// Team ...
+type Team struct {
 	ID            id.Team      `xml:"TeamID"`
 	Name          string       `xml:"TeamName"`
 	ShortName     string       `xml:"ShortTeamName"`
@@ -114,7 +107,7 @@ type TeamDetailsTeam struct {
 		Name string     `xml:"CountryName"`
 	} `xml:"Country"`
 
-	// Container for the data about the region theteam is located in.
+	// Container for the data about the region the team is located in.
 	Region struct {
 		ID   id.Region `xml:"RegionID"`
 		Name string    `xml:"RegionName"`
@@ -236,7 +229,7 @@ type TeamDetailsTeam struct {
 	// supporter
 	// Container for the data about the team's most recent
 	// PressAnnouncement.
-	PressAnnouncement struct {
+	PressAnnouncement []struct {
 
 		// The subject text specified for the PressAnnouncement.
 		Subject string `xml:"Subject"`
@@ -252,7 +245,7 @@ type TeamDetailsTeam struct {
 	// supporter
 	// Container for the team's club theme colors. Empty if no theme has
 	// been set for the club.
-	TeamColors struct {
+	TeamColors []struct {
 		// The defined background color from the club theme.
 		BackgroundColor string `xml:"BackgroundColor"`
 
@@ -274,7 +267,7 @@ type TeamDetailsTeam struct {
 
 		// The date when the team was made a bot, only available if team
 		// is a bot.
-		BotSinceDate HattrickTime `xml:"BotSince"`
+		BotSince HattrickTime `xml:"BotSince"`
 	} `xml:"BotStatus"`
 
 	// If the team has an owner, last is the League Rank, a number based
@@ -290,18 +283,32 @@ type TeamDetailsTeam struct {
 	// here. If not it will be an empty string.
 	YouthTeamName string `xml:"YouthTeamName"`
 
+	// The number of visits the team had in the latest day with at least one visit.
+	NumberOfVisits uint `xml:"NumberOfVisits"`
+
 	Flags struct {
-		Home []Flag `xml:"HomeFlags>Flag"`
-		Away []Flag `xml:"AwayFlags>Flag"`
+		Home []flag `xml:"HomeFlags>Flag"`
+		Away []flag `xml:"AwayFlags>Flag"`
 	} `xml:"Flags"`
 
 	Trophies []*struct {
-		TypeID              TrophyID     `xml:"TrophyTypeId"`
-		Season              uint         `xml:"TrophySeason"`
-		LeagueLevel         uint         `xml:"LeagueLevel"`
-		LeagueLevelUnitName string       `xml:"LeagueLevelUnitName"`
-		GainedDate          HattrickTime `xml:"GainedDate"`
-		ImageURL            string       `xml:"ImageUrl"`
+		TypeID TrophyID `xml:"TrophyTypeId"`
+		Season uint     `xml:"TrophySeason"`
+
+		// The level the league the user won. For tournament trophies, this act as a "type".
+		LeagueLevel uint `xml:"LeagueLevel"`
+
+		// The LeagueLevelUnitId of the leaguelevelunit that the user won.
+		// For tournaments this is the id of the tournament.
+		SeriesID   id.Series `xml:"LeagueLevelUnitID"`
+		SeriesName string    `xml:"LeagueLevelUnitName"`
+
+		GainedDate HattrickTime `xml:"GainedDate"`
+		ImageURL   string       `xml:"ImageUrl"`
+
+		CupLeagueLevel id.CupLeagueLevel `xml:"CupLeagueLevel"`
+		CupLevel       id.CupLevel       `xml:"CupLevel"`
+		CupLevelIndex  id.CupLevelIndex  `xml:"CupLevelIndex"`
 	} `xml:"TrophyList>Trophy"`
 
 	// Container for the supported teams. It will be empty if the
@@ -312,7 +319,7 @@ type TeamDetailsTeam struct {
 		MaxItems   *uint `xml:"MaxItems,attr"`
 
 		SupportedTeam []*struct {
-			SupportedTeam
+			supportedTeam
 
 			// Container for the last match of the supported team.
 			LastMatch struct {
@@ -357,26 +364,29 @@ type TeamDetailsTeam struct {
 
 		// Container for a supported team. Not supplied if the user doesn't
 		// have supporters.
-		SupporterTeam []*SupportedTeam `xml:"SupporterTeam"`
+		SupporterTeam []*supportedTeam `xml:"SupporterTeam"`
 	} `xml:"MySupporters"`
 
-	// Undocumented
-	NumberOfVisits uint `xml:"NumberOfVisits"`
+	// Whether the team is possible to challenge for a mid-week friendly
+	PossibleToChallengeMidweek bool `xml:"PossibleToChallengeMidweek"`
+
+	// Whether the team is possible to challenge for a weekend friendly
+	PossibleToChallengeWeekend bool `xml:"PossibleToChallengeWeekend"`
 }
 
-// Flag ...
-type Flag struct {
+// flag ...
+type flag struct {
 	LeagueID    id.League `xml:"LeagueId"`
 	LeagueName  string    `xml:"LeagueName"`
 	CountryCode string    `xml:"CountryCode"`
 }
 
-// SupportedTeam ...
-type SupportedTeam struct {
-	ID         id.Team   `xml:"TeamId"`
-	Name       string    `xml:"TeamName"`
+// supportedTeam ...
+type supportedTeam struct {
 	UserID     id.User   `xml:"UserId"`
 	LoginName  string    `xml:"LoginName"`
+	ID         id.Team   `xml:"TeamId"`
+	Name       string    `xml:"TeamName"`
 	LeagueID   id.League `xml:"LeagueID"`
 	LeagueName string    `xml:"LeagueName"`
 	SeriesID   id.Series `xml:"LeagueLevelUnitID"`

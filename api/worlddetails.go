@@ -5,8 +5,8 @@ import (
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetWorldDetails ...
-func (a *API) GetWorldDetails() ([]*chpp.League, error) {
+// GetWorld ...
+func (a *API) GetWorld() ([]*chpp.League, error) {
 	wd, err := a.parsed.GetWorldDetailsXML(
 		map[string]string{
 			"includeRegions": "false",
@@ -19,8 +19,8 @@ func (a *API) GetWorldDetails() ([]*chpp.League, error) {
 	return wd.Leagues, nil
 }
 
-// GetLeagueDetails ...
-func (a *API) GetLeagueDetails(league id.League) (*chpp.League, error) {
+// GetLeague ...
+func (a *API) GetLeague(league id.League) (*chpp.League, error) {
 	e, err := a.parsed.GetWorldDetailsXML(
 		map[string]string{
 			"includeRegions": "false",
@@ -34,8 +34,8 @@ func (a *API) GetLeagueDetails(league id.League) (*chpp.League, error) {
 	return e.Leagues[0], nil
 }
 
-// GetCountryDetails ...
-func (a *API) GetCountryDetails(country id.Country) (*chpp.League, error) {
+// GetCountry ...
+func (a *API) GetCountry(country id.Country) (*chpp.League, error) {
 	e, err := a.parsed.GetWorldDetailsXML(
 		map[string]string{
 			"includeRegions": "false",

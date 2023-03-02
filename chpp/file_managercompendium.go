@@ -29,10 +29,10 @@ type ManagerCompendiumXML struct {
 type Manager struct {
 
 	// The globally unique UserID.
-	UserID id.User `xml:"UserId"`
+	ID id.User `xml:"UserId"`
 
 	// The 'username' or 'nickname' used in Forums and around the site.
-	Name string `xml:"Loginname"`
+	LoginName string `xml:"Loginname"`
 
 	// The current level of Hattrick Supporter that the user has. Empty if not a Supporter.
 	SupporterTier SupporterTier `xml:"SupporterTier"`

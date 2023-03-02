@@ -7,7 +7,7 @@ import (
 // XML file name and version.
 const (
 	EconomyAPIFile    = "economy"
-	EconomyAPIVersion = "1.0"
+	EconomyAPIVersion = "1.4"
 )
 
 // EconomyXML ...
@@ -37,18 +37,17 @@ type Economy struct {
 	FanClubSize                     uint                   `xml:"FanClubSize"`
 	IncomeSpectators                Money                  `xml:"IncomeSpectators"`
 	IncomeSponsors                  Money                  `xml:"IncomeSponsors"`
+	IncomeSponsorsBonuses           Money                  `xml:"IncomeSponsorsBonuses"`
 	IncomeFinancial                 Money                  `xml:"IncomeFinancial"`
 	IncomeSoldPlayers               Money                  `xml:"IncomeSoldPlayers"`
 	IncomeSoldPlayersCommission     Money                  `xml:"IncomeSoldPlayersCommission"`
-	IncomeTemporary                 Money                  `xml:"IncomeTemporary"`
 	IncomeSum                       Money                  `xml:"IncomeSum"`
 	CostsArena                      Money                  `xml:"CostsArena"`
 	CostsPlayers                    Money                  `xml:"CostsPlayers"`
 	CostsFinancial                  Money                  `xml:"CostsFinancial"`
-	CostsStaff                      Money                  `xml:"CostsStaff"`
 	CostsBoughtPlayers              Money                  `xml:"CostsBoughtPlayers"`
 	CostsArenaBuilding              Money                  `xml:"CostsArenaBuilding"`
-	CostsTemporary                  Money                  `xml:"CostsTemporary"`
+	CostsStaff                      Money                  `xml:"CostsStaff"`
 	CostsYouth                      Money                  `xml:"CostsYouth"`
 	CostsSum                        Money                  `xml:"CostsSum"`
 	ExpectedWeeksTotal              Money                  `xml:"ExpectedWeeksTotal"`
@@ -57,15 +56,13 @@ type Economy struct {
 	LastIncomeFinancial             Money                  `xml:"LastIncomeFinancial"`
 	LastIncomeSoldPlayers           Money                  `xml:"LastIncomeSoldPlayers"`
 	LastIncomeSoldPlayersCommission Money                  `xml:"LastIncomeSoldPlayersCommission"`
-	LastIncomeTemporary             Money                  `xml:"LastIncomeTemporary"`
 	LastIncomeSum                   Money                  `xml:"LastIncomeSum"`
 	LastCostsArena                  Money                  `xml:"LastCostsArena"`
 	LastCostsPlayers                Money                  `xml:"LastCostsPlayers"`
 	LastCostsFinancial              Money                  `xml:"LastCostsFinancial"`
-	LastCostsStaff                  Money                  `xml:"LastCostsStaff"`
 	LastCostsBoughtPlayers          Money                  `xml:"LastCostsBoughtPlayers"`
 	LastCostsArenaBuilding          Money                  `xml:"LastCostsArenaBuilding"`
-	LastCostsTemporary              Money                  `xml:"LastCostsTemporary"`
+	LastCostsStaff                  Money                  `xml:"LastCostsStaff"`
 	LastCostsYouth                  Money                  `xml:"LastCostsYouth"`
 	LastCostsSum                    Money                  `xml:"LastCostsSum"`
 	LastWeeksTotal                  Money                  `xml:"LastWeeksTotal"`

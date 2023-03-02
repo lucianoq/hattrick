@@ -5,8 +5,8 @@ import (
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetMatchDetails ...
-func (a *API) GetMatchDetails(mID id.Match) (*chpp.MatchDetails, error) {
+// GetMatch ...
+func (a *API) GetMatch(mID id.Match) (*chpp.MatchDetails, error) {
 	values := map[string]string{
 		"matchEvents":  "false",
 		"matchID":      mID.String(),
