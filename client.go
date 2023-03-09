@@ -64,12 +64,12 @@ type Client interface {
 	GetHOFPlayers() ([]*chpp.HOFPlayer, error)
 
 	GetMySeries() (*chpp.Series, error)
-	GetSeries(leagueLevelUnitID id.Series) (*chpp.Series, error)
+	GetSeries(seriesID id.Series) (*chpp.Series, error)
 
 	GetMySeriesFixtures() (*chpp.SeriesFixtures, error)
 	GetMySeriesFixturesBySeason(season uint) (*chpp.SeriesFixtures, error)
-	GetSeriesFixtures(leagueLevelUnitID id.Series) (*chpp.SeriesFixtures, error)
-	GetSeriesFixturesBySeason(leagueLevelUnitID id.Series, season uint) (*chpp.SeriesFixtures, error)
+	GetSeriesFixtures(seriesID id.Series) (*chpp.SeriesFixtures, error)
+	GetSeriesFixturesBySeason(seriesID id.Series, season uint) (*chpp.SeriesFixtures, error)
 
 	GetMyPlayers() ([]*chpp.Player, error)
 	GetPlayers(teamID id.Team) ([]*chpp.Player, error)
