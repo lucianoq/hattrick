@@ -7,7 +7,7 @@ import (
 // XML file name and version.
 const (
 	PlayersAPIFile    = "players"
-	PlayersAPIVersion = "2.4"
+	PlayersAPIVersion = "2.6"
 )
 
 // PlayersXML ...
@@ -86,8 +86,8 @@ type Player struct {
 	// provided if the player has been made into a trainer, 'has gained trainer
 	// license'.
 	TrainerData struct {
-		TrainerType  TrainerType `xml:"TrainerType"`
-		TrainerSkill SkillLevel  `xml:"TrainerSkill"`
+		TrainerType       TrainerType `xml:"TrainerType"`
+		TrainerSkillLevel SkillLevel  `xml:"TrainerSkillLevel"`
 	} `xml:"TrainerData"`
 
 	// Last played match. If MatchId = 0 it either means that the player has not

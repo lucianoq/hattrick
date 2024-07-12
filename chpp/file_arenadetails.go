@@ -30,9 +30,10 @@ type ArenaDetailsXML struct {
 
 // Arena is a container for the data about the arena.
 type Arena struct {
-	ID    id.Arena `xml:"ArenaID"`
-	Name  string   `xml:"ArenaName"`
-	Image string   `xml:"ArenaImage"`
+	ID            id.Arena `xml:"ArenaID"`
+	Name          string   `xml:"ArenaName"`
+	Image         string   `xml:"ArenaImage"`
+	FallbackImage string   `xml:"ArenaFallbackImage"`
 
 	// Container for the data about the team owning this arena.
 	Team struct {

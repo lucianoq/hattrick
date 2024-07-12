@@ -19,5 +19,6 @@ vendor/
 
 # Development secrets
 examples/secrets.go
+.envrc
 
 cmd/
