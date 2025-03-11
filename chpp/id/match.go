@@ -3,9 +3,9 @@ package id
 import "strconv"
 
 // Match ...
-type Match uint
+type Match int
 
 // String returns a string representation of the type.
 func (m Match) String() string {
-	return strconv.FormatUint(uint64(m), 10)
+	return strconv.FormatInt(int64(m), 10)
 }
