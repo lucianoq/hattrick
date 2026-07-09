@@ -73,7 +73,7 @@ func (m MatchType) String() string {
 	case MatchTypeYouthInternationalFriendlyMatchNormalRules:
 		return "youth_friendly_international_normal_rules"
 	case MatchTypeYouthInternationalFriendlyMatchCupRules:
-		return "youth_friendly_international_normal_rules"
+		return "youth_friendly_international_cup_rules"
 	default:
 		return ""
 	}

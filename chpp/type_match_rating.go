@@ -220,7 +220,7 @@ func (m MatchRating) String() string {
 	case MatchRatingHighExtraTerrestrial:
 		return "HighExtraTerrestrial"
 	case MatchRatingVeryHighExtraTerrestrial:
-		return "VeryHighExtraTerrestrial "
+		return "VeryHighExtraTerrestrial"
 	case MatchRatingVeryLowMythical:
 		return "VeryLowMythical"
 	case MatchRatingLowMythical:
