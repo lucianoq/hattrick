@@ -1,6 +1,7 @@
 package chpp
 
-// NationalTeamStaffType ...
+// NationalTeamStaffType is a role on a national team's staff (coach,
+// assistant coach, or scout).
 type NationalTeamStaffType uint
 
 // List of NationalTeamStaffType constants.

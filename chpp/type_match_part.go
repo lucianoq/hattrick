@@ -1,6 +1,7 @@
 package chpp
 
-// MatchPart ...
+// MatchPart identifies which part of a match an event happened in (before
+// kickoff, first/second half, overtime, or penalty shootout).
 type MatchPart uint
 
 // List of MatchPart constants.

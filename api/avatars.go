@@ -5,7 +5,8 @@ import (
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetAvatarsMyPlayers ...
+// GetAvatarsMyPlayers shows the avatars of the requesting user's own
+// team's players.
 func (a *API) GetAvatarsMyPlayers() ([]*chpp.PlayerAvatars, error) {
 	values := map[string]string{}
 	values["actionType"] = "players"
@@ -17,7 +18,7 @@ func (a *API) GetAvatarsMyPlayers() ([]*chpp.PlayerAvatars, error) {
 
 }
 
-// GetAvatarsPlayers ...
+// GetAvatarsPlayers shows the avatars of the given team's players.
 func (a *API) GetAvatarsPlayers(teamID id.Team) ([]*chpp.PlayerAvatars, error) {
 	values := map[string]string{}
 	values["actionType"] = "players"
@@ -29,7 +30,8 @@ func (a *API) GetAvatarsPlayers(teamID id.Team) ([]*chpp.PlayerAvatars, error) {
 	return avatars.Team.Players, nil
 }
 
-// GetAvatarsMyHallOfFame ...
+// GetAvatarsMyHallOfFame shows the avatars of the requesting user's own
+// team's Hall of Fame players.
 func (a *API) GetAvatarsMyHallOfFame() ([]*chpp.PlayerAvatars, error) {
 	values := map[string]string{}
 	values["actionType"] = "hof"
@@ -40,7 +42,8 @@ func (a *API) GetAvatarsMyHallOfFame() ([]*chpp.PlayerAvatars, error) {
 	return avatars.Team.Players, nil
 }
 
-// GetAvatarsHallOfFame ...
+// GetAvatarsHallOfFame shows the avatars of the given team's Hall of Fame
+// players.
 func (a *API) GetAvatarsHallOfFame(teamID id.Team) ([]*chpp.PlayerAvatars, error) {
 	values := map[string]string{}
 	values["actionType"] = "hof"

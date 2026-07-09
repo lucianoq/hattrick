@@ -2,7 +2,8 @@ package chpp
 
 import "strconv"
 
-// MatchPlace ...
+// MatchPlace is where a match is played, relative to a given team: at
+// home, away, or at a neutral venue.
 type MatchPlace uint
 
 // List of MatchPlace constants.

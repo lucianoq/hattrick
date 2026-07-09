@@ -2,7 +2,8 @@ package chpp
 
 import "strconv"
 
-// BookmarkType ...
+// BookmarkType is the kind of entity a bookmark refers to (teams, players,
+// matches, forum content, league units, or youth equivalents).
 type BookmarkType uint
 
 // List of BookmarkType constants.

@@ -1,6 +1,7 @@
 package chpp
 
-// MatchPosition ...
+// MatchPosition is one of the 11 formal field positions in Hattrick's
+// standard 5-5-3 lineup grid.
 type MatchPosition uint
 
 // List of MatchPosition constants.

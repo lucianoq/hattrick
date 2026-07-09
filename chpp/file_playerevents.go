@@ -10,16 +10,37 @@ const (
 	PlayerEventsAPIVersion = "1.3"
 )
 
-// PlayerEventsXML ...
+// PlayerEventsXML contains the log of notable events (injuries, cards,
+// transfers, etc.) recorded for a single player.
 type PlayerEventsXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
+	Envelope
+	UserID id.User `xml:"User"`
 
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	// Indicates which Supporter package the fetching user has, or empty if
+	// not a Supporter.
+	UserSupporterTier SupporterTier `xml:"UserSupporterTier"`
+
+	Player struct {
+		PlayerID id.Player `xml:"PlayerID"`
+
+		// Container for the player's events.
+		PlayerEvents struct {
+			// If a match is running this value is not available.
+			Available bool               `xml:"Available,attr"`
+			Events    []*PlayerEventItem `xml:"PlayerEvent"`
+		} `xml:"PlayerEvents"`
+	} `xml:"Player"`
+}
+
+// PlayerEventItem is a single event that happened to a player. No fixed
+// list of event types is documented; each CHPP has to collect its own
+// event list by observing PlayerEventTypeID/EventText over time.
+type PlayerEventItem struct {
+	EventDate HattrickTime `xml:"EventDate"`
+
+	// An identifier to show which type of event it is.
+	PlayerEventTypeID uint `xml:"PlayerEventTypeID"`
+
+	// String describing the event.
+	EventText string `xml:"EventText"`
 }

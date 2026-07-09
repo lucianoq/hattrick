@@ -2,7 +2,8 @@ package chpp
 
 import "strconv"
 
-// MatchBehaviourID ...
+// MatchBehaviourID is the individual order/repositioning a player plays
+// with during a match (e.g. offensive, defensive, extra forward).
 type MatchBehaviourID int
 
 // List of MatchBehaviourID constants.

@@ -1,6 +1,7 @@
 package chpp
 
-// TrophyID ...
+// TrophyID identifies an award a team or player has won (e.g. league,
+// cup, World Cup, Hattrick Masters).
 type TrophyID uint
 
 // List of TrophyID constants.
@@ -17,6 +18,7 @@ const (
 	TrophyTutorialTournamentWinner TrophyID = 203
 )
 
+// String returns a string representation of the type.
 func (t TrophyID) String() string {
 	switch t {
 	case TrophyCupWinner:

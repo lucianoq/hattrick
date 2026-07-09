@@ -1,6 +1,8 @@
 package chpp
 
-// MatchRole ...
+// MatchRole is the formal lineup 'slot' a player fills in a match: one of
+// the 11 field positions, a substitute/backup bench slot, a set-piece or
+// captain designation, or a penalty-taker order.
 type MatchRole uint
 
 // List of MatchRole constants.

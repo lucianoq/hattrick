@@ -1,6 +1,7 @@
 package chpp
 
-// CupLevel ...
+// CupLevel identifies which national cup competition a team is in: the main
+// divisional cup, the challenger cup, or the consolation cup.
 type CupLevel uint
 
 // List of CupLevel constants.

@@ -14,7 +14,9 @@ type lineupSubstitutionOrder struct {
 	Standing  string `json:"standing"`
 }
 
-// LineupSubstitutionOrder ...
+// LineupSubstitutionOrder is a single player order (substitution,
+// behaviour change, or position swap) to include in the matchorders
+// lineup JSON payload built by NewLineup.
 type LineupSubstitutionOrder struct {
 	PlayerIn  id.Player
 	PlayerOut id.Player // same as In if behaviour change

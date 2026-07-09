@@ -2,7 +2,8 @@ package chpp
 
 import "strconv"
 
-// FriendlyType ...
+// FriendlyType is the rule set applied to a friendly match: normal rules,
+// cup rules, or a national team friendly.
 type FriendlyType uint
 
 // List of FriendlyType constants.

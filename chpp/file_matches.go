@@ -7,21 +7,14 @@ import (
 // XML file name and version.
 const (
 	MatchesAPIFile    = "matches"
-	MatchesAPIVersion = "2.8"
+	MatchesAPIVersion = "2.9"
 )
 
-// MatchesXML ...
+// MatchesXML contains the most recent and upcoming matches for a
+// particular team (senior or youth).
 type MatchesXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"User"`
 
 	IsYouth bool `xml:"IsYouth"`
 
@@ -45,7 +38,8 @@ type MatchesXML struct {
 	} `xml:"Team"`
 }
 
-// Match ...
+// Match is a single (past, ongoing, or upcoming) match for a team, as
+// returned by the matches and matchesArchive files.
 type Match struct {
 	// The globally unique identifier of the match.
 	MatchID id.Match `xml:"MatchID"`
@@ -53,20 +47,20 @@ type Match struct {
 	HomeTeam struct {
 		ID        id.Team `xml:"HomeTeamID"`
 		Name      string  `xml:"HomeTeamName"`
-		ShortName string  `xml:"HomeTeamNameShortName"`
+		ShortName string  `xml:"HomeTeamShortName"`
 	} `xml:"HomeTeam"`
 
 	AwayTeam struct {
 		ID        id.Team `xml:"AwayTeamID"`
 		Name      string  `xml:"AwayTeamName"`
-		ShortName string  `xml:"AwayTeamNameShortName"`
+		ShortName string  `xml:"AwayTeamShortName"`
 	} `xml:"AwayTeam"`
 
 	MatchDate HattrickTime `xml:"MatchDate"`
 
-	// SourceSystem tells from witch system the match is ex: hattrick, youth,
+	// SourceSystem tells from which system the match is, e.g. hattrick, youth,
 	// htointegrated
-	SourceSystem string `xml:"SourceSystem"`
+	SourceSystem SourceSystem `xml:"SourceSystem"`
 
 	// Integer defining the type of match.
 	MatchType MatchType `xml:"MatchType"`
@@ -78,9 +72,18 @@ type Match struct {
 	// single matches and preparation matches.
 	MatchContextID uint `xml:"MatchContextId"`
 
+	// The rules in place for the ladder or tournament in question, if any.
+	// Only sent by matchesArchive. Defaults to 0 = no rules.
+	MatchRuleID MatchRule `xml:"MatchRuleId"`
+
+	// The id of the cup the match belongs to, if any. Only sent by
+	// matchesArchive.
+	CupID id.Cup `xml:"CupId"`
+
 	// 1 = National/Divisional cup
 	// 2 = Challenger cup
 	// 3 = Consolation cup
+	// 0 if MatchType is not a cup match.
 	CupLevel CupLevel `xml:"CupLevel"`
 
 	// In Challenger cups:
@@ -88,9 +91,12 @@ type Match struct {
 	// 2 = Ruby (start week 3),
 	// 3 = Sapphire (start week 4).
 	// Always 1 for National/Divisional (main cups) and Consolation cups.
+	// 0 if MatchType is not a cup match.
 	CupLevelIndex CupLevelIndex `xml:"CupLevelIndex"`
 
+	// Not sent by matchesArchive if the match is still upcoming or ongoing.
 	HomeGoals uint `xml:"HomeGoals"`
+	// Not sent by matchesArchive if the match is still upcoming or ongoing.
 	AwayGoals uint `xml:"AwayGoals"`
 
 	// Specifying whether the match is FINISHED, ONGOING or UPCOMING.

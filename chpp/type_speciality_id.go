@@ -1,6 +1,7 @@
 package chpp
 
-// SpecialtyID ...
+// SpecialtyID is a player's special trait (e.g. technical, quick,
+// powerful), which affects match events and commentary.
 type SpecialtyID uint
 
 // List of SpecialtyID constants.
@@ -39,7 +40,8 @@ func (s SpecialtyID) String() string {
 	return ""
 }
 
-// StringTag ...
+// StringTag returns the specialty name wrapped in brackets, e.g.
+// "[Technical]", or an empty string if there is no specialty.
 func (s SpecialtyID) StringTag() string {
 	switch s {
 	case SpecialtyNoSpecialty:
@@ -63,7 +65,8 @@ func (s SpecialtyID) StringTag() string {
 	return ""
 }
 
-// Emoji ...
+// Emoji returns an emoji representing the specialty, or an empty string
+// if there is no specialty or no emoji is defined for it yet.
 func (s SpecialtyID) Emoji() string {
 	switch s {
 	case SpecialtyNoSpecialty:

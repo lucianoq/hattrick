@@ -2,7 +2,8 @@ package id
 
 import "strconv"
 
-// NationalTeam ...
+// NationalTeam identifies a national team (including U-20 squads), as
+// opposed to a regular club Team.
 type NationalTeam uint
 
 // String returns a string representation of the type.

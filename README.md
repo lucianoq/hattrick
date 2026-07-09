@@ -10,9 +10,9 @@ This package provides a list of Go types and functions to access online game
 Hattrick (www.hattrick.org) data, using and abstracting the official CHPP 
 interface.
 
-If you plan to write a Go application, this package helps you to obtain the data
+If you plan to write a Go application, this package helps you to gather the data
 with strong typing and types/constants definition, just ignoring the CHPP XML 
-files, versions and messy unsigned integer list of constants.
+files, versions, and messy unsigned integer list of constants.
 
 
 ## Example
@@ -48,16 +48,16 @@ func main() {
 
 
 ## Contribution
-I focused on the most important CHPP files, so we can, right now, easily extract 
-almost all player/match/team related data, but there is still a lot of work to 
-do on, e.g., youth, transfers, national teams.
+This package now covers every CHPP file (see `API_COVERAGE.md` for the full
+per-file status), including player/match/team data, youth teams, transfers,
+and national teams.
 
-If you want to contribute to the project, just drop me an email (on github profile).
+If you want to contribute to the project, drop me an email (on GitHub profile).
 
 
 ## Authentication
 
-( See www.hattrick.org/Community/CHPP/oauth/ for more details. )
+(See www.hattrick.org/Community/CHPP/oauth/ for more details.)
 
 The Hattrick Client requires 4 strings.
 
@@ -71,7 +71,7 @@ Two about the authorised user (or Resource Owner for oauth):
  
 ##### Consumer
 
-You can obtain the first two creating a new CHPP application on the Hattrick 
+You can get the first two by creating a new CHPP application on the Hattrick 
 website. Request must be motivated and approved by Hattrick developers.
 
 ##### Resource owner
@@ -80,4 +80,4 @@ You need to generate a pair of Access string, token and secret, for every user
 that needs to access Hattrick information.
 
 For simplicity, the process has been coded in `login` package.
-You can just run it to obtain the resource owner strings.
+You can run it to get the resource owner strings.

@@ -2,14 +2,51 @@ package api
 
 import (
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/lucianoq/hattrick/chpp"
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetMyMatchesArchive ...
+// GetMyMatchesArchive returns the requesting user's senior team's archived
+// matches between start and end.
 func (a *API) GetMyMatchesArchive(start, end time.Time) ([]*chpp.Match, error) {
+	return a.matchesArchive(nil, start, end, false, false)
+}
+
+// GetMatchesArchive returns the given senior team's archived matches
+// between start and end.
+func (a *API) GetMatchesArchive(teamID id.Team, start, end time.Time) ([]*chpp.Match, error) {
+	return a.matchesArchive(&teamID, start, end, false, false)
+}
+
+// GetMyYouthMatchesArchive returns the requesting user's youth team's
+// archived matches between start and end.
+func (a *API) GetMyYouthMatchesArchive(start, end time.Time) ([]*chpp.Match, error) {
+	return a.matchesArchive(nil, start, end, true, false)
+}
+
+// GetYouthMatchesArchive returns the given youth team's archived matches
+// between start and end.
+func (a *API) GetYouthMatchesArchive(youthTeamID id.Team, start, end time.Time) ([]*chpp.Match, error) {
+	return a.matchesArchive(&youthTeamID, start, end, true, false)
+}
+
+// GetMyMatchesArchiveIncludeHTO is like GetMyMatchesArchive, but also
+// includes HTO matches (tournaments, ladders, preparation and single
+// matches).
+func (a *API) GetMyMatchesArchiveIncludeHTO(start, end time.Time) ([]*chpp.Match, error) {
+	return a.matchesArchive(nil, start, end, false, true)
+}
+
+// GetMatchesArchiveIncludeHTO is like GetMatchesArchive, but also includes
+// HTO matches (tournaments, ladders, preparation and single matches).
+func (a *API) GetMatchesArchiveIncludeHTO(teamID id.Team, start, end time.Time) ([]*chpp.Match, error) {
+	return a.matchesArchive(&teamID, start, end, false, true)
+}
+
+func (a *API) matchesArchive(teamID *id.Team, start, end time.Time, isYouth, includeHTO bool) ([]*chpp.Match, error) {
 	if start.After(end) {
 		return nil, errors.New("start is after the end date")
 	}
@@ -17,10 +54,15 @@ func (a *API) GetMyMatchesArchive(start, end time.Time) ([]*chpp.Match, error) {
 	matches := make([]*chpp.Match, 0, 50)
 
 	for _, intv := range createBins(start, end) {
-		values := map[string]string{}
-		values["isYouth"] = "false"
-		values["FirstMatchDate"] = chpp.FromTime(intv.from).String()
-		values["LastMatchDate"] = chpp.FromTime(intv.to).String()
+		values := map[string]string{
+			"isYouth":        strconv.FormatBool(isYouth),
+			"includeHTO":     strconv.FormatBool(includeHTO),
+			"FirstMatchDate": chpp.FromTime(intv.from).String(),
+			"LastMatchDate":  chpp.FromTime(intv.to).String(),
+		}
+		if teamID != nil {
+			values["teamID"] = teamID.String()
+		}
 
 		res, err := a.parsed.GetMatchesArchiveXML(values)
 		if err != nil {
@@ -33,30 +75,37 @@ func (a *API) GetMyMatchesArchive(start, end time.Time) ([]*chpp.Match, error) {
 	return matches, nil
 }
 
-// GetMatchesArchive ...
-func (a *API) GetMatchesArchive(teamID id.Team, start, end time.Time) ([]*chpp.Match, error) {
-	if start.After(end) {
-		return nil, errors.New("start is after the end date")
+// GetMyMatchesArchiveBySeason returns the requesting user's senior team's
+// archived matches for the given season. Only valid for senior teams, not
+// youth. Overrides any date range. Per the CHPP doc, if more than 50
+// matches occurred in the season, only the first 50 are returned.
+func (a *API) GetMyMatchesArchiveBySeason(season uint) ([]*chpp.Match, error) {
+	return a.matchesArchiveBySeason(nil, season)
+}
+
+// GetMatchesArchiveBySeason returns the given senior team's archived matches
+// for the given season. Only valid for senior teams, not youth. Overrides
+// any date range. Per the CHPP doc, if more than 50 matches occurred in the
+// season, only the first 50 are returned.
+func (a *API) GetMatchesArchiveBySeason(teamID id.Team, season uint) ([]*chpp.Match, error) {
+	return a.matchesArchiveBySeason(&teamID, season)
+}
+
+func (a *API) matchesArchiveBySeason(teamID *id.Team, season uint) ([]*chpp.Match, error) {
+	values := map[string]string{
+		"isYouth": "false",
+		"season":  strconv.FormatUint(uint64(season), 10),
 	}
-
-	matches := make([]*chpp.Match, 0, 50)
-
-	for _, intv := range createBins(start, end) {
-		values := map[string]string{}
+	if teamID != nil {
 		values["teamID"] = teamID.String()
-		values["isYouth"] = "false"
-		values["FirstMatchDate"] = chpp.FromTime(intv.from).String()
-		values["LastMatchDate"] = chpp.FromTime(intv.to).String()
-
-		res, err := a.parsed.GetMatchesArchiveXML(values)
-		if err != nil {
-			return nil, err
-		}
-
-		matches = append(matches, res.Team.MatchList.Matches...)
 	}
 
-	return matches, nil
+	res, err := a.parsed.GetMatchesArchiveXML(values)
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Team.MatchList.Matches, nil
 }
 
 type interval struct {
@@ -69,8 +118,9 @@ type interval struct {
 // * For performance reasons you may only specify an interval of 2 seasons back in
 // time. If you specify a larger interval we'll automatically adjust it to the
 // default which is:
-//   firstMatchDate = DateTime.Now.AddMonths(-3).Date
-//   lastMatchDate = DateTime.Now.Date
+//
+//	firstMatchDate = DateTime.Now.AddMonths(-3).Date
+//	lastMatchDate = DateTime.Now.Date
 const binMaxSize = 50 * 24 * time.Hour // 50 days
 
 func createBins(start, end time.Time) []interval {

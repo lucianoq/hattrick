@@ -44,15 +44,15 @@ func (a *API) DeleteAllFinishedBids() error {
 // only. Only possible for losing bids, hotlisted and finished.
 // (Requires "place_bid" scope.)
 //
-//    transferId : unsigned Integer
-//    ID of the transfer to be ignored.
+//	transferId : unsigned Integer
+//	ID of the transfer to be ignored.
 //
-//    trackingTypeId : trackingTypeId
-//    Tracking type (category) of the transfer to be ignored. Only values 5, 8
-//    and 9 are allowed.
+//	trackingTypeId : trackingTypeId
+//	Tracking type (category) of the transfer to be ignored. Only values 5, 8
+//	and 9 are allowed.
 func (a *API) IgnoreTransfer(transferID id.Transfer, category chpp.TrackingTypeID) error {
 	values := map[string]string{
-		"actionType":     "view",
+		"actionType":     "ignoreTransfer",
 		"transferId":     transferID.String(),
 		"trackingTypeId": category.String(),
 	}

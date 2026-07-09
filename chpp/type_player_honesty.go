@@ -1,6 +1,7 @@
 package chpp
 
-// PlayerHonesty ...
+// PlayerHonesty is a player personality trait describing how fair they
+// play, from infamous to saintly.
 type PlayerHonesty uint
 
 // List of PlayerHonesty constants.

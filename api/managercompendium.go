@@ -5,12 +5,9 @@ import (
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetMe ...
+// GetMe shows the requesting user's manager profile and all their teams.
 func (a *API) GetMe() (*chpp.Manager, error) {
-	values := map[string]string{
-		"sourceSystem": "hattrick",
-	}
-	details, err := a.parsed.GetManagerCompendiumXML(values)
+	details, err := a.parsed.GetManagerCompendiumXML(nil)
 	if err != nil {
 		return nil, err
 	}
@@ -18,11 +15,10 @@ func (a *API) GetMe() (*chpp.Manager, error) {
 	return &details.Manager, nil
 }
 
-// GetManager ...
+// GetManager shows the given user's manager profile and all their teams.
 func (a *API) GetManager(uID id.User) (*chpp.Manager, error) {
 	values := map[string]string{
-		"userId":       uID.String(),
-		"sourceSystem": "hattrick",
+		"userId": uID.String(),
 	}
 	details, err := a.parsed.GetManagerCompendiumXML(values)
 	if err != nil {

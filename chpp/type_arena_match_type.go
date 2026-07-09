@@ -1,6 +1,7 @@
 package chpp
 
-// ArenaMatchType ...
+// ArenaMatchType filters which kind of games arena statistics are shown for
+// (all games, competitive only, league only, or friendlies only).
 type ArenaMatchType string
 
 // List of ArenaMatchType constants.

@@ -1,23 +1,16 @@
 package chpp
 
-// PlayerInjuryLevel ...
-type PlayerInjuryLevel string
+import "strconv"
 
-// List of PlayerInjuryLevel constants.
+// PlayerInjuryLevel is the number of weeks the player is predicted to be
+// injured. If the player is bruised, the value is 0. If the player is
+// healthy, the value is -1.
+type PlayerInjuryLevel int
+
+// List of special PlayerInjuryLevel values.
 const (
-	InjuryHealthy      PlayerInjuryLevel = "-1"
-	InjuryBruised      PlayerInjuryLevel = "0"
-	InjuryNotAvailable PlayerInjuryLevel = "NOT AVAILABLE"
-	InjuryPlus1        PlayerInjuryLevel = "+1"
-	InjuryPlus2        PlayerInjuryLevel = "+2"
-	InjuryPlus3        PlayerInjuryLevel = "+3"
-	InjuryPlus4        PlayerInjuryLevel = "+4"
-	InjuryPlus5        PlayerInjuryLevel = "+5"
-	InjuryPlus6        PlayerInjuryLevel = "+6"
-	InjuryPlus7        PlayerInjuryLevel = "+7"
-	InjuryPlus8        PlayerInjuryLevel = "+8"
-	InjuryPlus9        PlayerInjuryLevel = "+9"
-	InjuryPlus10       PlayerInjuryLevel = "+10"
+	InjuryHealthy PlayerInjuryLevel = -1
+	InjuryBruised PlayerInjuryLevel = 0
 )
 
 // String returns a string representation of the type.
@@ -27,63 +20,20 @@ func (i PlayerInjuryLevel) String() string {
 		return ""
 	case InjuryBruised:
 		return "bruised"
-	case InjuryNotAvailable:
-		return "NA"
-	case InjuryPlus1:
-		return "+1"
-	case InjuryPlus2:
-		return "+2"
-	case InjuryPlus3:
-		return "+3"
-	case InjuryPlus4:
-		return "+4"
-	case InjuryPlus5:
-		return "+5"
-	case InjuryPlus6:
-		return "+6"
-	case InjuryPlus7:
-		return "+7"
-	case InjuryPlus8:
-		return "+8"
-	case InjuryPlus9:
-		return "+9"
-	case InjuryPlus10:
-		return "+10"
 	default:
-		return ""
+		return "+" + strconv.Itoa(int(i))
 	}
 }
 
-// Short ...
+// Short returns a compact emoji-based representation of the injury level,
+// for space-constrained display.
 func (i PlayerInjuryLevel) Short() string {
 	switch i {
 	case InjuryHealthy:
 		return ""
 	case InjuryBruised:
 		return "🤕"
-	case InjuryNotAvailable:
-		return "NA"
-	case InjuryPlus1:
-		return "🏥1"
-	case InjuryPlus2:
-		return "🏥2"
-	case InjuryPlus3:
-		return "🏥3"
-	case InjuryPlus4:
-		return "🏥4"
-	case InjuryPlus5:
-		return "🏥5"
-	case InjuryPlus6:
-		return "🏥6"
-	case InjuryPlus7:
-		return "🏥7"
-	case InjuryPlus8:
-		return "🏥8"
-	case InjuryPlus9:
-		return "🏥9"
-	case InjuryPlus10:
-		return "🏥10"
 	default:
-		return ""
+		return "🏥" + strconv.Itoa(int(i))
 	}
 }

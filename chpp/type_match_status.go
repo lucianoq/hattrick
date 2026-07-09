@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-// MatchStatus ...
+// MatchStatus indicates whether a match hasn't started, is ongoing, or is
+// finished.
 type MatchStatus uint
 
 // List of MatchStatus constants.
@@ -16,7 +17,9 @@ const (
 	MatchStatusFinished   MatchStatus = 2
 )
 
-// UnmarshalXML ...
+// UnmarshalXML accepts both the numeric (0/1/2) and word ("UPCOMING"/
+// "ONGOING"/"FINISHED") forms sent by different CHPP files, plus an empty
+// string (treated as finished).
 func (ms *MatchStatus) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var s string
 	err := d.DecodeElement(&s, &start)

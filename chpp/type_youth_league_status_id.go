@@ -1,6 +1,7 @@
 package chpp
 
-// YouthLeagueStatusID ...
+// YouthLeagueStatusID is the lifecycle stage of a youth league, from not
+// yet full to finished.
 type YouthLeagueStatusID uint
 
 // List of YouthLeagueStatusID constants.

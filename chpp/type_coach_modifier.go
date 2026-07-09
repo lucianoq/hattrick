@@ -2,7 +2,8 @@ package chpp
 
 import "strconv"
 
-// CoachModifier ...
+// CoachModifier is the style of play a team's coach applies to a match,
+// ranging from -10 (100% defensive) to 10 (100% offensive).
 type CoachModifier int
 
 // List of CoachModifier constants.

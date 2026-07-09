@@ -1,6 +1,7 @@
 package chpp
 
-// StaffType ...
+// StaffType is a non-player staff role at a club (e.g. assistant trainer,
+// medic, financial director).
 type StaffType uint
 
 // List of StaffType constants.

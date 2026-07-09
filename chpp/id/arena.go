@@ -2,7 +2,7 @@ package id
 
 import "strconv"
 
-// Arena ...
+// Arena identifies a team's stadium.
 type Arena uint
 
 // String returns a string representation of the type.

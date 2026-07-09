@@ -7,29 +7,27 @@ import (
 // XML file name and version.
 const (
 	MatchLineupAPIFile    = "matchlineup"
-	MatchLineupAPIVersion = "2.0"
+	MatchLineupAPIVersion = "2.1"
 )
 
-// MatchLineupXML ...
+// MatchLineupXML contains the lineup (starting eleven, substitutions, and
+// end-of-match ratings) used by one team in a finished match.
 type MatchLineupXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"User"`
 
 	*MatchLineup
 }
 
-// MatchLineup ...
+// MatchLineup is the requested team's lineup for a specific match: the
+// starting lineup, substitutions made during the match, and the final
+// lineup with end-of-match player ratings.
 type MatchLineup struct {
-	MatchID   id.Match  `xml:"MatchID"`
-	IsYouth   bool      `xml:"IsYouth"`
+	MatchID id.Match `xml:"MatchID"`
+
+	// Specifies which source system the match belongs to.
+	SourceSystem SourceSystem `xml:"SourceSystem"`
+
 	MatchType MatchType `xml:"MatchType"`
 
 	// This will be either
@@ -38,8 +36,6 @@ type MatchLineup struct {
 	// LadderId, TournamentId, or 0 for friendly, qualification,
 	// single matches and preparation matches.
 	MatchContextID uint `xml:"MatchContextId"`
-
-	MatchDate HattrickTime `xml:"MatchDate"`
 
 	HomeTeam struct {
 		HomeTeamID   id.Team `xml:"HomeTeamID"`
@@ -57,18 +53,21 @@ type MatchLineup struct {
 	} `xml:"Arena"`
 
 	Team struct {
-		TeamID          id.Team       `xml:"TeamID"`
-		TeamName        string        `xml:"TeamName"`
-		ExperienceLevel SkillLevel    `xml:"ExperienceLevel"`
-		StyleOfPlay     CoachModifier `xml:"StyleOfPlay"`
+		TeamID   id.Team `xml:"TeamID"`
+		TeamName string  `xml:"TeamName"`
+		// The aggregated experience level of the team.
+		ExperienceLevel SkillLevel `xml:"ExperienceLevel"`
+		// The style of play used in the match. Always 0 for youth matches.
+		StyleOfPlay CoachModifier `xml:"StyleOfPlay"`
 
 		StartingLineup struct {
 			Player []struct {
-				PlayerID  id.Player        `xml:"PlayerID"`
-				RoleID    MatchRole        `xml:"RoleID"`
-				FirstName string           `xml:"FirstName"`
-				LastName  string           `xml:"LastName"`
-				NickName  string           `xml:"NickName"`
+				PlayerID  id.Player `xml:"PlayerID"`
+				RoleID    MatchRole `xml:"RoleID"`
+				FirstName string    `xml:"FirstName"`
+				LastName  string    `xml:"LastName"`
+				NickName  string    `xml:"NickName"`
+				// Not provided for the Captain and the set pieces taker.
 				Behaviour MatchBehaviourID `xml:"Behaviour"`
 			} `xml:"Player"`
 		} `xml:"StartingLineup"`
@@ -84,7 +83,7 @@ type MatchLineup struct {
 				SubjectPlayerID id.Player `xml:"SubjectPlayerID"`
 
 				// If a/ substitution: The player entering
-				// If b/ behaviour change: (once more) The player changing behaviour).
+				// If b/ behaviour change: (once more) the player changing his behaviour.
 				// If c/ position swap: The player to swap with.
 				ObjectPlayerID id.Player `xml:"ObjectPlayerID"`
 
@@ -105,6 +104,8 @@ type MatchLineup struct {
 			}
 		} `xml:"Substitutions"`
 
+		// The final lineup and end-of-match ratings, as opposed to
+		// StartingLineup which only reflects the kick-off eleven.
 		Lineup struct {
 			Player []struct {
 				PlayerID id.Player `xml:"PlayerID"`

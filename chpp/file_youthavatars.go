@@ -7,19 +7,22 @@ import (
 // XML file name and version.
 const (
 	YouthAvatarsAPIFile    = "youthavatars"
-	YouthAvatarsAPIVersion = "1.1"
+	YouthAvatarsAPIVersion = "1.2"
 )
 
-// YouthAvatarsXML ...
+// YouthAvatarsXML contains data of Avatars for all players of a youth team.
 type YouthAvatarsXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
+	Envelope
+	UserID id.User `xml:"User"`
 
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	YouthTeam struct {
+		ID      id.YouthTeam          `xml:"YouthTeamId"`
+		Players []*YouthPlayerAvatars `xml:"YouthPlayers>YouthPlayer"`
+	} `xml:"YouthTeam"`
+}
+
+// YouthPlayerAvatars is a container for a youth player's avatar.
+type YouthPlayerAvatars struct {
+	PlayerID id.YouthPlayer `xml:"YouthPlayerID"`
+	Avatar   Avatar         `xml:"Avatar"`
 }

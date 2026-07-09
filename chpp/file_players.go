@@ -7,34 +7,32 @@ import (
 // XML file name and version.
 const (
 	PlayersAPIFile    = "players"
-	PlayersAPIVersion = "2.6"
+	PlayersAPIVersion = "2.8"
 )
 
-// PlayersXML ...
+// PlayersXML contains the list of players belonging to a team (the
+// current squad, former club-trained/start-up players, or former players
+// who became coaches, depending on the requested action).
 type PlayersXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"User"`
 
 	UserSupporterTier SupporterTier `xml:"UserSupporterTier"`
-	IsYouth           bool          `xml:"IsYouth"`
-	ActionType        string        `xml:"ActionType"`
-	IsPlayingMatch    bool          `xml:"IsPlayingMatch"`
-	Team              struct {
+
+	// Always false; youth players are only returned by the dedicated
+	// youth XML files.
+	IsYouth        bool   `xml:"IsYouth"`
+	ActionType     string `xml:"ActionType"`
+	IsPlayingMatch bool   `xml:"IsPlayingMatch"`
+	Team           struct {
 		ID      id.Team   `xml:"TeamID"`
 		Name    string    `xml:"TeamName"`
 		Players []*Player `xml:"PlayerList>Player"`
 	} `xml:"Team"`
 }
 
-// Player ...
+// Player is a single squad member as listed by the players file, with a
+// subset of the details available from playerdetails.
 type Player struct {
 	ID                 id.Player            `xml:"PlayerID"`
 	FirstName          string               `xml:"FirstName"`
@@ -43,6 +41,7 @@ type Player struct {
 	Number             uint                 `xml:"PlayerNumber"`
 	Age                uint                 `xml:"Age"`
 	AgeDays            uint                 `xml:"AgeDays"`
+	Gender             GenderID             `xml:"GenderID"`
 	ArrivalDate        HattrickTime         `xml:"ArrivalDate"`
 	OwnerNotes         string               `xml:"OwnerNotes"`
 	TSI                TSI                  `xml:"TSI"`
@@ -64,6 +63,8 @@ type Player struct {
 	CareerHattricks    uint                 `xml:"CareerHattricks"`
 	MatchesCurrentTeam uint                 `xml:"MatchesCurrentTeam"`
 	GoalsCurrentTeam   uint                 `xml:"GoalsCurrentTeam"`
+	AssistsCurrentTeam uint                 `xml:"AssistsCurrentTeam"`
+	CareerAssists      uint                 `xml:"CareerAssists"`
 	Specialty          SpecialtyID          `xml:"Specialty"`
 	TransferListed     bool                 `xml:"TransferListed"`
 	NationalTeamID     id.NationalTeam      `xml:"NationalTeamID"`
@@ -86,8 +87,14 @@ type Player struct {
 	// provided if the player has been made into a trainer, 'has gained trainer
 	// license'.
 	TrainerData struct {
-		TrainerType       TrainerType `xml:"TrainerType"`
-		TrainerSkillLevel SkillLevel  `xml:"TrainerSkillLevel"`
+		TrainerType TrainerType `xml:"TrainerType"`
+
+		// The trainer skill. Sent for the viewOldCoaches actionType.
+		TrainerSkill SkillLevel `xml:"TrainerSkill"`
+
+		// The trainer skill level, from 1 (lowest) to 5 (highest). Sent for the
+		// default (view) actionType.
+		TrainerSkillLevel uint `xml:"TrainerSkillLevel"`
 	} `xml:"TrainerData"`
 
 	// Last played match. If MatchId = 0 it either means that the player has not
@@ -100,4 +107,12 @@ type Player struct {
 		Rating          float64      `xml:"Rating"`
 		RatingEndOfGame float64      `xml:"RatingEndOfGame"`
 	} `xml:"LastMatch"`
+
+	// The team the player used to belong to. Only sent for the viewOldies
+	// actionType.
+	OwningTeam *struct {
+		TeamID     id.Team `xml:"TeamID"`
+		TeamName   string  `xml:"TeamName"`
+		LeagueName string  `xml:"LeagueName"`
+	} `xml:"OwningTeam"`
 }

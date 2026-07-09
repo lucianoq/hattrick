@@ -1,6 +1,7 @@
 package chpp
 
-// PlayerCategoryID ...
+// PlayerCategoryID is the role a player was assigned in a match lineup
+// (e.g. keeper, winger, substitute, reserve).
 type PlayerCategoryID uint
 
 // List of PlayerCategoryID constants.

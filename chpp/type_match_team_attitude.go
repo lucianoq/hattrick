@@ -1,6 +1,9 @@
 package chpp
 
-// MatchTeamAttitude ...
+import "strconv"
+
+// MatchTeamAttitude is the team's motivational speech level for a match,
+// ranging from playing it cool (-1) to going for match of the season (1).
 type MatchTeamAttitude int
 
 // List of MatchTeamAttitude constants.
@@ -12,14 +15,5 @@ const (
 
 // String returns a string representation of the type.
 func (a MatchTeamAttitude) String() string {
-	switch a {
-	case MatchTeamAttitudePlayItCool:
-		return "PIC"
-	case MatchTeamAttitudeNormal:
-		return "normal"
-	case MatchTeamAttitudeMatchOfTheSeason:
-		return "MOTS"
-	default:
-		return "unknown"
-	}
+	return strconv.Itoa(int(a))
 }

@@ -1,11 +1,15 @@
+// Package parsed orchestrates, per CHPP file, the fetch-then-decode
+// pipeline: it issues a signed HTTP request to retrieve a CHPP file's raw
+// XML bytes, then decodes and validates them into the corresponding typed
+// XML struct via chpp.DecodeXML.
 package parsed
 
 import (
 	"github.com/lucianoq/hattrick/chpp"
-	"github.com/lucianoq/hattrick/parsed/raw"
 )
 
-// Parsed ...
+// Parsed is one method per CHPP file/action; the values map carries that
+// call's query-string parameters (e.g. team or league IDs).
 type Parsed interface {
 	GetAchievementsXML(values map[string]string) (*chpp.AchievementsXML, error)
 	GetArenaDetailsXML(values map[string]string) (*chpp.ArenaDetailsXML, error)
@@ -23,6 +27,7 @@ type Parsed interface {
 	GetLadderDetailsXML(values map[string]string) (*chpp.LadderDetailsXML, error)
 	GetLadderListXML(values map[string]string) (*chpp.LadderListXML, error)
 	GetLeagueDetailsXML(values map[string]string) (*chpp.LeagueDetailsXML, error)
+	GetLeagueLevelsXML(values map[string]string) (*chpp.LeagueLevelsXML, error)
 	GetLeagueFixturesXML(values map[string]string) (*chpp.LeagueFixturesXML, error)
 	GetLiveXML(values map[string]string) (*chpp.LiveXML, error)
 	GetManagerCompendiumXML(values map[string]string) (*chpp.ManagerCompendiumXML, error)
@@ -31,6 +36,7 @@ type Parsed interface {
 	GetMatchDetailsXML(values map[string]string) (*chpp.MatchDetailsXML, error)
 	GetMatchLineupXML(values map[string]string) (*chpp.MatchLineupXML, error)
 	GetMatchOrdersXML(values map[string]string) (*chpp.MatchOrdersXML, error)
+	SetMatchOrdersXML(values map[string]string, lineup string) (*chpp.MatchOrdersXML, error)
 	GetNationalTeamsXML(values map[string]string) (*chpp.NationalTeamsXML, error)
 	GetNationalTeamDetailsXML(values map[string]string) (*chpp.NationalTeamDetailsXML, error)
 	GetNationalTeamMatchesXML(values map[string]string) (*chpp.NationalTeamMatchesXML, error)
@@ -66,860 +72,325 @@ type Parsed interface {
 }
 
 type parsed struct {
-	codec Codec
-	raw   *raw.Raw
+	raw *rawClient
 }
 
 var _ Parsed = (*parsed)(nil)
 
-// NewParsed ...
+// NewParsed builds a Parsed backed by a signed HTTP client. It takes the
+// application's OAuth1 consumer key/secret and the user's access
+// token/secret (plus any additional data returned during authorization).
 func NewParsed(consumerKey, consumerSecret, accessToken, accessSecret string, accessAdditionalData map[string]string) (Parsed, error) {
-	rawData, err := raw.NewRaw(consumerKey, consumerSecret, accessToken, accessSecret, accessAdditionalData)
+	rawData, err := newRawClient(consumerKey, consumerSecret, accessToken, accessSecret, accessAdditionalData)
 	if err != nil {
 		return nil, err
 	}
 	return &parsed{
-		codec: &codec{},
-		raw:   rawData,
+		raw: rawData,
 	}, nil
 }
 
-// GetAchievementsXML ...
+// fetchXML issues a signed GET request for the given CHPP file/version and
+// decodes+validates the response into a *T via chpp.DecodeXML.
+func fetchXML[T chpp.XMLEnvelope](p *parsed, file, version string, values map[string]string) (*T, error) {
+	buf, err := p.raw.getRawXML(file, version, values)
+	if err != nil {
+		return nil, err
+	}
+	return chpp.DecodeXML[T](buf, file)
+}
+
+// GetAchievementsXML fetches the raw achievements CHPP file over HTTP and decodes it into an AchievementsXML.
 func (p *parsed) GetAchievementsXML(values map[string]string) (*chpp.AchievementsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.AchievementsAPIFile, chpp.AchievementsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Achievements(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.AchievementsXML](p, chpp.AchievementsAPIFile, chpp.AchievementsAPIVersion, values)
 }
 
-// GetArenaDetailsXML ...
+// GetArenaDetailsXML fetches the raw arenaDetails CHPP file over HTTP and decodes it into an ArenaDetailsXML.
 func (p *parsed) GetArenaDetailsXML(values map[string]string) (*chpp.ArenaDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.ArenaDetailsAPIFile, chpp.ArenaDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.ArenaDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.ArenaDetailsXML](p, chpp.ArenaDetailsAPIFile, chpp.ArenaDetailsAPIVersion, values)
 }
 
-// GetAlliancesXML ...
+// GetAlliancesXML fetches the raw alliances CHPP file over HTTP and decodes it into an AlliancesXML.
 func (p *parsed) GetAlliancesXML(values map[string]string) (*chpp.AlliancesXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.AlliancesAPIFile, chpp.AlliancesAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Alliances(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.AlliancesXML](p, chpp.AlliancesAPIFile, chpp.AlliancesAPIVersion, values)
 }
 
-// GetAllianceDetailsXML ...
+// GetAllianceDetailsXML fetches the raw allianceDetails CHPP file over HTTP and decodes it into an AllianceDetailsXML.
 func (p *parsed) GetAllianceDetailsXML(values map[string]string) (*chpp.AllianceDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.AllianceDetailsAPIFile, chpp.AllianceDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.AllianceDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.AllianceDetailsXML](p, chpp.AllianceDetailsAPIFile, chpp.AllianceDetailsAPIVersion, values)
 }
 
-// GetAvatarsXML ...
+// GetAvatarsXML fetches the raw avatars CHPP file over HTTP and decodes it into an AvatarsXML.
 func (p *parsed) GetAvatarsXML(values map[string]string) (*chpp.AvatarsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.AvatarsAPIFile, chpp.AvatarsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Avatars(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.AvatarsXML](p, chpp.AvatarsAPIFile, chpp.AvatarsAPIVersion, values)
 }
 
-// GetBookmarksXML ...
+// GetBookmarksXML fetches the raw bookmarks CHPP file over HTTP and decodes it into a BookmarksXML.
 func (p *parsed) GetBookmarksXML(values map[string]string) (*chpp.BookmarksXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.BookmarksAPIFile, chpp.BookmarksAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Bookmarks(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.BookmarksXML](p, chpp.BookmarksAPIFile, chpp.BookmarksAPIVersion, values)
 }
 
-// GetChallengesXML ...
+// GetChallengesXML fetches the raw challenges CHPP file over HTTP and decodes it into a ChallengesXML.
 func (p *parsed) GetChallengesXML(values map[string]string) (*chpp.ChallengesXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.ChallengesAPIFile, chpp.ChallengesAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Challenges(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.ChallengesXML](p, chpp.ChallengesAPIFile, chpp.ChallengesAPIVersion, values)
 }
 
-// GetClubXML ...
+// GetClubXML fetches the raw club CHPP file over HTTP and decodes it into a ClubXML.
 func (p *parsed) GetClubXML(values map[string]string) (*chpp.ClubXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.ClubAPIFile, chpp.ClubAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Club(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.ClubXML](p, chpp.ClubAPIFile, chpp.ClubAPIVersion, values)
 }
 
-// GetCupMatchesXML ...
+// GetCupMatchesXML fetches the raw cupMatches CHPP file over HTTP and decodes it into a CupMatchesXML.
 func (p *parsed) GetCupMatchesXML(values map[string]string) (*chpp.CupMatchesXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.CupMatchesAPIFile, chpp.CupMatchesAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.CupMatches(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.CupMatchesXML](p, chpp.CupMatchesAPIFile, chpp.CupMatchesAPIVersion, values)
 }
 
-// GetCurrentBidsXML ...
+// GetCurrentBidsXML fetches the raw currentBids CHPP file over HTTP and decodes it into a CurrentBidsXML.
 func (p *parsed) GetCurrentBidsXML(values map[string]string) (*chpp.CurrentBidsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.CurrentBidsAPIFile, chpp.CurrentBidsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.CurrentBids(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.CurrentBidsXML](p, chpp.CurrentBidsAPIFile, chpp.CurrentBidsAPIVersion, values)
 }
 
-// GetEconomyXML ...
+// GetEconomyXML fetches the raw economy CHPP file over HTTP and decodes it into an EconomyXML.
 func (p *parsed) GetEconomyXML(values map[string]string) (*chpp.EconomyXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.EconomyAPIFile, chpp.EconomyAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Economy(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.EconomyXML](p, chpp.EconomyAPIFile, chpp.EconomyAPIVersion, values)
 }
 
-// GetFansXML ...
+// GetFansXML fetches the raw fans CHPP file over HTTP and decodes it into a FansXML.
 func (p *parsed) GetFansXML(values map[string]string) (*chpp.FansXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.FansAPIFile, chpp.FansAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Fans(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.FansXML](p, chpp.FansAPIFile, chpp.FansAPIVersion, values)
 }
 
-// GetHOFPlayersXML ...
+// GetHOFPlayersXML fetches the raw hOFPlayers CHPP file over HTTP and decodes it into an HOFPlayersXML.
 func (p *parsed) GetHOFPlayersXML(values map[string]string) (*chpp.HOFPlayersXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.HOFPlayersAPIFile, chpp.HOFPlayersAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.HOFPlayers(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.HOFPlayersXML](p, chpp.HOFPlayersAPIFile, chpp.HOFPlayersAPIVersion, values)
 }
 
-// GetLadderDetailsXML ...
+// GetLadderDetailsXML fetches the raw ladderDetails CHPP file over HTTP and decodes it into a LadderDetailsXML.
 func (p *parsed) GetLadderDetailsXML(values map[string]string) (*chpp.LadderDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.LadderDetailsAPIFile, chpp.LadderDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.LadderDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.LadderDetailsXML](p, chpp.LadderDetailsAPIFile, chpp.LadderDetailsAPIVersion, values)
 }
 
-// GetLadderListXML ...
+// GetLadderListXML fetches the raw ladderList CHPP file over HTTP and decodes it into a LadderListXML.
 func (p *parsed) GetLadderListXML(values map[string]string) (*chpp.LadderListXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.LadderListAPIFile, chpp.LadderListAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.LadderList(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.LadderListXML](p, chpp.LadderListAPIFile, chpp.LadderListAPIVersion, values)
 }
 
-// GetLeagueDetailsXML ...
+// GetLeagueDetailsXML fetches the raw leagueDetails CHPP file over HTTP and decodes it into a LeagueDetailsXML.
 func (p *parsed) GetLeagueDetailsXML(values map[string]string) (*chpp.LeagueDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.LeagueDetailsAPIFile, chpp.LeagueDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.LeagueDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.LeagueDetailsXML](p, chpp.LeagueDetailsAPIFile, chpp.LeagueDetailsAPIVersion, values)
 }
 
-// GetLeagueFixturesXML ...
+// GetLeagueLevelsXML fetches the raw leagueLevels CHPP file over HTTP and decodes it into a LeagueLevelsXML.
+func (p *parsed) GetLeagueLevelsXML(values map[string]string) (*chpp.LeagueLevelsXML, error) {
+	return fetchXML[chpp.LeagueLevelsXML](p, chpp.LeagueLevelsAPIFile, chpp.LeagueLevelsAPIVersion, values)
+}
+
+// GetLeagueFixturesXML fetches the raw leagueFixtures CHPP file over HTTP and decodes it into a LeagueFixturesXML.
 func (p *parsed) GetLeagueFixturesXML(values map[string]string) (*chpp.LeagueFixturesXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.LeagueFixturesAPIFile, chpp.LeagueFixturesAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.LeagueFixtures(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.LeagueFixturesXML](p, chpp.LeagueFixturesAPIFile, chpp.LeagueFixturesAPIVersion, values)
 }
 
-// GetLiveXML ...
+// GetLiveXML fetches the raw live CHPP file over HTTP and decodes it into a LiveXML.
 func (p *parsed) GetLiveXML(values map[string]string) (*chpp.LiveXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.LiveAPIFile, chpp.LiveAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Live(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.LiveXML](p, chpp.LiveAPIFile, chpp.LiveAPIVersion, values)
 }
 
-// GetManagerCompendiumXML ...
+// GetManagerCompendiumXML fetches the raw managerCompendium CHPP file over HTTP and decodes it into a ManagerCompendiumXML.
 func (p *parsed) GetManagerCompendiumXML(values map[string]string) (*chpp.ManagerCompendiumXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.ManagerCompendiumAPIFile, chpp.ManagerCompendiumAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.ManagerCompendium(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.ManagerCompendiumXML](p, chpp.ManagerCompendiumAPIFile, chpp.ManagerCompendiumAPIVersion, values)
 }
 
-// GetMatchesXML ...
+// GetMatchesXML fetches the raw matches CHPP file over HTTP and decodes it into a MatchesXML.
 func (p *parsed) GetMatchesXML(values map[string]string) (*chpp.MatchesXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.MatchesAPIFile, chpp.MatchesAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Matches(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.MatchesXML](p, chpp.MatchesAPIFile, chpp.MatchesAPIVersion, values)
 }
 
-// GetMatchesArchiveXML ...
+// GetMatchesArchiveXML fetches the raw matchesArchive CHPP file over HTTP and decodes it into a MatchesArchiveXML.
 func (p *parsed) GetMatchesArchiveXML(values map[string]string) (*chpp.MatchesArchiveXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.MatchesArchiveAPIFile, chpp.MatchesArchiveAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.MatchesArchive(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.MatchesArchiveXML](p, chpp.MatchesArchiveAPIFile, chpp.MatchesArchiveAPIVersion, values)
 }
 
-// GetMatchDetailsXML ...
+// GetMatchDetailsXML fetches the raw matchDetails CHPP file over HTTP and decodes it into a MatchDetailsXML.
 func (p *parsed) GetMatchDetailsXML(values map[string]string) (*chpp.MatchDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.MatchDetailsAPIFile, chpp.MatchDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.MatchDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.MatchDetailsXML](p, chpp.MatchDetailsAPIFile, chpp.MatchDetailsAPIVersion, values)
 }
 
-// GetMatchLineupXML ...
+// GetMatchLineupXML fetches the raw matchLineup CHPP file over HTTP and decodes it into a MatchLineupXML.
 func (p *parsed) GetMatchLineupXML(values map[string]string) (*chpp.MatchLineupXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.MatchLineupAPIFile, chpp.MatchLineupAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.MatchLineup(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.MatchLineupXML](p, chpp.MatchLineupAPIFile, chpp.MatchLineupAPIVersion, values)
 }
 
-// GetMatchOrdersXML ...
+// GetMatchOrdersXML fetches the raw matchOrders CHPP file over HTTP and decodes it into a MatchOrdersXML.
 func (p *parsed) GetMatchOrdersXML(values map[string]string) (*chpp.MatchOrdersXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.MatchOrdersAPIFile, chpp.MatchOrdersAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.MatchOrders(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.MatchOrdersXML](p, chpp.MatchOrdersAPIFile, chpp.MatchOrdersAPIVersion, values)
 }
 
-// GetNationalTeamsXML ...
+// SetMatchOrdersXML posts a new lineup to the matchorders CHPP file over
+// HTTP and decodes the resulting confirmation into a MatchOrdersXML.
+func (p *parsed) SetMatchOrdersXML(values map[string]string, lineup string) (*chpp.MatchOrdersXML, error) {
+	buf, err := p.raw.postRawXML(chpp.MatchOrdersAPIFile, chpp.MatchOrdersAPIVersion, values, lineup)
+	if err != nil {
+		return nil, err
+	}
+	return chpp.DecodeXML[chpp.MatchOrdersXML](buf, chpp.MatchOrdersAPIFile)
+}
+
+// GetNationalTeamsXML fetches the raw nationalTeams CHPP file over HTTP and decodes it into a NationalTeamsXML.
 func (p *parsed) GetNationalTeamsXML(values map[string]string) (*chpp.NationalTeamsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.NationalTeamsAPIFile, chpp.NationalTeamsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.NationalTeams(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.NationalTeamsXML](p, chpp.NationalTeamsAPIFile, chpp.NationalTeamsAPIVersion, values)
 }
 
-// GetNationalTeamDetailsXML ...
+// GetNationalTeamDetailsXML fetches the raw nationalTeamDetails CHPP file over HTTP and decodes it into a NationalTeamDetailsXML.
 func (p *parsed) GetNationalTeamDetailsXML(values map[string]string) (*chpp.NationalTeamDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.NationalTeamDetailsAPIFile, chpp.NationalTeamDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.NationalTeamDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.NationalTeamDetailsXML](p, chpp.NationalTeamDetailsAPIFile, chpp.NationalTeamDetailsAPIVersion, values)
 }
 
-// GetNationalTeamMatchesXML ...
+// GetNationalTeamMatchesXML fetches the raw nationalTeamMatches CHPP file over HTTP and decodes it into a NationalTeamMatchesXML.
 func (p *parsed) GetNationalTeamMatchesXML(values map[string]string) (*chpp.NationalTeamMatchesXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.NationalTeamMatchesAPIFile, chpp.NationalTeamMatchesAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.NationalTeamMatches(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.NationalTeamMatchesXML](p, chpp.NationalTeamMatchesAPIFile, chpp.NationalTeamMatchesAPIVersion, values)
 }
 
-// GetNationalPlayersXML ...
+// GetNationalPlayersXML fetches the raw nationalPlayers CHPP file over HTTP and decodes it into a NationalPlayersXML.
 func (p *parsed) GetNationalPlayersXML(values map[string]string) (*chpp.NationalPlayersXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.NationalPlayersAPIFile, chpp.NationalPlayersAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.NationalPlayers(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.NationalPlayersXML](p, chpp.NationalPlayersAPIFile, chpp.NationalPlayersAPIVersion, values)
 }
 
-// GetPlayersXML ...
+// GetPlayersXML fetches the raw players CHPP file over HTTP and decodes it into a PlayersXML.
 func (p *parsed) GetPlayersXML(values map[string]string) (*chpp.PlayersXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.PlayersAPIFile, chpp.PlayersAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Players(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.PlayersXML](p, chpp.PlayersAPIFile, chpp.PlayersAPIVersion, values)
 }
 
-// GetPlayerDetailsXML ...
+// GetPlayerDetailsXML fetches the raw playerDetails CHPP file over HTTP and decodes it into a PlayerDetailsXML.
 func (p *parsed) GetPlayerDetailsXML(values map[string]string) (*chpp.PlayerDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.PlayerDetailsAPIFile, chpp.PlayerDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.PlayerDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.PlayerDetailsXML](p, chpp.PlayerDetailsAPIFile, chpp.PlayerDetailsAPIVersion, values)
 }
 
-// GetPlayerEventsXML ...
+// GetPlayerEventsXML fetches the raw playerEvents CHPP file over HTTP and decodes it into a PlayerEventsXML.
 func (p *parsed) GetPlayerEventsXML(values map[string]string) (*chpp.PlayerEventsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.PlayerEventsAPIFile, chpp.PlayerEventsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.PlayerEvents(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.PlayerEventsXML](p, chpp.PlayerEventsAPIFile, chpp.PlayerEventsAPIVersion, values)
 }
 
-// GetRegionDetailsXML ...
+// GetRegionDetailsXML fetches the raw regionDetails CHPP file over HTTP and decodes it into a RegionDetailsXML.
 func (p *parsed) GetRegionDetailsXML(values map[string]string) (*chpp.RegionDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.RegionDetailsAPIFile, chpp.RegionDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.RegionDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.RegionDetailsXML](p, chpp.RegionDetailsAPIFile, chpp.RegionDetailsAPIVersion, values)
 }
 
-// GetSearchXML ...
+// GetSearchXML fetches the raw search CHPP file over HTTP and decodes it into a SearchXML.
 func (p *parsed) GetSearchXML(values map[string]string) (*chpp.SearchXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.SearchAPIFile, chpp.SearchAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Search(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.SearchXML](p, chpp.SearchAPIFile, chpp.SearchAPIVersion, values)
 }
 
-// GetStaffAvatarsXML ...
+// GetStaffAvatarsXML fetches the raw staffAvatars CHPP file over HTTP and decodes it into a StaffAvatarsXML.
 func (p *parsed) GetStaffAvatarsXML(values map[string]string) (*chpp.StaffAvatarsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.StaffAvatarsAPIFile, chpp.StaffAvatarsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.StaffAvatars(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.StaffAvatarsXML](p, chpp.StaffAvatarsAPIFile, chpp.StaffAvatarsAPIVersion, values)
 }
 
-// GetStaffListXML ...
+// GetStaffListXML fetches the raw staffList CHPP file over HTTP and decodes it into a StaffListXML.
 func (p *parsed) GetStaffListXML(values map[string]string) (*chpp.StaffListXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.StaffListAPIFile, chpp.StaffListAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.StaffList(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.StaffListXML](p, chpp.StaffListAPIFile, chpp.StaffListAPIVersion, values)
 }
 
-// GetSupportersXML ...
+// GetSupportersXML fetches the raw supporters CHPP file over HTTP and decodes it into a SupportersXML.
 func (p *parsed) GetSupportersXML(values map[string]string) (*chpp.SupportersXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.SupportersAPIFile, chpp.SupportersAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Supporters(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.SupportersXML](p, chpp.SupportersAPIFile, chpp.SupportersAPIVersion, values)
 }
 
-// GetTeamDetailsXML ...
+// GetTeamDetailsXML fetches the raw teamDetails CHPP file over HTTP and decodes it into a TeamDetailsXML.
 func (p *parsed) GetTeamDetailsXML(values map[string]string) (*chpp.TeamDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.TeamDetailsAPIFile, chpp.TeamDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.TeamDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.TeamDetailsXML](p, chpp.TeamDetailsAPIFile, chpp.TeamDetailsAPIVersion, values)
 }
 
-// GetTournamentDetailsXML ...
+// GetTournamentDetailsXML fetches the raw tournamentDetails CHPP file over HTTP and decodes it into a TournamentDetailsXML.
 func (p *parsed) GetTournamentDetailsXML(values map[string]string) (*chpp.TournamentDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.TournamentDetailsAPIFile, chpp.TournamentDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.TournamentDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.TournamentDetailsXML](p, chpp.TournamentDetailsAPIFile, chpp.TournamentDetailsAPIVersion, values)
 }
 
-// GetTournamentFixturesXML ...
+// GetTournamentFixturesXML fetches the raw tournamentFixtures CHPP file over HTTP and decodes it into a TournamentFixturesXML.
 func (p *parsed) GetTournamentFixturesXML(values map[string]string) (*chpp.TournamentFixturesXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.TournamentFixturesAPIFile, chpp.TournamentFixturesAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.TournamentFixtures(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.TournamentFixturesXML](p, chpp.TournamentFixturesAPIFile, chpp.TournamentFixturesAPIVersion, values)
 }
 
-// GetTournamentLeagueTablesXML ...
+// GetTournamentLeagueTablesXML fetches the raw tournamentLeagueTables CHPP file over HTTP and decodes it into a TournamentLeagueTablesXML.
 func (p *parsed) GetTournamentLeagueTablesXML(values map[string]string) (*chpp.TournamentLeagueTablesXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.TournamentLeagueTablesAPIFile, chpp.TournamentLeagueTablesAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.TournamentLeagueTables(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.TournamentLeagueTablesXML](p, chpp.TournamentLeagueTablesAPIFile, chpp.TournamentLeagueTablesAPIVersion, values)
 }
 
-// GetTournamentListXML ...
+// GetTournamentListXML fetches the raw tournamentList CHPP file over HTTP and decodes it into a TournamentListXML.
 func (p *parsed) GetTournamentListXML(values map[string]string) (*chpp.TournamentListXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.TournamentListAPIFile, chpp.TournamentListAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.TournamentList(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.TournamentListXML](p, chpp.TournamentListAPIFile, chpp.TournamentListAPIVersion, values)
 }
 
-// GetTrainingXML ...
+// GetTrainingXML fetches the raw training CHPP file over HTTP and decodes it into a TrainingXML.
 func (p *parsed) GetTrainingXML(values map[string]string) (*chpp.TrainingXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.TrainingAPIFile, chpp.TrainingAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Training(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.TrainingXML](p, chpp.TrainingAPIFile, chpp.TrainingAPIVersion, values)
 }
 
-// GetTrainingEventsXML ...
+// GetTrainingEventsXML fetches the raw trainingEvents CHPP file over HTTP and decodes it into a TrainingEventsXML.
 func (p *parsed) GetTrainingEventsXML(values map[string]string) (*chpp.TrainingEventsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.TrainingEventsAPIFile, chpp.TrainingEventsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.TrainingEvents(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.TrainingEventsXML](p, chpp.TrainingEventsAPIFile, chpp.TrainingEventsAPIVersion, values)
 }
 
-// GetTransferSearchXML ...
+// GetTransferSearchXML fetches the raw transferSearch CHPP file over HTTP and decodes it into a TransferSearchXML.
 func (p *parsed) GetTransferSearchXML(values map[string]string) (*chpp.TransferSearchXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.TransferSearchAPIFile, chpp.TransferSearchAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.TransferSearch(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.TransferSearchXML](p, chpp.TransferSearchAPIFile, chpp.TransferSearchAPIVersion, values)
 }
 
-// GetTransferSteamXML ...
+// GetTransferSteamXML fetches the raw transferSteam CHPP file over HTTP and decodes it into a TransferSteamXML.
 func (p *parsed) GetTransferSteamXML(values map[string]string) (*chpp.TransferSteamXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.TransferSteamAPIFile, chpp.TransferSteamAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.TransferSteam(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.TransferSteamXML](p, chpp.TransferSteamAPIFile, chpp.TransferSteamAPIVersion, values)
 }
 
-// GetTransfersPlayerXML ...
+// GetTransfersPlayerXML fetches the raw transfersPlayer CHPP file over HTTP and decodes it into a TransfersPlayerXML.
 func (p *parsed) GetTransfersPlayerXML(values map[string]string) (*chpp.TransfersPlayerXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.TransfersPlayerAPIFile, chpp.TransfersPlayerAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.TransfersPlayer(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.TransfersPlayerXML](p, chpp.TransfersPlayerAPIFile, chpp.TransfersPlayerAPIVersion, values)
 }
 
-// GetTranslationsXML ...
+// GetTranslationsXML fetches the raw translations CHPP file over HTTP and decodes it into a TranslationsXML.
 func (p *parsed) GetTranslationsXML(values map[string]string) (*chpp.TranslationsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.TranslationsAPIFile, chpp.TranslationsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.Translations(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.TranslationsXML](p, chpp.TranslationsAPIFile, chpp.TranslationsAPIVersion, values)
 }
 
-// GetWorldCupXML ...
+// GetWorldCupXML fetches the raw worldCup CHPP file over HTTP and decodes it into a WorldCupXML.
 func (p *parsed) GetWorldCupXML(values map[string]string) (*chpp.WorldCupXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.WorldCupAPIFile, chpp.WorldCupAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.WorldCup(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.WorldCupXML](p, chpp.WorldCupAPIFile, chpp.WorldCupAPIVersion, values)
 }
 
-// GetWorldDetailsXML ...
+// GetWorldDetailsXML fetches the raw worldDetails CHPP file over HTTP and decodes it into a WorldDetailsXML.
 func (p *parsed) GetWorldDetailsXML(values map[string]string) (*chpp.WorldDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.WorldDetailsAPIFile, chpp.WorldDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.WorldDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.WorldDetailsXML](p, chpp.WorldDetailsAPIFile, chpp.WorldDetailsAPIVersion, values)
 }
 
-// GetWorldLanguagesXML ...
+// GetWorldLanguagesXML fetches the raw worldLanguages CHPP file over HTTP and decodes it into a WorldLanguagesXML.
 func (p *parsed) GetWorldLanguagesXML(values map[string]string) (*chpp.WorldLanguagesXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.WorldLanguagesAPIFile, chpp.WorldLanguagesAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.WorldLanguages(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.WorldLanguagesXML](p, chpp.WorldLanguagesAPIFile, chpp.WorldLanguagesAPIVersion, values)
 }
 
-// GetYouthAvatarsXML ...
+// GetYouthAvatarsXML fetches the raw youthAvatars CHPP file over HTTP and decodes it into a YouthAvatarsXML.
 func (p *parsed) GetYouthAvatarsXML(values map[string]string) (*chpp.YouthAvatarsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.YouthAvatarsAPIFile, chpp.YouthAvatarsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.YouthAvatars(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.YouthAvatarsXML](p, chpp.YouthAvatarsAPIFile, chpp.YouthAvatarsAPIVersion, values)
 }
 
-// GetYouthLeagueDetailsXML ...
+// GetYouthLeagueDetailsXML fetches the raw youthLeagueDetails CHPP file over HTTP and decodes it into a YouthLeagueDetailsXML.
 func (p *parsed) GetYouthLeagueDetailsXML(values map[string]string) (*chpp.YouthLeagueDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.YouthLeagueDetailsAPIFile, chpp.YouthLeagueDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.YouthLeagueDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.YouthLeagueDetailsXML](p, chpp.YouthLeagueDetailsAPIFile, chpp.YouthLeagueDetailsAPIVersion, values)
 }
 
-// GetYouthLeagueFixturesXML ...
+// GetYouthLeagueFixturesXML fetches the raw youthLeagueFixtures CHPP file over HTTP and decodes it into a YouthLeagueFixturesXML.
 func (p *parsed) GetYouthLeagueFixturesXML(values map[string]string) (*chpp.YouthLeagueFixturesXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.YouthLeagueFixturesAPIFile, chpp.YouthLeagueFixturesAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.YouthLeagueFixtures(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.YouthLeagueFixturesXML](p, chpp.YouthLeagueFixturesAPIFile, chpp.YouthLeagueFixturesAPIVersion, values)
 }
 
-// GetYouthPlayerDetailsXML ...
+// GetYouthPlayerDetailsXML fetches the raw youthPlayerDetails CHPP file over HTTP and decodes it into a YouthPlayerDetailsXML.
 func (p *parsed) GetYouthPlayerDetailsXML(values map[string]string) (*chpp.YouthPlayerDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.YouthPlayerDetailsAPIFile, chpp.YouthPlayerDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.YouthPlayerDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.YouthPlayerDetailsXML](p, chpp.YouthPlayerDetailsAPIFile, chpp.YouthPlayerDetailsAPIVersion, values)
 }
 
-// GetYouthPlayerListXML ...
+// GetYouthPlayerListXML fetches the raw youthPlayerList CHPP file over HTTP and decodes it into a YouthPlayerListXML.
 func (p *parsed) GetYouthPlayerListXML(values map[string]string) (*chpp.YouthPlayerListXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.YouthPlayerListAPIFile, chpp.YouthPlayerListAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.YouthPlayerList(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.YouthPlayerListXML](p, chpp.YouthPlayerListAPIFile, chpp.YouthPlayerListAPIVersion, values)
 }
 
-// GetYouthTeamDetailsXML ...
+// GetYouthTeamDetailsXML fetches the raw youthTeamDetails CHPP file over HTTP and decodes it into a YouthTeamDetailsXML.
 func (p *parsed) GetYouthTeamDetailsXML(values map[string]string) (*chpp.YouthTeamDetailsXML, error) {
-	buf, err := p.raw.GetRawXML(chpp.YouthTeamDetailsAPIFile, chpp.YouthTeamDetailsAPIVersion, values)
-	if err != nil {
-		return nil, err
-	}
-
-	ret, err := p.codec.YouthTeamDetails(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return fetchXML[chpp.YouthTeamDetailsXML](p, chpp.YouthTeamDetailsAPIFile, chpp.YouthTeamDetailsAPIVersion, values)
 }

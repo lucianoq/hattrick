@@ -1,6 +1,7 @@
 package chpp
 
-// HOFExpertType ...
+// HOFExpertType is the occupation of a Hall of Fame expert commenting on a
+// player.
 type HOFExpertType uint
 
 // List of HOFExpertType constants.

@@ -1,6 +1,7 @@
 package chpp
 
-// FanMatchExpectation ...
+// FanMatchExpectation is how confident a team's fans are about the outcome
+// of an upcoming match, from expecting a heavy loss to expecting a win.
 type FanMatchExpectation uint
 
 // List of FanMatchExpectation constants.

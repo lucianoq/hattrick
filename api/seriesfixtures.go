@@ -7,7 +7,8 @@ import (
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetMySeriesFixtures ...
+// GetMySeriesFixtures shows the current season's fixture list for the
+// requesting user's own team's series.
 func (a *API) GetMySeriesFixtures() (*chpp.SeriesFixtures, error) {
 	e, err := a.parsed.GetLeagueFixturesXML(nil)
 	if err != nil {
@@ -17,7 +18,8 @@ func (a *API) GetMySeriesFixtures() (*chpp.SeriesFixtures, error) {
 	return e.SeriesFixtures, nil
 }
 
-// GetMySeriesFixturesBySeason ...
+// GetMySeriesFixturesBySeason is like GetMySeriesFixtures, but for the
+// given season.
 func (a *API) GetMySeriesFixturesBySeason(season uint) (*chpp.SeriesFixtures, error) {
 	e, err := a.parsed.GetLeagueFixturesXML(
 		map[string]string{
@@ -31,7 +33,8 @@ func (a *API) GetMySeriesFixturesBySeason(season uint) (*chpp.SeriesFixtures, er
 	return e.SeriesFixtures, nil
 }
 
-// GetSeriesFixtures ...
+// GetSeriesFixtures shows the current season's fixture list for the given
+// series.
 func (a *API) GetSeriesFixtures(leagueLevelUnitID id.Series) (*chpp.SeriesFixtures, error) {
 	e, err := a.parsed.GetLeagueFixturesXML(
 		map[string]string{
@@ -45,7 +48,8 @@ func (a *API) GetSeriesFixtures(leagueLevelUnitID id.Series) (*chpp.SeriesFixtur
 	return e.SeriesFixtures, nil
 }
 
-// GetSeriesFixturesBySeason ...
+// GetSeriesFixturesBySeason is like GetSeriesFixtures, but for the given
+// season.
 func (a *API) GetSeriesFixturesBySeason(leagueLevelUnitID id.Series, season uint) (*chpp.SeriesFixtures, error) {
 	e, err := a.parsed.GetLeagueFixturesXML(
 		map[string]string{

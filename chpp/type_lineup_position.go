@@ -2,7 +2,8 @@ package chpp
 
 import "strconv"
 
-// LineupPosition ...
+// LineupPosition is the field position a player is moved to by a submitted
+// player order, as part of the matchorders lineup JSON payload.
 type LineupPosition int
 
 // List of LineupPosition constants.

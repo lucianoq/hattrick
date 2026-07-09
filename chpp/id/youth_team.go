@@ -2,7 +2,7 @@ package id
 
 import "strconv"
 
-// YouthTeam ...
+// YouthTeam identifies a club's youth academy team.
 type YouthTeam uint
 
 // String returns a string representation of the type.

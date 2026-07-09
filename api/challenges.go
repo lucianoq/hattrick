@@ -8,7 +8,8 @@ import (
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetChallenges ...
+// GetChallenges shows the requesting user's team's outgoing friendly
+// challenges and incoming offers from other teams.
 func (a *API) GetChallenges(weekend bool) ([]*chpp.ChallengeByMe, []*chpp.OffersByOthers, error) {
 	values := map[string]string{
 		"actionType": "view",
@@ -25,7 +26,8 @@ func (a *API) GetChallenges(weekend bool) ([]*chpp.ChallengeByMe, []*chpp.Offers
 	return res.Team.ChallengesByMe, res.Team.OffersByOthers, nil
 }
 
-// IsChallengeable ...
+// IsChallengeable reports whether the given team can currently be
+// challenged to a friendly.
 func (a *API) IsChallengeable(weekend bool, teamID id.Team) (bool, error) {
 	values := map[string]string{
 		"actionType":       "challengeable",
@@ -48,7 +50,8 @@ func (a *API) IsChallengeable(weekend bool, teamID id.Team) (bool, error) {
 	return ch.Team.ChallengeableResult.Opponent[0].IsChallengeable, nil
 }
 
-// AreChallengeable ...
+// AreChallengeable reports, for each given team in order, whether it can
+// currently be challenged to a friendly.
 func (a *API) AreChallengeable(weekend bool, teamIDs ...id.Team) ([]bool, error) {
 	strIDs := make([]string, len(teamIDs))
 	for i, t := range teamIDs {
@@ -73,15 +76,24 @@ func (a *API) AreChallengeable(weekend bool, teamIDs ...id.Team) ([]bool, error)
 		return nil, errors.New("error in challenges file returned")
 	}
 
+	byTeamID := make(map[id.Team]bool, len(ch.Team.ChallengeableResult.Opponent))
+	for _, op := range ch.Team.ChallengeableResult.Opponent {
+		byTeamID[op.TeamID] = op.IsChallengeable
+	}
+
 	results := make([]bool, len(teamIDs))
-	for i, op := range ch.Team.ChallengeableResult.Opponent {
-		results[i] = op.IsChallengeable
+	for i, t := range teamIDs {
+		isChallengeable, ok := byTeamID[t]
+		if !ok {
+			return nil, errors.New("error in challenges file returned")
+		}
+		results[i] = isChallengeable
 	}
 
 	return results, nil
 }
 
-// Challenge ...
+// Challenge sends a friendly match challenge to the given opponent team.
 func (a *API) Challenge(opponentTeam id.Team, friendlyType chpp.FriendlyType, matchPlace chpp.MatchPlace, otherArena id.Arena, weekend bool) error {
 	values := map[string]string{
 		"actionType":     "challenge",
@@ -102,7 +114,7 @@ func (a *API) Challenge(opponentTeam id.Team, friendlyType chpp.FriendlyType, ma
 	return err
 }
 
-// AcceptChallenge ...
+// AcceptChallenge accepts an incoming friendly match offer.
 func (a *API) AcceptChallenge(friendlyMatchID id.FriendlyMatch) error {
 	values := map[string]string{
 		"actionType":      "accept",
@@ -113,7 +125,7 @@ func (a *API) AcceptChallenge(friendlyMatchID id.FriendlyMatch) error {
 	return err
 }
 
-// DeclineChallenge ...
+// DeclineChallenge declines an incoming friendly match offer.
 func (a *API) DeclineChallenge(friendlyMatchID id.FriendlyMatch) error {
 	values := map[string]string{
 		"actionType":      "decline",
@@ -124,7 +136,8 @@ func (a *API) DeclineChallenge(friendlyMatchID id.FriendlyMatch) error {
 	return err
 }
 
-// WithdrawChallenge ...
+// WithdrawChallenge withdraws an outgoing friendly match challenge that
+// hasn't been accepted yet.
 func (a *API) WithdrawChallenge(friendlyMatchID id.FriendlyMatch) error {
 	values := map[string]string{
 		"actionType":      "withdraw",

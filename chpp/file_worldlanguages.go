@@ -10,16 +10,18 @@ const (
 	WorldLanguagesAPIVersion = "1.2"
 )
 
-// WorldLanguagesXML ...
+// WorldLanguagesXML contains the list of all languages supported by
+// Hattrick.
 type WorldLanguagesXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
+	Envelope
+	UserID id.User `xml:"User"`
 
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	// The list of all languages supported by Hattrick.
+	Languages []*WorldLanguage `xml:"LanguageList>Language"`
+}
+
+// WorldLanguage is a single language supported by Hattrick.
+type WorldLanguage struct {
+	ID   id.Language `xml:"LanguageID"`
+	Name string      `xml:"LanguageName"`
 }

@@ -1,8 +1,11 @@
 package id
 
-// CupLevelIndex ...
+// CupLevelIndex identifies a team's tier (emerald, ruby, or sapphire) within
+// its cup level.
 type CupLevelIndex uint
 
+// CupLevelIndexEmerald, CupLevelIndexRuby, and CupLevelIndexSapphire are the
+// possible CupLevelIndex values.
 const (
 	CupLevelIndexEmerald  CupLevelIndex = 1
 	CupLevelIndexRuby     CupLevelIndex = 2

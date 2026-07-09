@@ -5,27 +5,22 @@ import "github.com/lucianoq/hattrick/chpp/id"
 // XML file name and version.
 const (
 	ManagerCompendiumAPIFile    = "managercompendium"
-	ManagerCompendiumAPIVersion = "1.5"
+	ManagerCompendiumAPIVersion = "1.7"
 )
 
-// ManagerCompendiumXML ...
+// ManagerCompendiumXML contains a compendium of IDs and basic info for a
+// manager: account info, currency, teams, national team roles, and avatar.
 type ManagerCompendiumXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"User"`
 
 	// Container wrapping the info about the manager
 	Manager Manager `xml:"Manager"`
 }
 
-// Manager Container wrapping the info about the manager
+// Manager is the logged in (or requested) user's account info: login,
+// supporter status, language/country/currency settings, teams, and
+// national team coaching roles.
 type Manager struct {
 
 	// The globally unique UserID.
@@ -54,7 +49,8 @@ type Manager struct {
 
 	// Container for the currency selected by the user.
 	Currency struct {
-		Name string  `xml:"CurrencyName"`
+		Name string `xml:"CurrencyName"`
+		// The currency's exchange rate relative to SEK (Swedish krona).
 		Rate float64 `xml:"CurrencyRate"`
 	}
 
@@ -80,13 +76,20 @@ type Manager struct {
 	Avatar Avatar `xml:"Avatar"`
 }
 
-// ManagerTeam Container for the data about a particular Team.
+// ManagerTeam is one of the teams (senior team) owned by a manager, with
+// its arena, league, series, region, and youth team.
 type ManagerTeam struct {
 	// The globally unique TeamID.
 	ID id.Team `xml:"TeamId"`
 
 	// The full team name
 	Name string `xml:"TeamName"`
+
+	// The gender of the team.
+	Gender GenderID `xml:"GenderID"`
+
+	// The system type of the league for the team.
+	LeagueSystemID LeagueSystemID `xml:"LeagueSystemID"`
 
 	// Container for the data about the team's home ground.
 	Arena struct {
@@ -99,6 +102,9 @@ type ManagerTeam struct {
 	League struct {
 		ID   id.League `xml:"LeagueId"`
 		Name string    `xml:"LeagueName"`
+
+		// The current season.
+		Season uint `xml:"Season"`
 	} `xml:"League"`
 
 	// Container for the data about the country ('Sverige', 'England'
@@ -122,7 +128,7 @@ type ManagerTeam struct {
 		Level uint `xml:"LeagueLevel"`
 	} `xml:"LeagueLevelUnit"`
 
-	// Container for the data about the region theteam is located in.
+	// Container for the data about the region the team is located in.
 	Region struct {
 		ID   id.Region `xml:"RegionId"`
 		Name string    `xml:"RegionName"`

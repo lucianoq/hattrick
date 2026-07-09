@@ -10,23 +10,16 @@ const (
 	ClubAPIVersion = "1.5"
 )
 
-// ClubXML ...
+// ClubXML contains information about a team's staff (specialists) and
+// youth squad.
 type ClubXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"User"`
 
 	Team *Club `xml:"Team"`
 }
 
-// Club ...
+// Club holds a team's specialist staff levels and youth squad status.
 type Club struct {
 	TeamID   id.Team `xml:"TeamID"`
 	TeamName string  `xml:"TeamName"`
@@ -40,8 +33,12 @@ type Club struct {
 		TacticalAssistantLevels uint `xml:"TacticalAssistantLevels"`
 	} `xml:"Staff"`
 	YouthSquad struct {
-		Investment  Money `xml:"Investment"`
-		HasPromoted bool  `xml:"HasPromoted"`
-		YouthLevel  uint  `xml:"YouthLevel"`
+		// The weekly youth squad investment.
+		Investment Money `xml:"Investment"`
+
+		// Whether the team has promoted a youth player to the senior squad
+		// this week.
+		HasPromoted bool `xml:"HasPromoted"`
+		YouthLevel  uint `xml:"YouthLevel"`
 	} `xml:"YouthSquad"`
 }

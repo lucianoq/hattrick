@@ -2,7 +2,8 @@ package chpp
 
 import "strconv"
 
-// TrackingTypeID ...
+// TrackingTypeID is the reason a player appears on a manager's transfer
+// tracking list (e.g. selling, buying, hotlisted, mother club).
 type TrackingTypeID uint
 
 // List of TrackingTypeID constants.

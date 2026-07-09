@@ -1,6 +1,7 @@
 package chpp
 
-// SkillID ...
+// SkillID identifies one of a player's trainable skills (e.g. defending,
+// scoring, passing) or attributes (e.g. stamina, experience, leadership).
 type SkillID uint
 
 // List of SkillID constants.

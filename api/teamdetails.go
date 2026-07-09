@@ -2,11 +2,12 @@ package api
 
 import (
 	"errors"
+
 	"github.com/lucianoq/hattrick/chpp"
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetMyTeams ...
+// GetMyTeams shows all of the requesting user's teams.
 func (a *API) GetMyTeams() ([]*chpp.Team, error) {
 	e, err := a.parsed.GetTeamDetailsXML(
 		map[string]string{
@@ -22,7 +23,7 @@ func (a *API) GetMyTeams() ([]*chpp.Team, error) {
 	return e.Teams, nil
 }
 
-// GetMyMainTeam ...
+// GetMyPrimaryTeam shows the requesting user's primary club senior team.
 func (a *API) GetMyPrimaryTeam() (*chpp.Team, error) {
 	e, err := a.parsed.GetTeamDetailsXML(
 		map[string]string{
@@ -44,11 +45,11 @@ func (a *API) GetMyPrimaryTeam() (*chpp.Team, error) {
 	return nil, errors.New("user without a team")
 }
 
-// GetTeam ...
+// GetTeam shows the details of the given team.
 func (a *API) GetTeam(teamID id.Team) (*chpp.Team, error) {
 	e, err := a.parsed.GetTeamDetailsXML(
 		map[string]string{
-			// What team/user to show the data for. teamID and userID generates
+			// What team/user to show the data for. teamID and userID generate
 			// the same result, except that ownerless teams can only be accessed
 			// if submitting a teamID and that users without a team can only be
 			// accessed if userID is submitted.
@@ -72,14 +73,14 @@ func (a *API) GetTeam(teamID id.Team) (*chpp.Team, error) {
 	return nil, errors.New("team not found")
 }
 
-// GetPrimaryTeamByUser ...
+// GetPrimaryTeamByUser shows the given user's primary club senior team.
 func (a *API) GetPrimaryTeamByUser(userID id.User) (*chpp.Team, error) {
 	e, err := a.parsed.GetTeamDetailsXML(
 		map[string]string{
-			// What team/user to show the data for. teamID and userID generates
+			// What team/user to show the data for. teamID and userID generate
 			// the same result, except that ownerless teams can only be accessed
 			// if submitting a teamID and that users without a team can only be
-			// accessed if userID is submitted. If neither userID or teamID is
+			// accessed if userID is submitted. If neither userID nor teamID is
 			// supplied, userID defaults to the logged on user's userID.
 			"userID": userID.String(),
 
@@ -101,14 +102,14 @@ func (a *API) GetPrimaryTeamByUser(userID id.User) (*chpp.Team, error) {
 	return nil, errors.New("team not found")
 }
 
-// GetTeamsByUser ...
+// GetTeamsByUser shows all of the given user's teams.
 func (a *API) GetTeamsByUser(userID id.User) ([]*chpp.Team, error) {
 	e, err := a.parsed.GetTeamDetailsXML(
 		map[string]string{
-			// What team/user to show the data for. teamID and userID generates
+			// What team/user to show the data for. teamID and userID generate
 			// the same result, except that ownerless teams can only be accessed
 			// if submitting a teamID and that users without a team can only be
-			// accessed if userID is submitted. If neither userID or teamID is
+			// accessed if userID is submitted. If neither userID nor teamID is
 			// supplied, userID defaults to the logged on user's userID.
 			"userID": userID.String(),
 

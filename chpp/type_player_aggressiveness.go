@@ -1,6 +1,7 @@
 package chpp
 
-// PlayerAggressiveness ...
+// PlayerAggressiveness is a player personality trait describing how prone
+// they are to reckless play and getting booked, from tranquil to unstable.
 type PlayerAggressiveness uint
 
 // List of PlayerAggressiveness constants.

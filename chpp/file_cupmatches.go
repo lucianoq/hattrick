@@ -10,24 +10,16 @@ const (
 	CupMatchesAPIVersion = "1.4"
 )
 
-// CupMatchesXML ...
+// CupMatchesXML contains the matches for a given cup, season, and round.
 type CupMatchesXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"User"`
 
 	// Container for the cup and the matches.
 	Cup *Cup `xml:"Cup"`
 }
 
-// Cup ...
+// Cup identifies a cup competition, season and round, and holds its matches.
 type Cup struct {
 	ID      id.Cup      `xml:"CupID"`
 	Season  uint        `xml:"CupSeason"`
@@ -36,7 +28,7 @@ type Cup struct {
 	Matches []*CupMatch `xml:"MatchList>Match"`
 }
 
-// CupMatch ...
+// CupMatch is a single match within a cup round.
 type CupMatch struct {
 	MatchID   id.Match     `xml:"MatchID"`
 	MatchDate HattrickTime `xml:"MatchDate"`
@@ -48,11 +40,16 @@ type CupMatch struct {
 		ID   id.Team `xml:"TeamId"`
 		Name string  `xml:"TeamName"`
 	} `xml:"AwayTeam"`
+
+	// The match result, only available once the match has been played.
 	MatchResult struct {
 		Available bool `xml:"Available,attr"`
 		HomeGoals uint `xml:"HomeGoals"`
 		AwayGoals uint `xml:"AwayGoals"`
 	} `xml:"MatchResult"`
+
+	// League data for the participating teams, only available for
+	// international cups.
 	LeagueInfo struct {
 		Available      bool      `xml:"Available,attr"`
 		HomeLeagueID   id.League `xml:"HomeLeagueID"`

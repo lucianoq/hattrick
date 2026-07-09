@@ -1,6 +1,7 @@
 package chpp
 
-// TeamSpiritID ...
+// TeamSpiritID is the morale/spirit level of a team's squad, from like
+// the cold war to paradise on earth.
 type TeamSpiritID uint
 
 // List of TeamSpiritID constants.

@@ -10,16 +10,11 @@ const (
 	TournamentDetailsAPIVersion = "1.0"
 )
 
-// TournamentDetailsXML ...
+// TournamentDetailsXML contains the details of a single HTO tournament,
+// for the current season only.
 type TournamentDetailsXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
+	Envelope
+	UserID id.User `xml:"User"`
 
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Tournament Tournament `xml:"Tournament"`
 }

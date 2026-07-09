@@ -1,6 +1,7 @@
 package chpp
 
-// Weather ...
+// Weather is the match-day weather condition (e.g. rain, overcast, sunny),
+// which affects player performance during the match.
 type Weather uint
 
 // List of Weather constants.

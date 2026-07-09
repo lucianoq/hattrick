@@ -1,6 +1,7 @@
 package chpp
 
-// ScoutCommentType ...
+// ScoutCommentType is the kind of remark a scout makes about a player
+// they've found (e.g. current/potential skill level, has a speciality).
 type ScoutCommentType uint
 
 // List of ScoutCommentType constants.

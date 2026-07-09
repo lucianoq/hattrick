@@ -10,18 +10,10 @@ const (
 	AvatarsAPIVersion = "1.1"
 )
 
-// AvatarsXML contains data of Avatars for all players of user's team.
+// AvatarsXML contains avatar data for all players on the user's team.
 type AvatarsXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"User"`
 
 	Team struct {
 		ID      id.Team          `xml:"TeamId"`
@@ -29,7 +21,8 @@ type AvatarsXML struct {
 	} `xml:"Team"`
 }
 
-// PlayerAvatars is a container for a player.
+// PlayerAvatars pairs a player with the avatar image data used to render
+// their player card.
 type PlayerAvatars struct {
 	PlayerID id.Player `xml:"PlayerID"`
 	Avatar   Avatar    `xml:"Avatar"`

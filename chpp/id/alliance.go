@@ -2,7 +2,7 @@ package id
 
 import "strconv"
 
-// Alliance ...
+// Alliance identifies a Hattrick alliance (federation), a group of teams.
 type Alliance uint
 
 // String returns a string representation of the type.

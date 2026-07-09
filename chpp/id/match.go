@@ -2,7 +2,8 @@ package id
 
 import "strconv"
 
-// Match ...
+// Match identifies a single Hattrick match. It is signed rather than
+// unsigned because Hattrick sometimes returns -1 as a match ID.
 type Match int
 
 // String returns a string representation of the type.

@@ -1,6 +1,7 @@
 package chpp
 
-// SkillLevel ...
+// SkillLevel is a player's rating in a given skill, from non-existent (0)
+// to divine (20).
 type SkillLevel uint
 
 // List of SkillLevel constants.
@@ -77,7 +78,7 @@ func (s SkillLevel) String() string {
 	return ""
 }
 
-// Value ...
+// Value returns the numeric skill level as a uint.
 func (s SkillLevel) Value() uint {
 	return uint(s)
 }

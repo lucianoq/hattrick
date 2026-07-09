@@ -1,6 +1,7 @@
 package chpp
 
-// ErrorCode ...
+// ErrorCode is the numeric error code returned by the CHPP API when a
+// request fails.
 type ErrorCode int
 
 // List of ErrorCode constants.
@@ -27,8 +28,13 @@ const (
 	AllowedOnlyOnYourTeam                    ErrorCode = 59
 	UnknownTournamentID                      ErrorCode = 60
 	UnknownLadderID                          ErrorCode = 61
+	YouthPlayerNowSenior                     ErrorCode = 62
+	MissingRequiredParameters                ErrorCode = 63
+	PlayerHasBecomeACoach                    ErrorCode = 64
 	ChallengeFailed                          ErrorCode = 70
 	BidFailed                                ErrorCode = 71
+	BannedFromInternationalFriendly          ErrorCode = 80
+	BannedFromTransfers                      ErrorCode = 81
 	HattrickDownForMaintenance               ErrorCode = 90
 	HattrickYouthAcademyDownForMaintenance   ErrorCode = 91
 	HattrickTransferMarketDownForMaintenance ErrorCode = 92

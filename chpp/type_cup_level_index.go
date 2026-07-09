@@ -1,6 +1,7 @@
 package chpp
 
-// CupLevelIndex ...
+// CupLevelIndex identifies which of the parallel cups at the same CupLevel
+// a team is in (Emerald, Ruby, or Sapphire).
 type CupLevelIndex uint
 
 // List of CupLevelIndex constants.

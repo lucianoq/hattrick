@@ -1,6 +1,9 @@
 package chpp
 
-// MatchTacticType ...
+import "strconv"
+
+// MatchTacticType is the special tactic order set for a team in a match
+// (e.g. pressing, counter-attacks, long shots).
 type MatchTacticType uint
 
 // List of MatchTacticType constants.
@@ -16,22 +19,5 @@ const (
 
 // String returns a string representation of the type.
 func (t MatchTacticType) String() string {
-	switch t {
-	case MatchTacticTypeNormal:
-		return "normal"
-	case MatchTacticTypePressing:
-		return "pressing"
-	case MatchTacticTypeCounterAttacks:
-		return "CA"
-	case MatchTacticTypeAttackInTheMiddle:
-		return "AIM"
-	case MatchTacticTypeAttackInWings:
-		return "AOW"
-	case MatchTacticTypePlayCreatively:
-		return "creatively"
-	case MatchTacticTypeLongShots:
-		return "longShots"
-	default:
-		return "unknown"
-	}
+	return strconv.FormatUint(uint64(t), 10)
 }

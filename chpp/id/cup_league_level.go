@@ -2,7 +2,8 @@ package id
 
 import "strconv"
 
-// CupLeagueLevel ...
+// CupLeagueLevel identifies which tier of a team's regular league (national
+// division vs. lower divisional level) determines its cup seeding.
 type CupLeagueLevel uint
 
 // String returns a string representation of the type.

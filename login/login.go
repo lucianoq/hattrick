@@ -1,3 +1,6 @@
+// Package main is an interactive CLI that walks a user through the CHPP
+// OAuth1 authorization flow, letting them pick which scopes to grant, and
+// prints the resulting AccessToken/AccessSecret needed by hattrick.NewClient.
 package main
 
 import (

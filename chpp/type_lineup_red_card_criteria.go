@@ -2,7 +2,9 @@ package chpp
 
 import "strconv"
 
-// LineupRedCardCriteria ...
+// LineupRedCardCriteria is the red-card event that must have occurred for a
+// submitted player order to trigger, as part of the matchorders lineup
+// JSON payload.
 type LineupRedCardCriteria int
 
 // List of LineupRedCardCriteria constants.

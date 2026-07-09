@@ -2,7 +2,7 @@ package id
 
 import "strconv"
 
-// User ...
+// User identifies a Hattrick manager (user account).
 type User uint
 
 // String returns a string representation of the type.

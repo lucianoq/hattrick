@@ -10,35 +10,39 @@ const (
 	HOFPlayersAPIVersion = "1.2"
 )
 
-// HOFPlayersXML ...
+// HOFPlayersXML contains the players a team has inducted into its Hall of
+// Fame.
 type HOFPlayersXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"UserID"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"UserID"`
 
 	PlayerList struct {
 		Players []*HOFPlayer `xml:"Player"`
 	} `xml:"PlayerList"`
 }
 
-// HOFPlayer ...
+// HOFPlayer is a single player inducted into a team's Hall of Fame.
 type HOFPlayer struct {
-	PlayerID     id.Player     `xml:"PlayerId"`
-	FirstName    string        `xml:"FirstName"`
-	NickName     string        `xml:"NickName"`
-	LastName     string        `xml:"LastName"`
-	Age          uint          `xml:"Age"`
-	NextBirthday HattrickTime  `xml:"NextBirthday"`
-	CountryID    id.Country    `xml:"CountryID"`
-	ArrivalDate  HattrickTime  `xml:"ArrivalDate"`
-	ExpertType   HOFExpertType `xml:"ExpertType"`
-	HofDate      HattrickTime  `xml:"HofDate"`
-	HofAge       uint          `xml:"HofAge"`
+	PlayerID  id.Player `xml:"PlayerID"`
+	FirstName string    `xml:"FirstName"`
+	NickName  string    `xml:"NickName"`
+	LastName  string    `xml:"LastName"`
+	Age       uint      `xml:"Age"`
+
+	// The approximate date/time of the player's next birthday.
+	NextBirthday HattrickTime `xml:"NextBirthday"`
+
+	CountryID id.Country `xml:"CountryID"`
+
+	// The date the player arrived at the team.
+	ArrivalDate HattrickTime `xml:"ArrivalDate"`
+
+	// The type of "life after football" job the player now holds.
+	ExpertType HOFExpertType `xml:"ExpertType"`
+
+	// The date the player was inducted into the Hall of Fame.
+	HofDate HattrickTime `xml:"HofDate"`
+
+	// The player's age, in years, when inducted into the Hall of Fame.
+	HofAge uint `xml:"HofAge"`
 }

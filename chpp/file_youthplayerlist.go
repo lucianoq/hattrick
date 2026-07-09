@@ -7,19 +7,19 @@ import (
 // XML file name and version.
 const (
 	YouthPlayerListAPIFile    = "youthplayerlist"
-	YouthPlayerListAPIVersion = "1.1"
+	YouthPlayerListAPIVersion = "1.3"
 )
 
-// YouthPlayerListXML ...
+// YouthPlayerListXML contains the list of players belonging to a youth
+// team.
 type YouthPlayerListXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
+	Envelope
+	UserID id.User `xml:"User"`
 
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	// Container for all players. For the default actionType=list, only
+	// the id and name fields (and Gender) are populated; the remaining
+	// fields on YouthPlayerDetail are left at their zero value. For
+	// actionType=details/unlockskills, the full player detail is
+	// populated.
+	Players []*YouthPlayerDetail `xml:"PlayerList>YouthPlayer"`
 }

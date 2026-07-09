@@ -5,28 +5,22 @@ import "github.com/lucianoq/hattrick/chpp/id"
 // XML file name and version.
 const (
 	TeamDetailsAPIFile    = "teamdetails"
-	TeamDetailsAPIVersion = "3.6"
+	TeamDetailsAPIVersion = "3.9"
 )
 
-// TeamDetailsXML ...
+// TeamDetailsXML contains detailed information about a single team,
+// including its owning user's profile.
 type TeamDetailsXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"UserID"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"UserID"`
 
 	User User `xml:"User"`
 
 	Teams []*Team `xml:"Teams>Team"`
 }
 
-// User ...
+// User is the Hattrick manager who owns the requested team, along with
+// their profile and national team involvement.
 type User struct {
 	UserID id.User `xml:"UserID"`
 
@@ -79,13 +73,24 @@ type User struct {
 	} `xml:"NationalTeams>NationalTeam"`
 }
 
-// Team ...
+// Team is a single senior team, with its league/cup standing, arena,
+// finances-adjacent metadata and other club information.
 type Team struct {
 	ID            id.Team      `xml:"TeamID"`
 	Name          string       `xml:"TeamName"`
 	ShortName     string       `xml:"ShortTeamName"`
 	IsPrimaryClub bool         `xml:"IsPrimaryClub"`
 	FoundedDate   HattrickTime `xml:"FoundedDate"`
+
+	// Whether or not the team is deactivated and not part of the league
+	// system.
+	IsDeactivated bool `xml:"IsDeactivated"`
+
+	// The gender of the team.
+	Gender GenderID `xml:"GenderID"`
+
+	// The system type of the league for this team.
+	LeagueSystemID LeagueSystemID `xml:"LeagueSystemID"`
 
 	// Container for the data about the team's home ground.
 	Arena struct {
@@ -219,17 +224,17 @@ type Team struct {
 	LogoURL string `xml:"LogoURL"`
 
 	// This container and its elements are only shown if the user has
-	// supporter
+	// supporter status.
 	// Container for the data about the team's guestbook.
 	Guestbook *struct {
 		NumberOfGuestbookItems uint `xml:"NumberOfGuestbookItems"`
 	} `xml:"Guestbook"`
 
 	// This container and its elements are only shown if the user has
-	// supporter
+	// supporter status.
 	// Container for the data about the team's most recent
 	// PressAnnouncement.
-	PressAnnouncement []struct {
+	PressAnnouncement *struct {
 
 		// The subject text specified for the PressAnnouncement.
 		Subject string `xml:"Subject"`
@@ -242,10 +247,10 @@ type Team struct {
 	} `xml:"PressAnnouncement"`
 
 	// This container and its elements are only shown if the user has
-	// supporter
+	// supporter status.
 	// Container for the team's club theme colors. Empty if no theme has
 	// been set for the club.
-	TeamColors []struct {
+	TeamColors *struct {
 		// The defined background color from the club theme.
 		BackgroundColor string `xml:"BackgroundColor"`
 
@@ -270,7 +275,7 @@ type Team struct {
 		BotSince HattrickTime `xml:"BotSince"`
 	} `xml:"BotStatus"`
 
-	// If the team has an owner, last is the League Rank, a number based
+	// If the team has an owner, this is the League Rank, a number based
 	// on LeagueLevel, position, etc., only counting teams with an owner.
 	// If the team is playing a match the tag will be empty.
 	TeamRank uint `xml:"TeamRank"`
@@ -295,13 +300,15 @@ type Team struct {
 		TypeID TrophyID `xml:"TrophyTypeId"`
 		Season uint     `xml:"TrophySeason"`
 
-		// The level the league the user won. For tournament trophies, this act as a "type".
+		// The level of the league the user won. For tournament trophies, this acts as a "type".
 		LeagueLevel uint `xml:"LeagueLevel"`
 
 		// The LeagueLevelUnitId of the leaguelevelunit that the user won.
-		// For tournaments this is the id of the tournament.
-		SeriesID   id.Series `xml:"LeagueLevelUnitID"`
-		SeriesName string    `xml:"LeagueLevelUnitName"`
+		// For tournaments this is the id of the tournament. Unlike
+		// elsewhere in this file, this is a String (not a numeric ID),
+		// since tournament ids aren't numeric.
+		SeriesID   string `xml:"LeagueLevelUnitId"`
+		SeriesName string `xml:"LeagueLevelUnitName"`
 
 		GainedDate HattrickTime `xml:"GainedDate"`
 		ImageURL   string       `xml:"ImageUrl"`
@@ -312,7 +319,7 @@ type Team struct {
 	} `xml:"TrophyList>Trophy"`
 
 	// Container for the supported teams. It will be empty if the
-	// user have no supporters and not present if the user are not a
+	// user has no supporters and not present if the user is not a
 	// supporter. Only available, when includeSupporters=true.
 	SupportedTeams *struct {
 		TotalItems *uint `xml:"TotalItems,attr"`
@@ -352,11 +359,11 @@ type Team struct {
 	} `xml:"SupportedTeams"`
 
 	// Attribute: 'TotalItems' : unsigned Integer
-	//   Shows how many teams supports the team in total
+	//   Shows how many teams support the team in total
 	// Attribute: 'MaxItems' : unsigned Integer
-	//   Shows how many teams that can maximum be outputted in this list
+	//   Shows the maximum number of teams that can be output in this list
 	// Container for the supported teams. It will be empty if the
-	// user have no supporters and not present if the user are not a
+	// user has no supporters and not present if the user is not a
 	// supporter. Only available, when includeSupporters=true.
 	MySupporters *struct {
 		TotalItems *uint `xml:"TotalItems,attr"`
@@ -374,14 +381,16 @@ type Team struct {
 	PossibleToChallengeWeekend bool `xml:"PossibleToChallengeWeekend"`
 }
 
-// flag ...
+// flag is a league flag/pennant awarded to the team for a season, shown on
+// the team's Hattrick page.
 type flag struct {
-	LeagueID    id.League `xml:"LeagueId"`
+	LeagueID    id.League `xml:"LeagueID"`
 	LeagueName  string    `xml:"LeagueName"`
 	CountryCode string    `xml:"CountryCode"`
 }
 
-// supportedTeam ...
+// supportedTeam is a single supporter/supported team relationship, shared
+// between the SupportedTeams and MySupporters containers.
 type supportedTeam struct {
 	UserID     id.User   `xml:"UserId"`
 	LoginName  string    `xml:"LoginName"`

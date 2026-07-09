@@ -1,6 +1,7 @@
 package chpp
 
-// ScoutSearchTypeID ...
+// ScoutSearchTypeID is the player position a scout is asked to look for
+// (e.g. keeper, wingback, forward), or any position.
 type ScoutSearchTypeID uint
 
 // List of ScoutSearchTypeID constants.

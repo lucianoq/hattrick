@@ -1,6 +1,7 @@
 package chpp
 
-// TrainerType ...
+// TrainerType is a trainer's tactical leaning (defensive, offensive, or
+// balanced), which affects the team's training bonus.
 type TrainerType uint
 
 // List of TrainerType constants.

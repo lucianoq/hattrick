@@ -7,29 +7,22 @@ import (
 // XML file name and version.
 const (
 	MatchesArchiveAPIFile    = "matchesArchive"
-	MatchesArchiveAPIVersion = "1.4"
+	MatchesArchiveAPIVersion = "1.5"
 )
 
-// MatchesArchiveXML ...
+// MatchesArchiveXML contains a team's past matches within a date range
+// (or season), most recent 50 matches only.
 type MatchesArchiveXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"User"`
 
 	IsYouth bool `xml:"IsYouth"`
 	Team    struct {
-		TeamID        id.Team      `xml:"TeamID"`
-		TeamName      string       `xml:"TeamName"`
-		FistMatchDate HattrickTime `xml:"FirstMatchDate"`
-		LastMatchDate HattrickTime `xml:"LastMatchDate"`
-		MatchList     struct {
+		TeamID         id.Team      `xml:"TeamID"`
+		TeamName       string       `xml:"TeamName"`
+		FirstMatchDate HattrickTime `xml:"FirstMatchDate"`
+		LastMatchDate  HattrickTime `xml:"LastMatchDate"`
+		MatchList      struct {
 			Matches []*Match `xml:"Match"`
 		} `xml:"MatchList"`
 	} `xml:"Team"`

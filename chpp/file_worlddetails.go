@@ -7,43 +7,40 @@ import (
 // XML file name and version.
 const (
 	WorldDetailsAPIFile    = "worlddetails"
-	WorldDetailsAPIVersion = "1.9"
+	WorldDetailsAPIVersion = "2.0"
 )
 
-// WorldDetailsXML ...
+// WorldDetailsXML contains general information about the leagues (and their
+// related countries and cups) in the Hattrick world.
 type WorldDetailsXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"User"`
 
 	Leagues []*League `xml:"LeagueList>League"`
 }
 
+// League represents a single national league in the Hattrick world, along
+// with its related country, cups, and upcoming update schedule.
 type League struct {
-	ID           id.League `xml:"LeagueID"`
-	Name         string    `xml:"LeagueName"`
-	Season       uint      `xml:"Season"`
-	MatchRound   uint      `xml:"MatchRound"`
-	ShortName    string    `xml:"ShortName"`
-	Continent    string    `xml:"Continent"`
-	ZoneName     string    `xml:"ZoneName"`
-	EnglishName  string    `xml:"EnglishName"`
-	LanguageId   uint      `xml:"LanguageId"`
-	LanguageName string    `xml:"LanguageName"`
+	ID             id.League      `xml:"LeagueID"`
+	Name           string         `xml:"LeagueName"`
+	Season         uint           `xml:"Season"`
+	SeasonOffset   int            `xml:"SeasonOffset"`
+	MatchRound     uint           `xml:"MatchRound"`
+	ShortName      string         `xml:"ShortName"`
+	Continent      string         `xml:"Continent"`
+	ZoneName       string         `xml:"ZoneName"`
+	EnglishName    string         `xml:"EnglishName"`
+	LeagueSystemID LeagueSystemID `xml:"LeagueSystemID"`
+	LanguageID     uint           `xml:"LanguageId"`
+	LanguageName   string         `xml:"LanguageName"`
 
 	// Container for the country that is related to the league.
 	// It may seem confusing what the difference is between a league
 	// and a country. Well, there isn't much, except that in some cases
 	// we refer to CountryID instead of LeagueID. The easiest way to deal
-	// with it is perhaps to just say: "It's the way it is. Just learn to live
-	// with it.". Some things are formally tied to the Country instead of
+	// with it is perhaps to just say, "It's the way it is. Just learn to live
+	// with it." Some things are formally tied to the Country instead of
 	// the League. We have chosen to maintain that relationship in the
 	// XML output, hence the sub-containers of Country.
 	Country struct {
@@ -52,15 +49,25 @@ type League struct {
 		Name         string     `xml:"CountryName"`
 		CurrencyName string     `xml:"CurrencyName"`
 
-		// Decimal value specifying the relative currency rate to SEK (swedish krona).
+		// Decimal value specifying the relative currency rate to SEK (Swedish krona).
 		CurrencyRate        string `xml:"CurrencyRate"`
 		CurrencyRateFloat64 float64
+
+		// The country code for this country.
+		CountryCode string `xml:"CountryCode"`
 
 		// The date format for users of this country using ISO_8601
 		DateFormat string `xml:"DateFormat"`
 
 		// The time format for users of this country using ISO_8601
 		TimeFormat string `xml:"TimeFormat"`
+
+		// Container for the list of regions in the country. Only present when
+		// the "includeRegions" input parameter is set to true.
+		Regions []struct {
+			ID   id.Region `xml:"RegionID"`
+			Name string    `xml:"RegionName"`
+		} `xml:"RegionList>Region"`
 	} `xml:"Country"`
 
 	// Data about the league's cups.
@@ -83,11 +90,11 @@ type League struct {
 		MatchRound uint `xml:"MatchRound"`
 
 		// How many rounds are left of this cup.
-		MatchRoundLeft uint `xml:"MatchRoundLeft"`
+		MatchRoundsLeft uint `xml:"MatchRoundsLeft"`
 	} `xml:"Cups>Cup"`
 
-	NationalTeamID id.NationalTeam `xml:"NationalTeamID"`
-	U20TeamID      id.NationalTeam `xml:"U20TeamID"`
+	NationalTeamID id.NationalTeam `xml:"NationalTeamId"`
+	U20TeamID      id.NationalTeam `xml:"U20teamId"`
 	ActiveTeams    uint            `xml:"ActiveTeams"`
 	ActiveUsers    uint            `xml:"ActiveUsers"`
 	WaitingUsers   uint            `xml:"WaitingUsers"`

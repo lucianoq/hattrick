@@ -2,7 +2,8 @@ package chpp
 
 import "strconv"
 
-// MatchOrderType ...
+// MatchOrderType is the kind of a submitted player order: a substitution
+// or behaviour change, or a position swap between two players.
 type MatchOrderType uint
 
 // List of MatchOrderType constants.

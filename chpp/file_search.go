@@ -10,16 +10,31 @@ const (
 	SearchAPIVersion = "1.2"
 )
 
-// SearchXML ...
+// SearchXML contains the results of a search against Hattrick's global
+// database of players, teams, managers, arenas, leagues/regions or matches.
 type SearchXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
+	Envelope
+	UserID id.User `xml:"User"`
 
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	// The search parameters as echoed back by the server. NOTE: the
+	// CHPP doc's own field casing is inconsistent here (SearchType vs.
+	// searchString/searchID/searchLeagueID) - kept verbatim.
+	SearchParams struct {
+		SearchType     SearchType `xml:"SearchType"`
+		SearchString   string     `xml:"searchString"`
+		SearchString2  string     `xml:"searchString2"`
+		SearchID       uint       `xml:"searchID"`
+		SearchLeagueID int        `xml:"searchLeagueID"`
+	} `xml:"SearchParams"`
+
+	// The search results. Each Result is one row of the resultset.
+	Results []*SearchResult `xml:"Result"`
+}
+
+// SearchResult is a single row of a search resultset. The meaning of ID
+// and Name depends on the requested SearchType (player, arena, manager,
+// series, team, region or match).
+type SearchResult struct {
+	ID   uint   `xml:"ResultID"`
+	Name string `xml:"ResultName"`
 }

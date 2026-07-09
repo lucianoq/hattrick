@@ -1,6 +1,7 @@
 package chpp
 
-// FanSeasonExpectation ...
+// FanSeasonExpectation is what a team's fans expect from the current
+// season, from fearing relegation to expecting to dominate the division.
 type FanSeasonExpectation uint
 
 // List of FanSeasonExpectation constants.

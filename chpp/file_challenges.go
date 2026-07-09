@@ -10,18 +10,11 @@ const (
 	ChallengesAPIVersion = "1.6"
 )
 
-// ChallengesXML ...
+// ChallengesXML contains the friendlies the manager has challenged others to
+// and the friendly offers other teams have made to the manager's team.
 type ChallengesXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"User"`
 
 	Team struct {
 		ID   id.Team `xml:"TeamID"`
@@ -34,24 +27,29 @@ type ChallengesXML struct {
 		// the logged on user's team.
 		OffersByOthers []*OffersByOthers `xml:"OffersByOthers>Offer"`
 
+		// Only populated for actionType=challengeable requests, reporting
+		// whether each of the queried teams can be challenged.
 		ChallengeableResult *struct {
 			Opponent []*struct {
 				IsChallengeable bool    `xml:"IsChallengeable"`
 				UserID          id.User `xml:"UserId"`
-				TeamID          id.Team `xml:"TeamId"`
+				TeamID          id.Team `xml:"TeamID"`
 				TeamName        string  `xml:"TeamName"`
-				LogoURL         string  `xml:"LogoURL"`
+				LogoURL         string  `xml:"LogoUrl"`
 			} `xml:"Opponent"`
 		} `xml:"ChallengeableResult"`
 	} `xml:"Team"`
 }
 
-// ChallengeByMe ...
+// ChallengeByMe is a friendly match challenge that the manager's team has
+// made to an opponent.
 type ChallengeByMe struct {
 	TrainingMatchID id.FriendlyMatch `xml:"TrainingMatchID"`
-	MatchTime       HattrickTime     `xml:"MatchTime"`
-	MatchID         id.Match         `xml:"MatchID"`
-	FriendlyType    FriendlyType     `xml:"FriendlyType"`
+	MatchTime       uint             `xml:"MatchTime"`
+
+	// The match ID for the match created once the challenge has been accepted.
+	MatchID      id.Match     `xml:"MatchID"`
+	FriendlyType FriendlyType `xml:"FriendlyType"`
 
 	Opponent struct {
 		TeamID   id.Team `xml:"TeamID"`
@@ -65,7 +63,13 @@ type ChallengeByMe struct {
 			Name string   `xml:"ArenaName"`
 		} `xml:"Arena"`
 
-		// TODO check League or Country. Inconsistency.
+		League struct {
+			ID   id.League `xml:"LeagueID"`
+			Name string    `xml:"LeagueName"`
+		} `xml:"League"`
+
+		// Container for the data about the country that the friendly would be
+		// played in.
 		Country struct {
 			ID   id.Country `xml:"CountryID"`
 			Name string     `xml:"CountryName"`
@@ -77,12 +81,15 @@ type ChallengeByMe struct {
 	} `xml:"Opponent"`
 }
 
-// OffersByOthers ...
+// OffersByOthers is a friendly match offer that another team has made to
+// the manager's team.
 type OffersByOthers struct {
 	TrainingMatchID id.FriendlyMatch `xml:"TrainingMatchID"`
-	MatchTime       HattrickTime     `xml:"MatchTime"`
-	MatchID         id.Match         `xml:"MatchID"`
-	FriendlyType    FriendlyType     `xml:"FriendlyType"`
+	MatchTime       uint             `xml:"MatchTime"`
+
+	// The match ID for the match created once the offer has been accepted.
+	MatchID      id.Match     `xml:"MatchID"`
+	FriendlyType FriendlyType `xml:"FriendlyType"`
 
 	Opponent struct {
 		TeamID   id.Team `xml:"TeamID"`
@@ -94,7 +101,6 @@ type OffersByOthers struct {
 			Name string   `xml:"ArenaName"`
 		} `xml:"Arena"`
 
-		// TODO check League or Country. Inconsistency.
 		League struct {
 			ID   id.League `xml:"LeagueID"`
 			Name string    `xml:"LeagueName"`

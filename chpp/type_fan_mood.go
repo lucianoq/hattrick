@@ -1,6 +1,7 @@
 package chpp
 
-// FanMood ...
+// FanMood is the current mood of a team's fans, ranging from murderous to
+// sending love poems to you.
 type FanMood uint
 
 // List of FanMood constants.

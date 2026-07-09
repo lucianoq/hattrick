@@ -1,6 +1,7 @@
 package chpp
 
-// AchievementCategory ...
+// AchievementCategory identifies the group an achievement belongs to (e.g.
+// ranking, team, matches, manager, special awards, supporter).
 type AchievementCategory uint
 
 // List of AchievementCategory constants.

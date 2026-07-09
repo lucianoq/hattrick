@@ -2,10 +2,10 @@ package id
 
 import "strconv"
 
-// Team ...
+// Team identifies a Hattrick team.
 type Team int
 
 // String returns a string representation of the type.
 func (t Team) String() string {
-	return strconv.FormatUint(uint64(t), 10)
+	return strconv.Itoa(int(t))
 }

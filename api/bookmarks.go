@@ -2,13 +2,13 @@ package api
 
 import (
 	"github.com/lucianoq/hattrick/chpp"
-	m "github.com/lucianoq/hattrick/chpp"
 )
 
-// GetBookmarks ...
-func (a *API) GetBookmarks(bookmarkType m.BookmarkType) ([]*chpp.Bookmark, error) {
+// GetBookmarks shows the requesting user's bookmarks, optionally filtered
+// to a single BookmarkType.
+func (a *API) GetBookmarks(bookmarkType chpp.BookmarkType) ([]*chpp.Bookmark, error) {
 	values := map[string]string{
-		"BookmarkType": bookmarkType.String(),
+		"BookmarkTypeID": bookmarkType.String(),
 	}
 
 	res, err := a.parsed.GetBookmarksXML(values)

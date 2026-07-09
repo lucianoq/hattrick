@@ -1,6 +1,8 @@
 package chpp
 
-// MatchRating ...
+// MatchRating is a sector or tactic rating (e.g. RatingMidfield) on
+// Hattrick's 1-80 scale, which maps onto the same named tiers as
+// SkillLevel (disastrous..divine) at four times the resolution.
 type MatchRating uint
 
 // List of MatchRating constants.
@@ -256,7 +258,7 @@ func (m MatchRating) String() string {
 	}
 }
 
-// Value ...
+// Value returns the underlying 1-80 numeric rating.
 func (m MatchRating) Value() int {
-	return int(m)
+	return int(m) //nolint:gosec // bounded to 1-80, can't overflow int
 }

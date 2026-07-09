@@ -2,7 +2,9 @@ package chpp
 
 import "strconv"
 
-// LineupMatchMinuteCriteria ...
+// LineupMatchMinuteCriteria is the earliest match minute at which a
+// submitted player order may trigger, as part of the matchorders lineup
+// JSON payload.
 type LineupMatchMinuteCriteria int
 
 // List of LineupMatchMinuteCriteria constants.

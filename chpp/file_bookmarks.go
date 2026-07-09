@@ -12,26 +12,20 @@ const (
 
 // BookmarksXML contains user bookmarks.
 type BookmarksXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"User"`
 
 	Bookmarks []*Bookmark `xml:"BookmarkList>Bookmark"`
 }
 
-// Bookmark ...
+// Bookmark is a single item a user has bookmarked (e.g. a team, player,
+// match, forum thread, or youth-related entity); which fields are
+// populated depends on BookmarkType.
 type Bookmark struct {
 	// The unique ID of the bookmark. The ID is prefixed with a 'y' for youth
 	// data with BookmarkType of 6, 7, 8 and 9, and prefixed with a 'c' for
 	// forum data with BookmarkType of 4, 10 and 11.
-	BookmarkID id.Bookmark `xml:"BookmarkID"`
+	BookmarkID string `xml:"BookmarkID"`
 
 	// The type of bookmark.
 	BookmarkType BookmarkType `xml:"BookmarkTypeID"`
@@ -52,9 +46,9 @@ type Bookmark struct {
 	//  ForumThreads    ThreadSubject    ByUser     ThreadID           UserID     n/a
 	Text      string `xml:"Text"`
 	Text2     string `xml:"Text2"`
-	ObjectID  uint   `xml:"ObjectID"`
-	ObjectID2 uint   `xml:"ObjectID2"`
-	ObjectID3 uint   `xml:"ObjectID3"`
+	ObjectID  string `xml:"ObjectID"`
+	ObjectID2 string `xml:"ObjectID2"`
+	ObjectID3 string `xml:"ObjectID3"`
 
 	// The user supplied comment about a bookmark item.
 	Comment string `xml:"Comment"`

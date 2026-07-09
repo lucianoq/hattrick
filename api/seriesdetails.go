@@ -5,7 +5,8 @@ import (
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
-// GetMySeries ...
+// GetMySeries shows the details of the requesting user's own team's
+// series (league table).
 func (a *API) GetMySeries() (*chpp.Series, error) {
 	e, err := a.parsed.GetLeagueDetailsXML(nil)
 	if err != nil {
@@ -15,7 +16,7 @@ func (a *API) GetMySeries() (*chpp.Series, error) {
 	return e.Series, nil
 }
 
-// GetSeries ...
+// GetSeries shows the details of the given series (league table).
 func (a *API) GetSeries(leagueLevelUnitID id.Series) (*chpp.Series, error) {
 	e, err := a.parsed.GetLeagueDetailsXML(
 		map[string]string{

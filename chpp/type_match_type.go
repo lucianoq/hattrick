@@ -1,6 +1,7 @@
 package chpp
 
-// MatchType ...
+// MatchType identifies the competition/context a match belongs to (league,
+// cup, friendly, national team, youth, tournament, etc).
 type MatchType uint
 
 // List of MatchType constants.

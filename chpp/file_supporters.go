@@ -10,16 +10,75 @@ const (
 	SupportersAPIVersion = "1.0"
 )
 
-// SupportersXML ...
+// SupportersXML contains the teams a user supports, or the teams that
+// support a given team, depending on the requested actionType.
 type SupportersXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
+	Envelope
+	UserID id.User `xml:"User"`
 
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	// The teams the requested user supports. Only sent for
+	// actionType=supportedteams.
+	SupportedTeams struct {
+		TotalItems uint             `xml:"TotalItems,attr"`
+		Teams      []*SupporterTeam `xml:"SupportedTeam"`
+	} `xml:"SupportedTeams"`
+
+	// The teams supporting the requested team. Only sent for
+	// actionType=mysupporters.
+	MySupporters struct {
+		TotalItems uint             `xml:"TotalItems,attr"`
+		Teams      []*SupporterTeam `xml:"SupporterTeam"`
+	} `xml:"MySupporters"`
+}
+
+// SupporterTeam is a single supporter/supported team relationship. The
+// LastMatch, NextMatch and PressAnnouncement containers are only sent for
+// actionType=supportedteams.
+type SupporterTeam struct {
+	UserID    id.User `xml:"UserId"`
+	LoginName string  `xml:"LoginName"`
+
+	TeamID   id.Team `xml:"TeamId"`
+	TeamName string  `xml:"TeamName"`
+
+	LeagueID   id.League `xml:"LeagueID"`
+	LeagueName string    `xml:"LeagueName"`
+
+	SeriesID   id.Series `xml:"LeagueLevelUnitID"`
+	SeriesName string    `xml:"LeagueLevelUnitName"`
+
+	LastMatch *SupporterTeamLastMatch `xml:"LastMatch"`
+	NextMatch *SupporterTeamNextMatch `xml:"NextMatch"`
+
+	PressAnnouncement *struct {
+		SendDate HattrickTime `xml:"PressAnnouncementSendDate"`
+		Subject  string       `xml:"PressAnnouncementSubject"`
+		Body     string       `xml:"PressAnnouncementBody"`
+	} `xml:"PressAnnouncement"`
+}
+
+// SupporterTeamLastMatch is a supported team's last played match.
+type SupporterTeamLastMatch struct {
+	ID   id.Match     `xml:"LastMatchId"`
+	Date HattrickTime `xml:"LastMatchDate"`
+
+	HomeTeamID   id.Team `xml:"LastMatchHomeTeamId"`
+	HomeTeamName string  `xml:"LastMatchHomeTeamName"`
+	HomeGoals    uint    `xml:"LastMatchHomeGoals"`
+
+	AwayTeamID   id.Team `xml:"LastMatchAwayTeamId"`
+	AwayTeamName string  `xml:"LastMatchAwayTeamName"`
+	AwayGoals    uint    `xml:"LastMatchAwayGoals"`
+}
+
+// SupporterTeamNextMatch is a supported team's next upcoming match.
+type SupporterTeamNextMatch struct {
+	ID   id.Match     `xml:"NextMatchId"`
+	Date HattrickTime `xml:"NextMatchDate"`
+
+	HomeTeamID   id.Team `xml:"NextMatchHomeTeamId"`
+	HomeTeamName string  `xml:"NextMatchHomeTeamName"`
+
+	AwayTeamID   id.Team `xml:"NextMatchAwayTeamId"`
+	AwayTeamName string  `xml:"NextMatchAwayTeamName"`
 }

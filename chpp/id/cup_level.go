@@ -1,8 +1,11 @@
 package id
 
-// CupLevel ...
+// CupLevel identifies which cup bracket (national, challenger, or
+// consolation) a team plays in.
 type CupLevel uint
 
+// CupLevelNational, CupLevelChallenger, and CupLevelConsolation are the
+// possible CupLevel values.
 const (
 	CupLevelNational    CupLevel = 1
 	CupLevelChallenger  CupLevel = 2

@@ -1,6 +1,7 @@
 package chpp
 
-// WorldCupID ...
+// WorldCupID identifies which national-team World Cup tournament a match
+// or competition belongs to (regular or U-20, old or new format).
 type WorldCupID uint
 
 // List of WorldCupID constants.

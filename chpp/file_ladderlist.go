@@ -10,16 +10,27 @@ const (
 	LadderListAPIVersion = "1.0"
 )
 
-// LadderListXML ...
+// LadderListXML contains the list of ladders that a team currently takes
+// part in.
 type LadderListXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
+	Envelope
+	UserID id.User `xml:"User"`
 
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	// The list of ladders the given team takes part in.
+	Ladders []*LadderListEntry `xml:"Ladders>Ladder"`
+}
+
+// LadderListEntry is a single ladder a team takes part in.
+type LadderListEntry struct {
+	ID   id.Ladder `xml:"LadderId"`
+	Name string    `xml:"Name"`
+
+	// The team's current position in the ladder. Note: the doc's own
+	// element name is misspelled "Posistion" - keep it verbatim, it is not
+	// a typo to fix here.
+	Position uint `xml:"Posistion"`
+
+	NextMatchDate HattrickTime `xml:"NextMatchDate"`
+	Wins          uint         `xml:"Wins"`
+	Lost          uint         `xml:"Lost"`
 }

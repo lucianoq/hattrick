@@ -1,6 +1,7 @@
 package chpp
 
-// ScoutTravelType ...
+// ScoutTravelType is the means of transport a scout uses to travel abroad
+// (plane or car), which affects how long the search takes.
 type ScoutTravelType uint
 
 // List of ScoutTravelType constants.

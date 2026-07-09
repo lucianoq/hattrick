@@ -2,7 +2,7 @@ package id
 
 import "strconv"
 
-// Fanclub ...
+// Fanclub identifies a team's fan club.
 type Fanclub uint
 
 // String returns a string representation of the type.

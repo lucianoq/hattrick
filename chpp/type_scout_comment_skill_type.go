@@ -1,6 +1,7 @@
 package chpp
 
-// ScoutCommentSkillType ...
+// ScoutCommentSkillType is the skill a scout's comment about a player
+// refers to (e.g. defending, scoring, passing).
 type ScoutCommentSkillType uint
 
 // List of ScoutCommentSkillType constants.
@@ -11,6 +12,6 @@ const (
 	ScoutCommentSkillTypePlaymaking ScoutCommentSkillType = 4
 	ScoutCommentSkillTypeWinger     ScoutCommentSkillType = 5
 	ScoutCommentSkillTypeScorer     ScoutCommentSkillType = 6
-	ScoutCommentSkillTypeSePieces   ScoutCommentSkillType = 7
+	ScoutCommentSkillTypeSetPieces  ScoutCommentSkillType = 7
 	ScoutCommentSkillTypePassing    ScoutCommentSkillType = 8
 )

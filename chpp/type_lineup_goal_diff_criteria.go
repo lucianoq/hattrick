@@ -2,7 +2,9 @@ package chpp
 
 import "strconv"
 
-// LineupGoalDiffCriteria ...
+// LineupGoalDiffCriteria is the goal-difference standing that must hold for
+// a submitted player order to trigger, as part of the matchorders lineup
+// JSON payload.
 type LineupGoalDiffCriteria int
 
 // List of LineupGoalDiffCriteria constants.

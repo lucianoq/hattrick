@@ -1,6 +1,7 @@
 package chpp
 
-// SelfConfidence ...
+// SelfConfidence is a player personality trait describing how they rate
+// their own ability, from non-existent to completely exaggerated.
 type SelfConfidence uint
 
 // List of SelfConfidence constants.

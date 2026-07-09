@@ -7,37 +7,54 @@ import (
 	"github.com/lucianoq/hattrick/chpp/id"
 )
 
+// Hattrick JSON-formatted player slot (numeric id/behaviour), used in the
+// positions, bench and kickers arrays.
+type lineupPlayerSlot struct {
+	ID        id.Player        `json:"id"`
+	Behaviour MatchBehaviourID `json:"behaviour"`
+}
+
 // Hattrick string-based json
 type lineup struct {
-	Positions     [30]lineupPlayerPosition  `json:"positions"`
+	Positions     [14]lineupPlayerSlot      `json:"positions"`
+	Bench         [14]lineupPlayerSlot      `json:"bench"`
+	Kickers       [11]lineupPlayerSlot      `json:"kickers"`
+	Captain       string                    `json:"captain"`
+	SetPieces     string                    `json:"setPieces"`
 	Settings      lineupSettings            `json:"settings"`
 	Substitutions []lineupSubstitutionOrder `json:"substitutions"`
 }
 
 // Hattrick string-based json
 type lineupSettings struct {
-	Tactic        string `json:"tactic"`
-	SpeechLevel   string `json:"speechLevel"`
-	NewLineup     string `json:"newLineup"`
-	CoachModifier string `json:"coachModifier"`
+	Tactic             string `json:"tactic"`
+	SpeechLevel        string `json:"speechLevel"`
+	NewLineup          string `json:"newLineup"`
+	CoachModifier      string `json:"coachModifier"`
+	ManMarkerPlayerID  string `json:"manMarkerPlayerId"`
+	ManMarkingPlayerID string `json:"manMarkingPlayerId"`
 }
 
-// NewLineup returns a string containing the JSON representation of a Lineup.
+// NewLineup returns a string containing the JSON representation of a Lineup,
+// in the format required by the matchorders CHPP file from version 2.5
+// onwards (MatchOrdersAPIVersion).
 //
 // Exported types and constants for the Go Library,
 // strong typed struct, less chance of errors,
 // leaving to the constructor the job of building the json
 // as requested.
-// (see org/Community/CHPP/NewDocs/File.aspx?name=matchorders#ref_Lineup_18)
+// (see org/Community/CHPP/NewDocs/File.aspx?name=matchorders#ref_Lineup_30)
 func NewLineup(
 	fsPlayers LineupFirstStringPlayers,
-	subs LineupSubPlayers,
+	bench LineupBenchPlayers,
+	kickers [11]id.Player, // you can leave entries empty
 	captain id.Player, // you can leave it empty
 	setPiecesTaker id.Player, // you can leave it empty
-	penalty [11]id.Player, // you can leave it empty
 	tactic MatchTacticType,
 	speechLevel MatchTeamAttitude,
 	coachModifier CoachModifier,
+	manMarker id.Player, // your player man-marking an opponent; leave empty for none
+	manMarking id.Player, // the opponent player being man-marked; leave empty for none
 	subsOrders []LineupSubstitutionOrder, // you can leave it empty (0)
 ) (string, error) {
 
@@ -45,61 +62,56 @@ func NewLineup(
 		return "", errors.New("too many substitution orders")
 	}
 
-	lu := [30]lineupPlayerPosition{}
-
-	// First 14 position slots (0-13) represent the players on the field,
-	// starting with the goalkeeper (0), followed by right defender (1),
-	// right central defender (2) and so on up to left forward (13).
-	lu[0].ID = fsPlayers.Goalkeeper.Player.String()
-	lu[0].Behaviour = fsPlayers.Goalkeeper.Behaviour.String()
-	lu[1].ID = fsPlayers.RightDefender.Player.String()
-	lu[1].Behaviour = fsPlayers.RightDefender.Behaviour.String()
-	lu[2].ID = fsPlayers.RightCentralDefender.Player.String()
-	lu[2].Behaviour = fsPlayers.RightCentralDefender.Behaviour.String()
-	lu[3].ID = fsPlayers.CentralDefender.Player.String()
-	lu[3].Behaviour = fsPlayers.CentralDefender.Behaviour.String()
-	lu[4].ID = fsPlayers.LeftCentralDefender.Player.String()
-	lu[4].Behaviour = fsPlayers.LeftCentralDefender.Behaviour.String()
-	lu[5].ID = fsPlayers.LeftDefender.Player.String()
-	lu[5].Behaviour = fsPlayers.LeftDefender.Behaviour.String()
-	lu[6].ID = fsPlayers.RightWinger.Player.String()
-	lu[6].Behaviour = fsPlayers.RightWinger.Behaviour.String()
-	lu[7].ID = fsPlayers.RightInnerMidfielder.Player.String()
-	lu[7].Behaviour = fsPlayers.RightInnerMidfielder.Behaviour.String()
-	lu[8].ID = fsPlayers.CentralInnerMidfielder.Player.String()
-	lu[8].Behaviour = fsPlayers.CentralInnerMidfielder.Behaviour.String()
-	lu[9].ID = fsPlayers.LeftInnerMidfielder.Player.String()
-	lu[9].Behaviour = fsPlayers.LeftInnerMidfielder.Behaviour.String()
-	lu[10].ID = fsPlayers.LeftWinger.Player.String()
-	lu[10].Behaviour = fsPlayers.LeftWinger.Behaviour.String()
-	lu[11].ID = fsPlayers.RightForward.Player.String()
-	lu[11].Behaviour = fsPlayers.RightForward.Behaviour.String()
-	lu[12].ID = fsPlayers.CentralForward.Player.String()
-	lu[12].Behaviour = fsPlayers.CentralForward.Behaviour.String()
-	lu[13].ID = fsPlayers.LeftForward.Player.String()
-	lu[13].Behaviour = fsPlayers.LeftForward.Behaviour.String()
-
-	// The next 5 slots are substitutes in the following order:
-	// goalkeeper, defender, midfielder, forward, winger.
-	lu[14].ID = subs.Goalkeeper.String()
-	lu[15].ID = subs.Defender.String()
-	lu[16].ID = subs.Midfielder.String()
-	lu[17].ID = subs.Forward.String()
-	lu[18].ID = subs.Winger.String()
-
-	// Line 20 and 21 is captain and set pieces taker.
-	lu[19].ID = captain.String()
-	lu[20].ID = setPiecesTaker.String()
-
-	// The last 11 slots are penalty takers. All 11 of these should always be
-	// provided, sending {"id":"0","behaviour":"0"} where not provided by the
-	// user.
-	for i := 0; i < 11; i++ {
-		lu[i+21].ID = penalty[i].String()
+	// The 14 field positions, starting with the goalkeeper (0), followed by
+	// right defender (1), right central defender (2) and so on up to left
+	// forward (13).
+	positions := [14]lineupPlayerSlot{
+		{ID: fsPlayers.Goalkeeper.Player, Behaviour: fsPlayers.Goalkeeper.Behaviour},
+		{ID: fsPlayers.RightDefender.Player, Behaviour: fsPlayers.RightDefender.Behaviour},
+		{ID: fsPlayers.RightCentralDefender.Player, Behaviour: fsPlayers.RightCentralDefender.Behaviour},
+		{ID: fsPlayers.CentralDefender.Player, Behaviour: fsPlayers.CentralDefender.Behaviour},
+		{ID: fsPlayers.LeftCentralDefender.Player, Behaviour: fsPlayers.LeftCentralDefender.Behaviour},
+		{ID: fsPlayers.LeftDefender.Player, Behaviour: fsPlayers.LeftDefender.Behaviour},
+		{ID: fsPlayers.RightWinger.Player, Behaviour: fsPlayers.RightWinger.Behaviour},
+		{ID: fsPlayers.RightInnerMidfielder.Player, Behaviour: fsPlayers.RightInnerMidfielder.Behaviour},
+		{ID: fsPlayers.CentralInnerMidfielder.Player, Behaviour: fsPlayers.CentralInnerMidfielder.Behaviour},
+		{ID: fsPlayers.LeftInnerMidfielder.Player, Behaviour: fsPlayers.LeftInnerMidfielder.Behaviour},
+		{ID: fsPlayers.LeftWinger.Player, Behaviour: fsPlayers.LeftWinger.Behaviour},
+		{ID: fsPlayers.RightForward.Player, Behaviour: fsPlayers.RightForward.Behaviour},
+		{ID: fsPlayers.CentralForward.Player, Behaviour: fsPlayers.CentralForward.Behaviour},
+		{ID: fsPlayers.LeftForward.Player, Behaviour: fsPlayers.LeftForward.Behaviour},
 	}
 
-	lso := make([]lineupSubstitutionOrder, 0)
+	// The 14 bench slots: 7 primary substitutes (goalkeeper, central
+	// defender, wing back, inner midfielder, forward, winger, extra)
+	// followed by 7 backup substitutes in the same order. Bench behaviour is
+	// always ignored by Hattrick, so it's left at its zero value.
+	benchSlot := func(p id.Player) lineupPlayerSlot { return lineupPlayerSlot{ID: p} }
+	benchSlots := [14]lineupPlayerSlot{
+		benchSlot(bench.Primary.Goalkeeper),
+		benchSlot(bench.Primary.CentralDefender),
+		benchSlot(bench.Primary.WingBack),
+		benchSlot(bench.Primary.InnerMidfielder),
+		benchSlot(bench.Primary.Forward),
+		benchSlot(bench.Primary.Winger),
+		benchSlot(bench.Primary.Extra),
+		benchSlot(bench.Backup.Goalkeeper),
+		benchSlot(bench.Backup.CentralDefender),
+		benchSlot(bench.Backup.WingBack),
+		benchSlot(bench.Backup.InnerMidfielder),
+		benchSlot(bench.Backup.Forward),
+		benchSlot(bench.Backup.Winger),
+		benchSlot(bench.Backup.Extra),
+	}
 
+	// The 11 penalty takers. Kicker behaviour is always ignored by
+	// Hattrick, so it's left at its zero value.
+	var kickerSlots [11]lineupPlayerSlot
+	for i, p := range kickers {
+		kickerSlots[i] = benchSlot(p)
+	}
+
+	lso := make([]lineupSubstitutionOrder, 0, len(subsOrders))
 	for _, s := range subsOrders {
 		lso = append(lso, lineupSubstitutionOrder{
 			PlayerIn:  s.PlayerIn.String(),
@@ -114,12 +126,18 @@ func NewLineup(
 	}
 
 	line := &lineup{
-		Positions: lu,
+		Positions: positions,
+		Bench:     benchSlots,
+		Kickers:   kickerSlots,
+		Captain:   captain.String(),
+		SetPieces: setPiecesTaker.String(),
 		Settings: lineupSettings{
-			Tactic:        tactic.String(),
-			SpeechLevel:   speechLevel.String(),
-			NewLineup:     "", // should always be empty
-			CoachModifier: coachModifier.String(),
+			Tactic:             tactic.String(),
+			SpeechLevel:        speechLevel.String(),
+			NewLineup:          "", // should always be empty
+			CoachModifier:      coachModifier.String(),
+			ManMarkerPlayerID:  manMarker.String(),
+			ManMarkingPlayerID: manMarking.String(),
 		},
 		Substitutions: lso,
 	}

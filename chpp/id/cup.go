@@ -2,9 +2,10 @@ package id
 
 import "strconv"
 
-// Cup ...
+// Cup identifies a Hattrick cup competition.
 type Cup uint
 
+// HattrickMasters is the Cup ID of the Hattrick Masters competition.
 const HattrickMasters Cup = 183
 
 // String returns a string representation of the type.

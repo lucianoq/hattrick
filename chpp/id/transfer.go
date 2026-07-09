@@ -2,7 +2,7 @@ package id
 
 import "strconv"
 
-// Transfer ...
+// Transfer identifies a player transfer-market listing.
 type Transfer uint
 
 // String returns a string representation of the type.

@@ -1,3 +1,5 @@
+// Package main demonstrates basic usage of the hattrick client: authenticating,
+// then fetching the requesting user's players, matches archive, and league.
 package main
 
 import (

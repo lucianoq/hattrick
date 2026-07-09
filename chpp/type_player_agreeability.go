@@ -1,6 +1,7 @@
 package chpp
 
-// PlayerAgreeability ...
+// PlayerAgreeability is a player personality trait describing how well
+// liked they are, from nasty fellow to beloved team member.
 type PlayerAgreeability uint
 
 // List of PlayerAgreeability constants.

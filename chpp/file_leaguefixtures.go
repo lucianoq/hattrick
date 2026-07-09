@@ -10,47 +10,43 @@ const (
 	LeagueFixturesAPIVersion = "1.2"
 )
 
-// LeagueFixturesXML ...
+// LeagueFixturesXML contains the match fixtures for a League Level Unit
+// (series).
 type LeagueFixturesXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
-
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	Envelope
+	UserID id.User `xml:"User"`
 
 	*SeriesFixtures
 }
 
-// SeriesFixtures ...
+// SeriesFixtures is the full match schedule of a League Level Unit (series)
+// for a given season.
 type SeriesFixtures struct {
-	SeriesID   id.Series      `xml:"LeagueLevelUnitId"`
-	SeriesName string         `xml:"LeagueLevelUnitName"`
-	Season     uint           `xml:"Season"`
-	Matches    []*SeriesMatch `xml:"Match"`
+	SeriesID   id.Series `xml:"LeagueLevelUnitID"`
+	SeriesName string    `xml:"LeagueLevelUnitName"`
+
+	// The season the returned fixtures belong to.
+	Season  uint           `xml:"Season"`
+	Matches []*SeriesMatch `xml:"Match"`
 }
 
-// SeriesMatch ...
+// SeriesMatch is a single league match within a series' fixture list.
 type SeriesMatch struct {
 	// The globally unique match identifier.
-	ID id.Match `xml:"MatchId"`
+	ID id.Match `xml:"MatchID"`
 
 	// MatchRound that the match is part of.
 	Round uint `xml:"MatchRound"`
 
 	// The home team container.
 	HomeTeam struct {
-		ID   id.Team `xml:"HomeTeamId"`
+		ID   id.Team `xml:"HomeTeamID"`
 		Name string  `xml:"HomeTeamName"`
 	} `xml:"HomeTeam"`
 
 	// The away team container.
 	AwayTeam struct {
-		ID   id.Team `xml:"AwayTeamId"`
+		ID   id.Team `xml:"AwayTeamID"`
 		Name string  `xml:"AwayTeamName"`
 	} `xml:"AwayTeam"`
 

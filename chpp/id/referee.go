@@ -2,7 +2,7 @@ package id
 
 import "strconv"
 
-// Referee ...
+// Referee identifies the referee officiating a match.
 type Referee uint
 
 // String returns a string representation of the type.

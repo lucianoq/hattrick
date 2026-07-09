@@ -10,16 +10,38 @@ const (
 	TrainingEventsAPIVersion = "1.3"
 )
 
-// TrainingEventsXML ...
+// TrainingEventsXML contains the history of skill-level changes (training
+// events) recorded for a single player.
 type TrainingEventsXML struct {
-	FileName    string       `xml:"FileName"`
-	Version     string       `xml:"Version"`
-	UserID      id.User      `xml:"User"`
-	FetchedDate HattrickTime `xml:"FetchedDate"`
+	Envelope
+	UserID id.User `xml:"User"`
 
-	Error     string    `xml:"Error"`
-	ErrorCode ErrorCode `xml:"ErrorCode"`
-	ErrorGUID string    `xml:"ErrorGUID"`
-	Server    string    `xml:"Server"`
-	Request   string    `xml:"Request"`
+	// Indicates which Supporter package the fetching user has, or empty
+	// if not a Supporter.
+	UserSupporterTier SupporterTier `xml:"UserSupporterTier"`
+
+	Player struct {
+		PlayerID id.Player `xml:"PlayerID"`
+
+		TrainingEvents struct {
+			// If a match is running this value is not available.
+			Available bool             `xml:"Available,attr"`
+			Events    []*TrainingEvent `xml:"TrainingEvent"`
+		} `xml:"TrainingEvents"`
+	} `xml:"Player"`
+}
+
+// TrainingEvent is a single skill-level change event for a player.
+type TrainingEvent struct {
+	// The order of the event relative to the other events for this
+	// player.
+	Index uint `xml:"Index,attr"`
+
+	SkillID  SkillID    `xml:"SkillID"`
+	OldLevel SkillLevel `xml:"OldLevel"`
+	NewLevel SkillLevel `xml:"NewLevel"`
+
+	Season     uint `xml:"Season"`
+	MatchRound uint `xml:"MatchRound"`
+	DayNumber  uint `xml:"DayNumber"`
 }
