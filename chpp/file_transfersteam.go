@@ -17,14 +17,16 @@ type TransferSteamXML struct {
 	UserID id.User `xml:"User"`
 
 	Team struct {
-		ID            id.Team      `xml:"TeamID"`
-		Name          string       `xml:"TeamName"`
+		ID   id.Team `xml:"TeamID"`
+		Name string  `xml:"TeamName"`
+
+		// The date when the user got this team.
 		ActivatedDate HattrickTime `xml:"ActivatedDate"`
 	} `xml:"Team"`
 
+	// TotalSumOfBuys and TotalSumOfSales are always expressed in SEK,
+	// regardless of the requesting team's local currency.
 	Stats struct {
-		// Always expressed in SEK, regardless of the requesting team's
-		// local currency.
 		TotalSumOfBuys  Money `xml:"TotalSumOfBuys"`
 		TotalSumOfSales Money `xml:"TotalSumOfSales"`
 		NumberOfBuys    uint  `xml:"NumberOfBuys"`
@@ -41,23 +43,32 @@ type TeamTransferHistory struct {
 	// last page, not literally page 0 - PageIndex reflects the actual
 	// page returned.
 	PageIndex uint `xml:"PageIndex"`
-	Pages     uint `xml:"Pages"`
 
+	// The total number of pages available.
+	Pages uint `xml:"Pages"`
+
+	// The oldest date of the selected transfers list.
 	StartDate HattrickTime `xml:"StartDate"`
-	EndDate   HattrickTime `xml:"EndDate"`
+
+	// The latest date of the selected transfers list.
+	EndDate HattrickTime `xml:"EndDate"`
 
 	Transfers []*TeamTransfer `xml:"Transfer"`
 }
 
 // TeamTransfer is a single historical transfer involving a team.
 type TeamTransfer struct {
-	ID       id.Transfer  `xml:"TransferID"`
+	ID id.Transfer `xml:"TransferID"`
+
+	// The date when bidding closed for the transfer.
 	Deadline HattrickTime `xml:"Deadline"`
 
 	Player struct {
 		ID   id.Player `xml:"PlayerID"`
 		Name string    `xml:"PlayerName"`
-		TSI  uint      `xml:"TSI"`
+
+		// The player's TSI at the time he was sent to the transfer list.
+		TSI uint `xml:"TSI"`
 
 		// Either "S" or "B", representing whether the transfer was a
 		// sale or a buy, seen from the requested team's point of view.

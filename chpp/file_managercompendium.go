@@ -37,12 +37,14 @@ type Manager struct {
 
 	// Container for the language.
 	Language struct {
+		// The globally unique LanguageID.
 		ID   id.Language `xml:"LanguageId"`
 		Name string      `xml:"LanguageName"`
 	}
 
 	// Container for the country.
 	Country struct {
+		// The globally unique CountryID.
 		ID   id.Country `xml:"CountryId"`
 		Name string     `xml:"CountryName"`
 	}
@@ -61,6 +63,7 @@ type Manager struct {
 	// Container for national teams the manager is a coach of.
 	// Empty if user is not a national team coach.
 	NationalTeamCoach struct {
+		// The globally unique NationalTeamID.
 		NationalTeamID   id.NationalTeam `xml:"NationalTeam>NationalTeamId"`
 		NationalTeamName string          `xml:"NationalTeam>NationalTeamName"`
 	} `xml:"NationalTeamCoach"`
@@ -68,6 +71,7 @@ type Manager struct {
 	// Container for national teams the manager is an assistant coach of.
 	// Empty if user is not a national team assistant coach.
 	NationalTeamAssistant struct {
+		// The globally unique NationalTeamID.
 		NationalTeamID   id.NationalTeam `xml:"NationalTeam>NationalTeamId"`
 		NationalTeamName string          `xml:"NationalTeam>NationalTeamName"`
 	} `xml:"NationalTeamAssistant"`
@@ -93,6 +97,7 @@ type ManagerTeam struct {
 
 	// Container for the data about the team's home ground.
 	Arena struct {
+		// The globally unique ArenaID.
 		ID   id.Arena `xml:"ArenaId"`
 		Name string   `xml:"ArenaName"`
 	} `xml:"Arena"`
@@ -100,6 +105,7 @@ type ManagerTeam struct {
 	// Container for the data about the league ('Sverige', 'England' and
 	// so on) the team is part of.
 	League struct {
+		// The globally unique LeagueID.
 		ID   id.League `xml:"LeagueId"`
 		Name string    `xml:"LeagueName"`
 
@@ -110,6 +116,7 @@ type ManagerTeam struct {
 	// Container for the data about the country ('Sverige', 'England'
 	// and so on) the team is part of.
 	Country struct {
+		// The globally unique CountryID.
 		ID   id.Country `xml:"CountryId"`
 		Name string     `xml:"CountryName"`
 	} `xml:"Country"`
@@ -130,6 +137,7 @@ type ManagerTeam struct {
 
 	// Container for the data about the region the team is located in.
 	Region struct {
+		// The globally unique RegionID.
 		ID   id.Region `xml:"RegionId"`
 		Name string    `xml:"RegionName"`
 	} `xml:"Region"`
@@ -146,6 +154,7 @@ type ManagerTeam struct {
 		// Container for the league of the youthTeam.
 		// Will be empty if the youthTeam is currently not playing in a league.
 		League struct {
+			// The globally unique YouthLeagueID.
 			ID   id.YouthLeague `xml:"YouthLeagueId"`
 			Name string         `xml:"YouthLeagueName"`
 		} `xml:"YouthLeague"`

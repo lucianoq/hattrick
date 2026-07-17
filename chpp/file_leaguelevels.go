@@ -16,8 +16,11 @@ type LeagueLevelsXML struct {
 	Envelope
 	UserID id.User `xml:"User"`
 
+	// The ID of the league (e.g. Sweden, USA, England...).
 	LeagueID id.League `xml:"LeagueID"`
-	Season   uint      `xml:"Season"`
+
+	// The league's current season.
+	Season uint `xml:"Season"`
 
 	NrOfLeagueLevels uint `xml:"NrOfLeagueLevels"`
 
@@ -30,6 +33,7 @@ type LeagueLevelItem struct {
 	// 1 = top division, 2 = second division, and so on.
 	LeagueLevel uint `xml:"LeagueLevel"`
 
+	// The number of league level units (series) in this league level.
 	// NOTE: documented as a string, not a uint, despite being a count.
 	NrOfLeagueLevelUnits string `xml:"NrOfLeagueLevelUnits"`
 

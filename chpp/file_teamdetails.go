@@ -16,6 +16,7 @@ type TeamDetailsXML struct {
 
 	User User `xml:"User"`
 
+	// The team(s) owned by the specified user - can be more than one.
 	Teams []*Team `xml:"Teams>Team"`
 }
 
@@ -125,8 +126,9 @@ type Team struct {
 	// The home page URL that the team has specified.
 	HomePage string `xml:"HomePage"`
 
-	// Data about the team's cup status. If the team is playing a match
-	// the container is empty.
+	// Data about the team's cup status. If the team is playing a match,
+	// the rest of the container is empty - except for StillInCup, which
+	// (since v3.6) is shown all the time, even during matches.
 	Cup struct {
 
 		// Boolean value stating if the team is still in the cup.
@@ -322,8 +324,11 @@ type Team struct {
 	// user has no supporters and not present if the user is not a
 	// supporter. Only available, when includeSupporters=true.
 	SupportedTeams *struct {
+		// How many teams the user supports in total.
 		TotalItems *uint `xml:"TotalItems,attr"`
-		MaxItems   *uint `xml:"MaxItems,attr"`
+
+		// The maximum number of teams that can be output in this list.
+		MaxItems *uint `xml:"MaxItems,attr"`
 
 		SupportedTeam []*struct {
 			supportedTeam
@@ -358,16 +363,15 @@ type Team struct {
 		} `xml:"SupportedTeam"`
 	} `xml:"SupportedTeams"`
 
-	// Attribute: 'TotalItems' : unsigned Integer
-	//   Shows how many teams support the team in total
-	// Attribute: 'MaxItems' : unsigned Integer
-	//   Shows the maximum number of teams that can be output in this list
 	// Container for the supported teams. It will be empty if the
 	// user has no supporters and not present if the user is not a
 	// supporter. Only available, when includeSupporters=true.
 	MySupporters *struct {
+		// How many teams support this team in total.
 		TotalItems *uint `xml:"TotalItems,attr"`
-		MaxItems   *uint `xml:"MaxItems,attr"`
+
+		// The maximum number of teams that can be output in this list.
+		MaxItems *uint `xml:"MaxItems,attr"`
 
 		// Container for a supported team. Not supplied if the user doesn't
 		// have supporters.

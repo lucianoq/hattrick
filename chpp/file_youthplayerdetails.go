@@ -33,7 +33,9 @@ type YouthPlayerDetail struct {
 	NickName  string         `xml:"NickName"`
 	LastName  string         `xml:"LastName"`
 
-	Age     uint     `xml:"Age"`
+	Age uint `xml:"Age"`
+
+	// The number of days since the player's last birthday.
 	AgeDays uint     `xml:"AgeDays"`
 	Gender  GenderID `xml:"GenderID"`
 
@@ -52,22 +54,32 @@ type YouthPlayerDetail struct {
 	// from the player.
 	Statement string `xml:"Statement"`
 
+	// The country where the player was born.
 	NativeCountryID   id.Country `xml:"NativeCountryID"`
 	NativeCountryName string     `xml:"NativeCountryName"`
 
 	// The notes the owner has set. Only visible to the owner.
 	OwnerNotes string `xml:"OwnerNotes"`
 
-	// The category assigned by the owner. Only visible to the owner.
+	// The category assigned by the owner. Only shown to Supporters, and
+	// only visible to the owner.
 	CategoryID PlayerCategoryID `xml:"PlayerCategoryID"`
 
-	Cards       uint              `xml:"Cards"`
+	// The number of currently accumulated cards. If the player is
+	// suspended, this returns 3 regardless of whether he actually
+	// accumulated 3 bookings or was sent off after 2 bookings in the
+	// same game. Unavailable while a match is running.
+	Cards uint `xml:"Cards"`
+
+	// Unavailable while a match is running.
 	InjuryLevel PlayerInjuryLevel `xml:"InjuryLevel"`
 
 	// The specialty, if the player has any and it is already revealed.
 	// 0 if none or unknown.
 	Specialty SpecialtyID `xml:"Specialty"`
 
+	// CareerGoals, CareerHattricks, LeagueGoals, and FriendlyGoals are
+	// all empty while the team is playing a match.
 	CareerGoals     uint `xml:"CareerGoals"`
 	CareerHattricks uint `xml:"CareerHattricks"`
 	LeagueGoals     uint `xml:"LeagueGoals"`

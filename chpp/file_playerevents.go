@@ -36,11 +36,12 @@ type PlayerEventsXML struct {
 // list of event types is documented; each CHPP has to collect its own
 // event list by observing PlayerEventTypeID/EventText over time.
 type PlayerEventItem struct {
+	// The date and time when the event was recorded.
 	EventDate HattrickTime `xml:"EventDate"`
 
 	// An identifier to show which type of event it is.
 	PlayerEventTypeID uint `xml:"PlayerEventTypeID"`
 
-	// String describing the event.
+	// String describing the event. May contain HTML tags.
 	EventText string `xml:"EventText"`
 }

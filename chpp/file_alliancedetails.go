@@ -17,15 +17,9 @@ type AllianceDetailsXML struct {
 	Envelope
 	UserID id.User `xml:"User"`
 
-	// Whether the fetching user is a Supporter.
-	UserIsSupporter bool `xml:"UserIsSupporter"`
-
 	// Indicates which Supporter package the fetching user has, or empty if not
 	// a Supporter.
 	UserSupporterTier SupporterTier `xml:"UserSupporterTier"`
-
-	// Whether the fetching user has a clubhouse.
-	UserHasClubhouse bool `xml:"UserHasClubhouse"`
 
 	// The requested ActionType.
 	ActionType string `xml:"ActionType"`
@@ -38,19 +32,34 @@ type AllianceDetailsXML struct {
 // and its details (which fields are populated depends on the ActionType
 // requested).
 type Alliance struct {
-	AllianceID          id.Alliance  `xml:"AllianceID"`
-	AllianceName        string       `xml:"AllianceName"`
-	AllianceDescription string       `xml:"AllianceDescription"`
-	Abbreviation        string       `xml:"Abbreviation"`
-	Description         string       `xml:"Description"`
-	LogoURL             string       `xml:"LogoURL"`
-	TopRole             string       `xml:"TopRole"`
-	TopUserID           id.User      `xml:"TopUserID"`
-	TopLoginName        string       `xml:"TopLoginname"`
-	CreationDate        HattrickTime `xml:"CreationDate"`
-	HomePageURL         string       `xml:"HomePageURL"`
-	NumberOfMembers     uint         `xml:"NumberOfMembers"`
-	AwaitingRequests    uint         `xml:"AwaitingRequests"`
+	// The globally unique AllianceID.
+	AllianceID id.Alliance `xml:"AllianceID"`
+
+	// The name of the federation.
+	AllianceName        string `xml:"AllianceName"`
+	AllianceDescription string `xml:"AllianceDescription"`
+
+	// The abbreviation of the federation. Left out if the federation has
+	// none.
+	Abbreviation string `xml:"Abbreviation"`
+	Description  string `xml:"Description"`
+
+	// The URL of the federation's logo. Left out if the federation has
+	// none.
+	LogoURL string `xml:"LogoURL"`
+
+	// The name of the role held by the federation's top user.
+	TopRole string `xml:"TopRole"`
+
+	// The globally unique UserID of the federation's top user.
+	TopUserID id.User `xml:"TopUserID"`
+
+	// The login alias of the federation's top user.
+	TopLoginName     string       `xml:"TopLoginname"`
+	CreationDate     HattrickTime `xml:"CreationDate"`
+	HomePageURL      string       `xml:"HomePageURL"`
+	NumberOfMembers  uint         `xml:"NumberOfMembers"`
+	AwaitingRequests uint         `xml:"AwaitingRequests"`
 
 	// Container for the list of languages the federation has declared as used
 	// languages. An Attribute named Count
@@ -59,6 +68,8 @@ type Alliance struct {
 		ID   uint   `xml:"LanguageID"`
 		Name string `xml:"LanguageName"`
 	} `xml:"Languages>Language"`
+
+	// Internal message to members of the federation.
 	Message string `xml:"Message"`
 
 	// Internal message to members of the federation. Only present if the
@@ -78,6 +89,7 @@ type Alliance struct {
 		Roles []*AllianceRole `xml:"Role"`
 	} `xml:"Roles"`
 
+	// The subset of members listed, for ActionType=membersSubset.
 	ListSubset string `xml:"ListSubset"`
 
 	// Container for the list of members, or a subset thereof, of the federation
@@ -101,6 +113,7 @@ type AllianceRole struct {
 // AllianceMember is a single member of an alliance (federation), as
 // returned for ActionType=members or ActionType=membersSubset.
 type AllianceMember struct {
+	// The globally unique user ID of the member.
 	UserID    id.User `xml:"UserID"`
 	LoginName string  `xml:"Loginname"`
 	RoleID    uint    `xml:"RoleId"`

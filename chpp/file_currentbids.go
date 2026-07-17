@@ -16,6 +16,7 @@ type CurrentBidsXML struct {
 	Envelope
 	UserID id.User `xml:"UserID"`
 
+	// The globally unique identifier of the team whose bids are shown.
 	TeamID id.Team `xml:"TeamId"`
 
 	// Transfers grouped by tracking category (e.g. selling, buying,
@@ -42,5 +43,6 @@ type BidItem struct {
 		TeamName string  `xml:"TeamName"`
 	} `xml:"HighestBid"`
 
+	// The transfer deadline.
 	Deadline HattrickTime `xml:"Deadline"`
 }

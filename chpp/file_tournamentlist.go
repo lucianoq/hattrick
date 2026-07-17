@@ -44,7 +44,9 @@ type Tournament struct {
 
 	// The user who created the tournament.
 	Creator struct {
-		UserID    id.User `xml:"UserId"`
-		LoginName string  `xml:"Loginname"`
+		UserID id.User `xml:"UserId"`
+
+		// The "username" or "nickname" used in forums and for login.
+		LoginName string `xml:"Loginname"`
 	} `xml:"Creator"`
 }

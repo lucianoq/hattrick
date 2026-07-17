@@ -20,18 +20,13 @@ type AlliancesXML struct {
 	// Number of result pages.
 	Pages uint `xml:"Pages"`
 
-	// The current page index of the result.
+	// The zero-based index of this result page; each page holds at most 25
+	// rows.
 	PageIndex uint `xml:"PageIndex"`
-
-	// Whether the fetching user is a Supporter.
-	UserIsSupporter bool `xml:"UserIsSupporter"`
 
 	// Indicates which Supporter package the fetching user has, or empty if not
 	// a Supporter.
 	UserSupporterTier SupporterTier `xml:"UserSupporterTier"`
-
-	// Whether the fetching user has a clubhouse.
-	UserHasClubHouse bool `xml:"UserHasClubHouse"`
 
 	// Container for the list of federations. An Attribute named Count specifies
 	// how many federations it contains.

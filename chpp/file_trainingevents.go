@@ -43,5 +43,7 @@ type TrainingEvent struct {
 
 	Season     uint `xml:"Season"`
 	MatchRound uint `xml:"MatchRound"`
-	DayNumber  uint `xml:"DayNumber"`
+
+	// Ranges from 1 to 7.
+	DayNumber uint `xml:"DayNumber"`
 }

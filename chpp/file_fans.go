@@ -20,9 +20,11 @@ type FansXML struct {
 // Fans holds a team's fan club data: mood, season expectations, and the
 // last three and next three series/qualification/cup/masters matches.
 type Fans struct {
-	TeamID      id.Team    `xml:"TeamID"`
-	FanClubID   id.Fanclub `xml:"FanClubId"`
-	FanClubName string     `xml:"FanClubName"`
+	TeamID    id.Team    `xml:"TeamID"`
+	FanClubID id.Fanclub `xml:"FanClubId"`
+
+	// The name of the fan club. Empty if the user hasn't set one.
+	FanClubName string `xml:"FanClubName"`
 
 	// The popularity among supporters. Unavailable while a match is running.
 	FanMood FanMood `xml:"FanMood"`
@@ -36,10 +38,12 @@ type Fans struct {
 		Match []struct {
 			MatchID  id.Match `xml:"MatchID"`
 			HomeTeam struct {
+				// The teamID of the home team. Negative for street teams.
 				HomeTeamID   id.Team `xml:"HomeTeamID"`
 				HomeTeamName string  `xml:"HomeTeamName"`
 			} `xml:"HomeTeam"`
 			AwayTeam struct {
+				// The teamID of the away team. Negative for street teams.
 				AwayTeamID   id.Team `xml:"AwayTeamID"`
 				AwayTeamName string  `xml:"AwayTeamName"`
 			} `xml:"AwayTeam"`
@@ -63,10 +67,12 @@ type Fans struct {
 		Match []struct {
 			MatchID  id.Match `xml:"MatchID"`
 			HomeTeam struct {
+				// The teamID of the home team. Negative for street teams.
 				HomeTeamID   id.Team `xml:"HomeTeamID"`
 				HomeTeamName string  `xml:"HomeTeamName"`
 			} `xml:"HomeTeam"`
 			AwayTeam struct {
+				// The teamID of the away team. Negative for street teams.
 				AwayTeamID   id.Team `xml:"AwayTeamID"`
 				AwayTeamName string  `xml:"AwayTeamName"`
 			} `xml:"AwayTeam"`

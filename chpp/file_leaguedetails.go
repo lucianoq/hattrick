@@ -24,8 +24,13 @@ type Series struct {
 	ID   id.Series `xml:"LeagueLevelUnitID"`
 	Name string    `xml:"LeagueLevelUnitName"`
 
-	LeagueID   id.League `xml:"LeagueID"`
-	LeagueName string    `xml:"LeagueName"`
+	// The globally unique ID of the league (e.g. Sweden, USA, England...)
+	// that this series is part of.
+	LeagueID id.League `xml:"LeagueID"`
+
+	// The name of the league (e.g. Sweden, USA, England...) that this
+	// series is part of.
+	LeagueName string `xml:"LeagueName"`
 
 	// 1 = top division, 2 = second division, and so on.
 	LeagueLevel uint `xml:"LeagueLevel"`
@@ -38,9 +43,12 @@ type Series struct {
 	// The series' ranking relative to other series on the same level.
 	Rank  uint `xml:"Rank"`
 	Teams []*struct {
+		// The globally unique UserID.
 		UserID id.User `xml:"UserId"`
-		ID     id.Team `xml:"TeamID"`
-		Name   string  `xml:"TeamName"`
+
+		// The globally unique TeamID.
+		ID   id.Team `xml:"TeamID"`
+		Name string  `xml:"TeamName"`
 
 		// The team's current position in the table.
 		Position uint `xml:"Position"`

@@ -78,6 +78,8 @@ type WorldCupMatch struct {
 type WorldCupRound struct {
 	// A key that indicates a certain round (which typically runs for
 	// either 10 weeks or 9 days). Qualification is always matchRound 1.
-	MatchRound uint         `xml:"MatchRound"`
-	StartDate  HattrickTime `xml:"StartDate"`
+	MatchRound uint `xml:"MatchRound"`
+
+	// The date of the round's first match.
+	StartDate HattrickTime `xml:"StartDate"`
 }

@@ -19,6 +19,7 @@ type SupportersXML struct {
 	// The teams the requested user supports. Only sent for
 	// actionType=supportedteams.
 	SupportedTeams struct {
+		// How many teams the user supports in total.
 		TotalItems uint             `xml:"TotalItems,attr"`
 		Teams      []*SupporterTeam `xml:"SupportedTeam"`
 	} `xml:"SupportedTeams"`
@@ -26,6 +27,7 @@ type SupportersXML struct {
 	// The teams supporting the requested team. Only sent for
 	// actionType=mysupporters.
 	MySupporters struct {
+		// How many teams support this team in total.
 		TotalItems uint             `xml:"TotalItems,attr"`
 		Teams      []*SupporterTeam `xml:"SupporterTeam"`
 	} `xml:"MySupporters"`
@@ -35,8 +37,11 @@ type SupportersXML struct {
 // LastMatch, NextMatch and PressAnnouncement containers are only sent for
 // actionType=supportedteams.
 type SupporterTeam struct {
-	UserID    id.User `xml:"UserId"`
-	LoginName string  `xml:"LoginName"`
+	UserID id.User `xml:"UserId"`
+
+	// The "username" or "nickname" used in forums and around the site;
+	// not a login credential.
+	LoginName string `xml:"LoginName"`
 
 	TeamID   id.Team `xml:"TeamId"`
 	TeamName string  `xml:"TeamName"`
@@ -50,6 +55,7 @@ type SupporterTeam struct {
 	LastMatch *SupporterTeamLastMatch `xml:"LastMatch"`
 	NextMatch *SupporterTeamNextMatch `xml:"NextMatch"`
 
+	// The team's most recent press announcement.
 	PressAnnouncement *struct {
 		SendDate HattrickTime `xml:"PressAnnouncementSendDate"`
 		Subject  string       `xml:"PressAnnouncementSubject"`

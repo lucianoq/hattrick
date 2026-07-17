@@ -31,12 +31,19 @@ type PlayerDetails struct {
 	NickName  string `xml:"NickName"`
 	LastName  string `xml:"LastName"`
 
-	Number     uint             `xml:"PlayerNumber"`
+	// The number (1 to 99) that the owner of the team has assigned this
+	// player.
+	Number uint `xml:"PlayerNumber"`
+
+	// The category assigned by the owner. Only visible to the owner.
 	CategoryID PlayerCategoryID `xml:"PlayerCategoryID"`
 
+	// The notes the owner has set. Only visible to the owner.
 	OwnerNotes string `xml:"OwnerNotes"`
 
-	Age     uint `xml:"Age"`
+	Age uint `xml:"Age"`
+
+	// The number of days since the player's last birthday.
 	AgeDays uint `xml:"AgeDays"`
 
 	// The approximate date/time of the player's next birthday.
@@ -44,19 +51,31 @@ type PlayerDetails struct {
 
 	Gender GenderID `xml:"GenderID"`
 
-	// The datetime when the player was pulled to the senior team.
+	// The date of arrival to the team (via transfer, youth promotion,
+	// etc).
 	ArrivalDate HattrickTime `xml:"ArrivalDate"`
 
-	Form  SkillLevel `xml:"PlayerForm"`
-	Cards uint       `xml:"Cards"`
+	Form SkillLevel `xml:"PlayerForm"`
+
+	// The number of currently accumulated cards. If the player is
+	// suspended, this returns 3 regardless of whether he actually
+	// accumulated 3 bookings or was sent off after 2 bookings in the
+	// same game. Unavailable while a match is running.
+	Cards uint `xml:"Cards"`
 
 	// Signed: -1 = healthy, 0 = bruised, >0 = weeks predicted injured.
+	// Unavailable while a match is running.
 	InjuryLevel PlayerInjuryLevel `xml:"InjuryLevel"`
 
+	// If the owner is a HT Supporter, he may have provided a statement
+	// from the player.
 	Statement string `xml:"Statement"`
 
-	Language   string `xml:"PlayerLanguage"`
-	LanguageID uint   `xml:"PlayerLanguageID"`
+	// The language the player speaks in his Statement, if any.
+	Language string `xml:"PlayerLanguage"`
+
+	// The languageID the player speaks in his Statement, if any.
+	LanguageID uint `xml:"PlayerLanguageID"`
 
 	// Container for the skills that relate to coach/trainer ability. Only
 	// provided if the player has been made into a trainer.
@@ -99,11 +118,15 @@ type PlayerDetails struct {
 		LeagueID id.League `xml:"LeagueID"`
 	} `xml:"OwningTeam"`
 
+	// Empty if the player has no owner.
 	Salary Money `xml:"Salary"`
 
-	// Empty (zero value) if not known.
+	// Confusingly named: true means the player is in his home country,
+	// false means he's with a team abroad. Empty if the player has no
+	// owner.
 	IsAbroad bool `xml:"IsAbroad"`
 
+	// Only the owner can see these skills, except Stamina since v1.7.
 	Skills struct {
 		StaminaSkill   SkillLevel `xml:"StaminaSkill"`
 		KeeperSkill    SkillLevel `xml:"KeeperSkill"`
@@ -118,6 +141,8 @@ type PlayerDetails struct {
 	Caps    uint `xml:"Caps"`
 	CapsU20 uint `xml:"CapsU20"`
 
+	// CareerGoals, CareerHattricks, LeagueGoals, FriendliesGoals, and
+	// MatchesCurrentTeam are all unavailable while a match is running.
 	CareerGoals     uint `xml:"CareerGoals"`
 	CareerHattricks uint `xml:"CareerHattricks"`
 	LeagueGoals     uint `xml:"LeagueGoals"`
@@ -143,13 +168,20 @@ type PlayerDetails struct {
 
 	// Empty if the player is not transfer listed.
 	TransferDetails struct {
-		AskingPrice Money        `xml:"AskingPrice"`
-		Deadline    HattrickTime `xml:"Deadline"`
-		HighestBid  Money        `xml:"HighestBid"`
+		AskingPrice Money `xml:"AskingPrice"`
+
+		// The transfer deadline. Can be even a few hours in the past.
+		Deadline HattrickTime `xml:"Deadline"`
+
+		// 0 if no bids have been made.
+		HighestBid Money `xml:"HighestBid"`
 
 		// The maximum (autobid) bid amount, only visible to the bidder.
+		// Not shown if not set.
 		MaxBid Money `xml:"MaxBid"`
 
+		// The team holding the highest bid. Empty if no bids have been
+		// made.
 		BidderTeam struct {
 			TeamID   id.Team `xml:"TeamID"`
 			TeamName string  `xml:"TeamName"`

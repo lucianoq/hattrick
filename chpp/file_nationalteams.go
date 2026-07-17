@@ -38,6 +38,7 @@ type NationalTeamsList struct {
 // NationalTeamListEntry is a single national team, as returned by the
 // nationalteams file.
 type NationalTeamListEntry struct {
+	// The globally unique identifier of the national team.
 	ID   id.NationalTeam `xml:"NationalTeamID"`
 	Name string          `xml:"NationalTeamName"`
 
@@ -56,11 +57,13 @@ type NationalTeamListEntry struct {
 // NationalTeamCup is a single cup, and the national teams that take part in
 // it.
 type NationalTeamCup struct {
+	// The teams in the cup. Unavailable while a match is running.
 	Teams []*NationalTeamCupTeam `xml:"CupTeams>CupTeam"`
 }
 
 // NationalTeamCupTeam is a single national team taking part in a cup.
 type NationalTeamCupTeam struct {
+	// The globally unique identifier of the national team.
 	ID   id.NationalTeam `xml:"CupNationalTeamID"`
 	Name string          `xml:"CupNationalTeamName"`
 }

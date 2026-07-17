@@ -31,10 +31,13 @@ type NationalPlayersXML struct {
 	// The requested ActionType.
 	ActionType string `xml:"ActionType"`
 
+	// The globally unique nationalTeamID.
 	TeamID   id.NationalTeam `xml:"TeamID"`
 	TeamName string          `xml:"TeamName"`
 
-	// The national team's players. Only sent for actionType=view.
+	// The national team's players. Only sent for actionType=view. Hidden
+	// (empty) starting 4 hours before every match the team plays, and
+	// until the match starts.
 	Players []*NationalTeamPlayer `xml:"Players>Player"`
 
 	// The Supporter statistics for the national team. Only sent for
@@ -45,18 +48,22 @@ type NationalPlayersXML struct {
 // NationalTeamPlayer is a single player currently in a national team's
 // squad, as returned for actionType=view.
 type NationalTeamPlayer struct {
+	// The globally unique identifier of the player.
 	PlayerID id.Player `xml:"PlayerID"`
 	Name     string    `xml:"PlayerName"`
 
-	// Number of national team matches for which the player is suspended
-	// due to cards. Only sent since API version 1.4.
+	// The number of currently accumulated cards. If the player is
+	// suspended, this returns 3 regardless of whether he actually
+	// accumulated 3 bookings or was sent off after 2 bookings in the
+	// same game. Only sent since API version 1.4.
 	Cards uint `xml:"Cards"`
 
 	// The player's specialty, if revealed. 0 if none or unknown. Only
 	// sent since API version 1.5.
 	Specialty SpecialtyID `xml:"Specialty"`
 
-	// Only sent since API version 1.5.
+	// Container for the elements to build the avatar. Only sent since
+	// API version 1.5.
 	Avatar Avatar `xml:"Avatar"`
 }
 
@@ -79,7 +86,11 @@ type NationalPlayersStats struct {
 // NationalPlayerStat is a single player's number of matches played for a
 // national team.
 type NationalPlayerStat struct {
-	PlayerID    id.Player `xml:"PlayerID"`
-	Name        string    `xml:"PlayerName"`
-	NrOfMatches uint      `xml:"NrOfMatches"`
+	// The globally unique identifier of the player.
+	PlayerID id.Player `xml:"PlayerID"`
+	Name     string    `xml:"PlayerName"`
+
+	// The number of matches this player has played for this national
+	// team.
+	NrOfMatches uint `xml:"NrOfMatches"`
 }

@@ -16,6 +16,7 @@ type ChallengesXML struct {
 	Envelope
 	UserID id.User `xml:"User"`
 
+	// Container for a team in the group.
 	Team struct {
 		ID   id.Team `xml:"TeamID"`
 		Name string  `xml:"TeamName"`
@@ -30,12 +31,18 @@ type ChallengesXML struct {
 		// Only populated for actionType=challengeable requests, reporting
 		// whether each of the queried teams can be challenged.
 		ChallengeableResult *struct {
+			// Container for data about a possible opponent.
 			Opponent []*struct {
-				IsChallengeable bool    `xml:"IsChallengeable"`
-				UserID          id.User `xml:"UserId"`
-				TeamID          id.Team `xml:"TeamID"`
-				TeamName        string  `xml:"TeamName"`
-				LogoURL         string  `xml:"LogoUrl"`
+				// Whether this opponent is challengeable.
+				IsChallengeable bool `xml:"IsChallengeable"`
+
+				// The globally unique UserID of the opponent.
+				UserID   id.User `xml:"UserId"`
+				TeamID   id.Team `xml:"TeamID"`
+				TeamName string  `xml:"TeamName"`
+
+				// URL for the opponent's logo.
+				LogoURL string `xml:"LogoUrl"`
 			} `xml:"Opponent"`
 		} `xml:"ChallengeableResult"`
 	} `xml:"Team"`
@@ -44,8 +51,11 @@ type ChallengesXML struct {
 // ChallengeByMe is a friendly match challenge that the manager's team has
 // made to an opponent.
 type ChallengeByMe struct {
+	// The globally unique identifier for the challenge/offer.
 	TrainingMatchID id.FriendlyMatch `xml:"TrainingMatchID"`
-	MatchTime       uint             `xml:"MatchTime"`
+
+	// The match start time.
+	MatchTime uint `xml:"MatchTime"`
 
 	// The match ID for the match created once the challenge has been accepted.
 	MatchID      id.Match     `xml:"MatchID"`
@@ -84,8 +94,11 @@ type ChallengeByMe struct {
 // OffersByOthers is a friendly match offer that another team has made to
 // the manager's team.
 type OffersByOthers struct {
+	// The globally unique identifier for the challenge/offer.
 	TrainingMatchID id.FriendlyMatch `xml:"TrainingMatchID"`
-	MatchTime       uint             `xml:"MatchTime"`
+
+	// The match start time.
+	MatchTime uint `xml:"MatchTime"`
 
 	// The match ID for the match created once the offer has been accepted.
 	MatchID      id.Match     `xml:"MatchID"`
@@ -94,7 +107,9 @@ type OffersByOthers struct {
 	Opponent struct {
 		TeamID   id.Team `xml:"TeamID"`
 		TeamName string  `xml:"TeamName"`
-		LogoURL  string  `xml:"LogoURL"`
+
+		// URL for the opponent's logo.
+		LogoURL string `xml:"LogoURL"`
 
 		Arena struct {
 			ID   id.Arena `xml:"ArenaID"`

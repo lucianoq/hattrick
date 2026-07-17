@@ -30,7 +30,9 @@ type Cup struct {
 
 // CupMatch is a single match within a cup round.
 type CupMatch struct {
-	MatchID   id.Match     `xml:"MatchID"`
+	MatchID id.Match `xml:"MatchID"`
+
+	// The start date (kick-off) of the match.
 	MatchDate HattrickTime `xml:"MatchDate"`
 	HomeTeam  struct {
 		ID   id.Team `xml:"TeamId"`

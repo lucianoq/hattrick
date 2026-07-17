@@ -18,6 +18,9 @@ type NationalTeamDetailsXML struct {
 	// if not a Supporter.
 	UserSupporterTier SupporterTier `xml:"UserSupporterTier"`
 
+	// Whether the team is currently playing a match. While true, some
+	// fields below (e.g. Morale, SelfConfidence, SupportersPopularity)
+	// are unavailable.
 	IsPlayingMatch bool `xml:"IsPlayingMatch"`
 
 	Team NationalTeamDetails `xml:"Team"`
@@ -29,8 +32,10 @@ type NationalTeamDetails struct {
 	Name string          `xml:"TeamName"`
 
 	NationalCoach struct {
-		UserID    id.User `xml:"NationalCoachUserID"`
-		LoginName string  `xml:"NationalCoachLoginname"`
+		UserID id.User `xml:"NationalCoachUserID"`
+
+		// The "username" or "nickname" used in forums.
+		LoginName string `xml:"NationalCoachLoginname"`
 	} `xml:"NationalCoach"`
 
 	League struct {
@@ -56,7 +61,12 @@ type NationalTeamDetails struct {
 	Experience550 SkillLevel `xml:"Experience550"`
 	Experience253 SkillLevel `xml:"Experience253"`
 
-	Morale         TeamSpiritID   `xml:"Morale"`
+	// Hidden (empty) starting 4 hours before every match the team plays,
+	// and until the match ends.
+	Morale TeamSpiritID `xml:"Morale"`
+
+	// Hidden (empty) starting 4 hours before every match the team plays,
+	// and until the match ends.
 	SelfConfidence SelfConfidence `xml:"SelfConfidence"`
 
 	// The popularity among the supporters of the national team. If a

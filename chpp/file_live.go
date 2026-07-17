@@ -26,12 +26,17 @@ type LiveMatchInfo struct {
 	// The number of the match in the list.
 	Index uint `xml:"Index,attr"`
 
+	// Which source system the match belongs to; replaces the old isYouth
+	// parameter.
 	SourceSystem SourceSystem `xml:"SourceSystem"`
 	MatchID      id.Match     `xml:"MatchID"`
 	MatchType    MatchType    `xml:"MatchType"`
-	MatchDate    HattrickTime `xml:"MatchDate"`
+
+	// The start date (kick-off) of the match.
+	MatchDate HattrickTime `xml:"MatchDate"`
 
 	HomeTeam struct {
+		// The teamID of the home team. Negative for street teams.
 		ID             id.Team        `xml:"HomeTeamID"`
 		Name           string         `xml:"HomeTeamName"`
 		ShortName      string         `xml:"HomeTeamShortName"`
@@ -39,6 +44,7 @@ type LiveMatchInfo struct {
 	} `xml:"HomeTeam"`
 
 	AwayTeam struct {
+		// The teamID of the away team. Negative for street teams.
 		ID             id.Team        `xml:"AwayTeamID"`
 		Name           string         `xml:"AwayTeamName"`
 		ShortName      string         `xml:"AwayTeamShortName"`
@@ -53,6 +59,7 @@ type LiveMatchInfo struct {
 
 	Substitutions struct {
 		Substitutions []*struct {
+			// The globally unique TeamID for which the order was sent.
 			TeamID id.Team `xml:"TeamID"`
 			// If substitution: The player leaving.
 			// If behaviour change: The player changing his behaviour.
@@ -62,12 +69,20 @@ type LiveMatchInfo struct {
 			// If substitution: The player entering
 			// If behaviour change: The player changing behaviour.
 			// If position swap: The player to swap with.
-			ObjectPlayerID       id.Player        `xml:"ObjectPlayerID"`
-			OrderType            MatchOrderType   `xml:"OrderType"`
-			NewPositionID        MatchRole        `xml:"NewPositionId"`
+			ObjectPlayerID id.Player      `xml:"ObjectPlayerID"`
+			OrderType      MatchOrderType `xml:"OrderType"`
+
+			// The new position for the (entering or staying) player.
+			NewPositionID MatchRole `xml:"NewPositionId"`
+
+			// The new behaviour for the (entering or staying) player.
 			NewPositionBehaviour MatchBehaviourID `xml:"NewPositionBehaviour"`
-			MatchMinute          uint             `xml:"MatchMinute"`
-			MatchPart            MatchPart        `xml:"MatchPart"`
+
+			// The match minute the order was executed.
+			MatchMinute uint `xml:"MatchMinute"`
+
+			// Which part of the match the order was executed in.
+			MatchPart MatchPart `xml:"MatchPart"`
 		} `xml:"Substitution"`
 	} `xml:"Substitutions"`
 
@@ -79,7 +94,10 @@ type LiveMatchInfo struct {
 		Events []*LiveEvent `xml:"Event"`
 	} `xml:"EventList"`
 
+	// The current number of goals in the match for the home team.
 	HomeGoals uint `xml:"HomeGoals"`
+
+	// The current number of goals in the match for the away team.
 	AwayGoals uint `xml:"AwayGoals"`
 
 	// The last shown event. Use this as LastShownIndexes for
@@ -103,7 +121,10 @@ type LiveEvent struct {
 	// same batch for this match.
 	Index uint `xml:"Index,attr"`
 
-	Minute    uint      `xml:"Minute"`
+	// The match minute when the event happened.
+	Minute uint `xml:"Minute"`
+
+	// Which part of the match the event happened in.
 	MatchPart MatchPart `xml:"MatchPart"`
 
 	// A unique key defining what type of event it was.
@@ -129,7 +150,9 @@ type StartingLineUp struct {
 
 // LiveMatchPlayer is a player in a match's starting lineup.
 type LiveMatchPlayer struct {
-	PlayerID   id.Player `xml:"PlayerID"`
+	PlayerID id.Player `xml:"PlayerID"`
+
+	// Which formal "slot" (role) the player has filled in the match.
 	RoleID     MatchRole `xml:"RoleID"`
 	PlayerName string    `xml:"PlayerName"`
 	// The individual order or repositioning the player played with. Not

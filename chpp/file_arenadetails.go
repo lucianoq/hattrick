@@ -32,10 +32,17 @@ type ArenaDetailsXML struct {
 // MyArenaStats is the container for supporter statistics for the requesting
 // user's own arena, as returned when StatsType=MyArena.
 type MyArenaStats struct {
-	ID            id.Arena `xml:"ArenaID"`
-	Name          string   `xml:"ArenaName"`
-	Image         string   `xml:"ArenaImage"`
-	FallbackImage string   `xml:"ArenaFallbackImage"`
+	// The globally unique arenaID.
+	ID   id.Arena `xml:"ArenaID"`
+	Name string   `xml:"ArenaName"`
+
+	// URL to an image of the arena. If this fails to load, the team likely
+	// doesn't have a custom arena look; fall back to FallbackImage.
+	Image string `xml:"ArenaImage"`
+
+	// The default image for an arena of this size. Use only if Image
+	// fails to load.
+	FallbackImage string `xml:"ArenaFallbackImage"`
 
 	// The type of matches included in the statistics.
 	MatchTypes ArenaMatchType `xml:"MatchTypes"`
@@ -71,10 +78,17 @@ type LeagueArenaStats struct {
 // ArenaStat is a particular arena's statistics, as returned when
 // StatsType=OtherArenas.
 type ArenaStat struct {
-	ID            id.Arena `xml:"ArenaID"`
-	Name          string   `xml:"ArenaName"`
-	Image         string   `xml:"ArenaImage"`
-	FallbackImage string   `xml:"ArenaFallbackImage"`
+	// The globally unique arenaID.
+	ID   id.Arena `xml:"ArenaID"`
+	Name string   `xml:"ArenaName"`
+
+	// URL to an image of the arena. If this fails to load, the team likely
+	// doesn't have a custom arena look; fall back to FallbackImage.
+	Image string `xml:"ArenaImage"`
+
+	// The default image for an arena of this size. Use only if Image
+	// fails to load.
+	FallbackImage string `xml:"ArenaFallbackImage"`
 
 	// The size of the arena.
 	Size uint `xml:"ArenaSize"`
@@ -90,25 +104,35 @@ type ArenaStat struct {
 
 // Arena is a container for the data about the arena.
 type Arena struct {
-	ID            id.Arena `xml:"ArenaID"`
-	Name          string   `xml:"ArenaName"`
-	Image         string   `xml:"ArenaImage"`
-	FallbackImage string   `xml:"ArenaFallbackImage"`
+	// The globally unique arenaID.
+	ID   id.Arena `xml:"ArenaID"`
+	Name string   `xml:"ArenaName"`
+
+	// URL to an image of the arena. If this fails to load, the team likely
+	// doesn't have a custom arena look; fall back to FallbackImage.
+	Image string `xml:"ArenaImage"`
+
+	// The default image for an arena of this size. Use only if Image
+	// fails to load.
+	FallbackImage string `xml:"ArenaFallbackImage"`
 
 	// Container for the data about the team owning this arena.
 	Team struct {
+		// The globally unique teamID.
 		ID   id.Team `xml:"TeamID"`
 		Name string  `xml:"TeamName"`
 	} `xml:"Team"`
 
 	// Container for the data about the league of the arena's team.
 	League struct {
+		// The globally unique leagueID.
 		ID   id.League `xml:"LeagueID"`
 		Name string    `xml:"LeagueName"`
 	} `xml:"League"`
 
 	// Container for the data about the region of the arena.
 	Region struct {
+		// The globally unique regionID.
 		ID   id.Region `xml:"RegionID"`
 		Name string    `xml:"RegionName"`
 	} `xml:"Region"`
@@ -117,7 +141,9 @@ type Arena struct {
 	// the arena is under construction, Available is false and the rest
 	// of the container is empty.
 	CurrentCapacity struct {
-		Available   bool         `xml:"Available,attr"`
+		Available bool `xml:"Available,attr"`
+
+		// The date when the current capacity was reached.
 		RebuiltDate HattrickTime `xml:"RebuiltDate"`
 		seats
 	} `xml:"CurrentCapacity"`
@@ -127,7 +153,9 @@ type Arena struct {
 	// Available is set to true, otherwise to false and the container is then
 	// empty.
 	ExpandedCapacity struct {
-		Available     bool         `xml:"Available,attr"`
+		Available bool `xml:"Available,attr"`
+
+		// The preliminary date when the expansion is finished.
 		ExpansionDate HattrickTime `xml:"ExpansionDate"`
 		seats
 	} `xml:"ExpandedCapacity"`

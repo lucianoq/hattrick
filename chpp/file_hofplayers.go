@@ -32,6 +32,7 @@ type HOFPlayer struct {
 	// The approximate date/time of the player's next birthday.
 	NextBirthday HattrickTime `xml:"NextBirthday"`
 
+	// The country where the player was born.
 	CountryID id.Country `xml:"CountryID"`
 
 	// The date the player arrived at the team.

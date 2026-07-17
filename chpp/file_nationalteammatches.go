@@ -29,7 +29,10 @@ type NationalTeamMatchesXML struct {
 // NationalTeamMatch is a single match played (or to be played) by a
 // national team.
 type NationalTeamMatch struct {
-	MatchID   id.Match     `xml:"MatchID"`
+	// The globally unique identifier of the match.
+	MatchID id.Match `xml:"MatchID"`
+
+	// The start date (kick-off) of the match.
 	MatchDate HattrickTime `xml:"MatchDate"`
 	MatchType MatchType    `xml:"MatchType"`
 

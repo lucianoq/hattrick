@@ -21,8 +21,11 @@ type TransfersPlayerXML struct {
 // PlayerTransferHistory is the container for the given player's transfer
 // history.
 type PlayerTransferHistory struct {
+	// The oldest date of the selected transfers list.
 	StartDate HattrickTime `xml:"StartDate"`
-	EndDate   HattrickTime `xml:"EndDate"`
+
+	// The latest date of the selected transfers list.
+	EndDate HattrickTime `xml:"EndDate"`
 
 	Player struct {
 		ID   id.Player `xml:"PlayerID"`
@@ -34,7 +37,9 @@ type PlayerTransferHistory struct {
 
 // PlayerTransfer is a single historical transfer of a player.
 type PlayerTransfer struct {
-	ID       id.Transfer  `xml:"TransferID"`
+	ID id.Transfer `xml:"TransferID"`
+
+	// The date when bidding closed for the transfer.
 	Deadline HattrickTime `xml:"Deadline"`
 
 	Buyer struct {
@@ -48,5 +53,7 @@ type PlayerTransfer struct {
 	} `xml:"Seller"`
 
 	Price Money `xml:"Price"`
-	TSI   uint  `xml:"TSI"`
+
+	// The player's TSI at the time he was sent to the transfer list.
+	TSI uint `xml:"TSI"`
 }

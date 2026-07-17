@@ -48,6 +48,7 @@ type MatchDetails struct {
 	// MatchType is not a cup match.
 	CupLevelIndex uint `xml:"CupLevelIndex"`
 
+	// The start date and time (kick-off) of the match.
 	MatchDate HattrickTime `xml:"MatchDate"`
 
 	// Not sent until the match is finished.
@@ -58,6 +59,7 @@ type MatchDetails struct {
 	AddedMinutes int `xml:"AddedMinutes"`
 
 	HomeTeam struct {
+		// The teamID of the home team. Negative for street teams.
 		HomeTeamID   id.Team `xml:"HomeTeamID"`
 		HomeTeamName string  `xml:"HomeTeamName"`
 		// URI to an image of the team's dress. Only sent for senior teams.
@@ -78,15 +80,18 @@ type MatchDetails struct {
 		RatingIndirectSetPiecesAtt MatchRating     `xml:"RatingIndirectSetPiecesAtt"`
 		// The team attitude set for the match. Only shown to the owner
 		// of the team, omitted otherwise (hence the pointer).
-		TeamAttitude             *MatchTeamAttitude `xml:"TeamAttitude"`
-		NrOfChancesLeft          uint               `xml:"NrOfChancesLeft"`
-		NrOfChancesCenter        uint               `xml:"NrOfChancesCenter"`
-		NrOfChancesRight         uint               `xml:"NrOfChancesRight"`
-		NrOfChancesSpecialEvents uint               `xml:"NrOfChancesSpecialEvents"`
+		TeamAttitude      *MatchTeamAttitude `xml:"TeamAttitude"`
+		NrOfChancesLeft   uint               `xml:"NrOfChancesLeft"`
+		NrOfChancesCenter uint               `xml:"NrOfChancesCenter"`
+		NrOfChancesRight  uint               `xml:"NrOfChancesRight"`
+
+		// The number of special-event chances.
+		NrOfChancesSpecialEvents uint `xml:"NrOfChancesSpecialEvents"`
 		// Chances that don't fit any of the other NrOfChances categories.
 		NrOfChancesOther uint `xml:"NrOfChancesOther"`
 	} `xml:"HomeTeam"`
 	AwayTeam struct {
+		// The teamID of the away team. Negative for street teams.
 		AwayTeamID   id.Team `xml:"AwayTeamID"`
 		AwayTeamName string  `xml:"AwayTeamName"`
 		// URI to an image of the team's dress. Only sent for senior teams.
@@ -107,23 +112,28 @@ type MatchDetails struct {
 		RatingIndirectSetPiecesAtt MatchRating     `xml:"RatingIndirectSetPiecesAtt"`
 		// The team attitude set for the match. Only shown to the owner
 		// of the team, omitted otherwise (hence the pointer).
-		TeamAttitude             *MatchTeamAttitude `xml:"TeamAttitude"`
-		NrOfChancesLeft          uint               `xml:"NrOfChancesLeft"`
-		NrOfChancesCenter        uint               `xml:"NrOfChancesCenter"`
-		NrOfChancesRight         uint               `xml:"NrOfChancesRight"`
-		NrOfChancesSpecialEvents uint               `xml:"NrOfChancesSpecialEvents"`
+		TeamAttitude      *MatchTeamAttitude `xml:"TeamAttitude"`
+		NrOfChancesLeft   uint               `xml:"NrOfChancesLeft"`
+		NrOfChancesCenter uint               `xml:"NrOfChancesCenter"`
+		NrOfChancesRight  uint               `xml:"NrOfChancesRight"`
+
+		// The number of special-event chances.
+		NrOfChancesSpecialEvents uint `xml:"NrOfChancesSpecialEvents"`
 		// Chances that don't fit any of the other NrOfChances categories.
 		NrOfChancesOther uint `xml:"NrOfChancesOther"`
 	} `xml:"AwayTeam"`
 	Arena struct {
-		ArenaID      id.Arena `xml:"ArenaID"`
-		ArenaName    string   `xml:"ArenaName"`
-		Weather      Weather  `xml:"WeatherID"`
-		SoldTotal    uint     `xml:"SoldTotal"`
-		SoldTerraces uint     `xml:"SoldTerraces"`
-		SoldBasic    uint     `xml:"SoldBasic"`
-		SoldRoof     uint     `xml:"SoldRoof"`
-		SoldVIP      uint     `xml:"SoldVIP"`
+		ArenaID   id.Arena `xml:"ArenaID"`
+		ArenaName string   `xml:"ArenaName"`
+		Weather   Weather  `xml:"WeatherID"`
+		SoldTotal uint     `xml:"SoldTotal"`
+
+		// The number of sold tickets for the terraces/basic/roof/VIP
+		// sections, respectively.
+		SoldTerraces uint `xml:"SoldTerraces"`
+		SoldBasic    uint `xml:"SoldBasic"`
+		SoldRoof     uint `xml:"SoldRoof"`
+		SoldVIP      uint `xml:"SoldVIP"`
 	} `xml:"Arena"`
 	// Only sent for matches with SourceSystem=Hattrick.
 	MatchOfficials struct {
@@ -219,9 +229,17 @@ type MatchDetailsEvent struct {
 	// String describing the event as it would appear in the match report.
 	EventText string `xml:"EventText"`
 
-	// Unsupported, undocumented fields whose exact meaning varies by event
-	// type; see the CHPP doc's own disclaimer.
-	SubjectTeamID   id.Team   `xml:"SubjectTeamID"`
+	// For goals and chances, indicates the attacking team. For other
+	// events, usually indicates the team that is doing something.
+	SubjectTeamID id.Team `xml:"SubjectTeamID"`
+
+	// For goals and chances, indicates the scorer or the player who
+	// failed to score. For other events, usually indicates the
+	// primarily active player.
 	SubjectPlayerID id.Player `xml:"SubjectPlayerID"`
-	ObjectPlayerID  id.Player `xml:"ObjectPlayerID"`
+
+	// For regular goals and chances, indicates the defending team's
+	// goalkeeper. For special-event chances/goals, often indicates the
+	// assisting player of the attacking team.
+	ObjectPlayerID id.Player `xml:"ObjectPlayerID"`
 }

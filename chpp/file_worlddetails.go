@@ -22,9 +22,11 @@ type WorldDetailsXML struct {
 // League represents a single national league in the Hattrick world, along
 // with its related country, cups, and upcoming update schedule.
 type League struct {
-	ID             id.League      `xml:"LeagueID"`
-	Name           string         `xml:"LeagueName"`
-	Season         uint           `xml:"Season"`
+	ID     id.League `xml:"LeagueID"`
+	Name   string    `xml:"LeagueName"`
+	Season uint      `xml:"Season"`
+
+	// The season offset relative to Sweden's season.
 	SeasonOffset   int            `xml:"SeasonOffset"`
 	MatchRound     uint           `xml:"MatchRound"`
 	ShortName      string         `xml:"ShortName"`
@@ -44,6 +46,8 @@ type League struct {
 	// the League. We have chosen to maintain that relationship in the
 	// XML output, hence the sub-containers of Country.
 	Country struct {
+		// False (and the container empty) if the league has no country.
+		// Added in v1.8.
 		Available    bool       `xml:"Available,attr"`
 		ID           id.Country `xml:"CountryID"`
 		Name         string     `xml:"CountryName"`
@@ -95,9 +99,18 @@ type League struct {
 
 	NationalTeamID id.NationalTeam `xml:"NationalTeamId"`
 	U20TeamID      id.NationalTeam `xml:"U20teamId"`
-	ActiveTeams    uint            `xml:"ActiveTeams"`
-	ActiveUsers    uint            `xml:"ActiveUsers"`
-	WaitingUsers   uint            `xml:"WaitingUsers"`
+
+	// The number of active teams in the league, as of the last daily count.
+	ActiveTeams uint `xml:"ActiveTeams"`
+
+	// The number of active users in the league, as of the last daily
+	// count.
+	ActiveUsers uint `xml:"ActiveUsers"`
+
+	// The number of users waiting for a team in the league. Not included
+	// in ActiveUsers, so ActiveUsers+WaitingUsers gives a rough total
+	// user count.
+	WaitingUsers uint `xml:"WaitingUsers"`
 
 	// The date and time when the next training update will start in this league.
 	TrainingDate HattrickTime `xml:"TrainingDate"`
@@ -119,6 +132,9 @@ type League struct {
 	Sequence2 HattrickTime `xml:"Sequence2"`
 	Sequence3 HattrickTime `xml:"Sequence3"`
 	Sequence5 HattrickTime `xml:"Sequence5"`
+
+	// Time and date for an upcoming daily update, including the
+	// confidence.
 	Sequence7 HattrickTime `xml:"Sequence7"`
 
 	// Integer representing the number of LeagueLevels (divisions) active for this league.

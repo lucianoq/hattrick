@@ -23,6 +23,7 @@ type MatchLineupXML struct {
 // starting lineup, substitutions made during the match, and the final
 // lineup with end-of-match player ratings.
 type MatchLineup struct {
+	// The globally unique identifier of the match.
 	MatchID id.Match `xml:"MatchID"`
 
 	// Specifies which source system the match belongs to.
@@ -37,12 +38,18 @@ type MatchLineup struct {
 	// single matches and preparation matches.
 	MatchContextID uint `xml:"MatchContextId"`
 
+	// The home (formal, not taking arena location into account) team of
+	// the match.
 	HomeTeam struct {
+		// Negative for street teams.
 		HomeTeamID   id.Team `xml:"HomeTeamID"`
 		HomeTeamName string  `xml:"HomeTeamName"`
 	} `xml:"HomeTeam"`
 
+	// The away (formal, not taking arena location into account) team of
+	// the match.
 	AwayTeam struct {
+		// Negative for street teams.
 		AwayTeamID   id.Team `xml:"AwayTeamID"`
 		AwayTeamName string  `xml:"AwayTeamName"`
 	} `xml:"AwayTeam"`
@@ -60,14 +67,21 @@ type MatchLineup struct {
 		// The style of play used in the match. Always 0 for youth matches.
 		StyleOfPlay CoachModifier `xml:"StyleOfPlay"`
 
+		// The players in the home team who started the game.
 		StartingLineup struct {
 			Player []struct {
-				PlayerID  id.Player `xml:"PlayerID"`
+				PlayerID id.Player `xml:"PlayerID"`
+
+				// Which formal "slot" (role) the player has filled in the
+				// match.
 				RoleID    MatchRole `xml:"RoleID"`
 				FirstName string    `xml:"FirstName"`
 				LastName  string    `xml:"LastName"`
 				NickName  string    `xml:"NickName"`
-				// Not provided for the Captain and the set pieces taker.
+
+				// The individual order or repositioning the player played
+				// with. Not provided for the Captain and the set pieces
+				// taker.
 				Behaviour MatchBehaviourID `xml:"Behaviour"`
 			} `xml:"Player"`
 		} `xml:"StartingLineup"`

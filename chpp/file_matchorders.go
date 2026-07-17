@@ -55,6 +55,8 @@ type MatchOrdersMatchData struct {
 	RatingMidAtt   MatchRating `xml:"RatingMidAtt"`
 	RatingLeftAtt  MatchRating `xml:"RatingLeftAtt"`
 
+	// The home (formal, not taking arena location into account) team of
+	// the match.
 	HomeTeam struct {
 		// The teamID of the Home team in the match. (Negative for street
 		// teams.)
@@ -62,6 +64,8 @@ type MatchOrdersMatchData struct {
 		Name string  `xml:"HomeTeamName"`
 	} `xml:"HomeTeam"`
 
+	// The away (formal, not taking arena location into account) team of
+	// the match.
 	AwayTeam struct {
 		// The teamID of the Away team in the match. (Negative for street
 		// teams.)
@@ -126,7 +130,9 @@ type MatchOrdersPlayer struct {
 	PlayerID id.Player `xml:"PlayerID"`
 
 	// An integer indicating which formal 'slot' (Role) the player has
-	// filled in the match, before the repositionings take effect.
+	// filled in the match, before the repositionings take effect. There
+	// can only be one (or zero) player with a particular RoleID,
+	// contrary to how PositionCode works.
 	RoleID MatchRole `xml:"RoleID"`
 
 	FirstName string `xml:"FirstName"`

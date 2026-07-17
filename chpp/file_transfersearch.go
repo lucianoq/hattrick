@@ -44,15 +44,21 @@ type TransferSearchResult struct {
 
 	NativeCountryID id.Country `xml:"NativeCountryID"`
 
-	AskingPrice Money        `xml:"AskingPrice"`
-	Deadline    HattrickTime `xml:"Deadline"`
-	HighestBid  Money        `xml:"HighestBid"`
+	AskingPrice Money `xml:"AskingPrice"`
 
+	// The transfer deadline. Can be even a few hours in the past.
+	Deadline HattrickTime `xml:"Deadline"`
+
+	// 0 if no bids have been made.
+	HighestBid Money `xml:"HighestBid"`
+
+	// The team holding the highest bid. Empty if no bids have been made.
 	BidderTeam struct {
 		ID   id.Team `xml:"TeamID"`
 		Name string  `xml:"TeamName"`
 	} `xml:"BidderTeam"`
 
+	// Empty if the deadline has passed.
 	Details TransferSearchResultDetails `xml:"Details"`
 }
 
@@ -85,6 +91,7 @@ type TransferSearchResultDetails struct {
 	DefenderSkill  SkillLevel `xml:"DefenderSkill"`
 	SetPiecesSkill SkillLevel `xml:"SetPiecesSkill"`
 
+	// The team currently selling the player.
 	SellerTeam struct {
 		ID       id.Team   `xml:"TeamID"`
 		Name     string    `xml:"TeamName"`

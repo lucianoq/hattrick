@@ -30,6 +30,8 @@ type LadderListEntry struct {
 	// a typo to fix here.
 	Position uint `xml:"Posistion"`
 
+	// The date of the next match. During a match, this is instead the
+	// following match's date.
 	NextMatchDate HattrickTime `xml:"NextMatchDate"`
 	Wins          uint         `xml:"Wins"`
 	Lost          uint         `xml:"Lost"`

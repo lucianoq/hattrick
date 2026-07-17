@@ -34,54 +34,70 @@ type PlayersXML struct {
 // Player is a single squad member as listed by the players file, with a
 // subset of the details available from playerdetails.
 type Player struct {
-	ID                 id.Player            `xml:"PlayerID"`
-	FirstName          string               `xml:"FirstName"`
-	NickName           string               `xml:"NickName"`
-	LastName           string               `xml:"LastName"`
-	Number             uint                 `xml:"PlayerNumber"`
-	Age                uint                 `xml:"Age"`
-	AgeDays            uint                 `xml:"AgeDays"`
-	Gender             GenderID             `xml:"GenderID"`
-	ArrivalDate        HattrickTime         `xml:"ArrivalDate"`
-	OwnerNotes         string               `xml:"OwnerNotes"`
-	TSI                TSI                  `xml:"TSI"`
-	Form               SkillLevel           `xml:"PlayerForm"`
-	Statement          string               `xml:"Statement"`
-	Experience         SkillLevel           `xml:"Experience"`
-	Loyalty            SkillLevel           `xml:"Loyalty"`
-	MotherClubBonus    bool                 `xml:"MotherClubBonus"`
-	Leadership         SkillLevel           `xml:"Leadership"`
-	Salary             Money                `xml:"Salary"`
-	IsAbroad           bool                 `xml:"IsAbroad"`
-	Agreeability       PlayerAgreeability   `xml:"Agreeability"`
-	Aggressiveness     PlayerAggressiveness `xml:"Aggressiveness"`
-	Honesty            PlayerHonesty        `xml:"Honesty"`
-	LeagueGoals        uint                 `xml:"LeagueGoals"`
-	CupGoals           uint                 `xml:"CupGoals"`
-	FriendliesGoals    uint                 `xml:"FriendliesGoals"`
-	CareerGoals        uint                 `xml:"CareerGoals"`
-	CareerHattricks    uint                 `xml:"CareerHattricks"`
-	MatchesCurrentTeam uint                 `xml:"MatchesCurrentTeam"`
-	GoalsCurrentTeam   uint                 `xml:"GoalsCurrentTeam"`
-	AssistsCurrentTeam uint                 `xml:"AssistsCurrentTeam"`
-	CareerAssists      uint                 `xml:"CareerAssists"`
-	Specialty          SpecialtyID          `xml:"Specialty"`
-	TransferListed     bool                 `xml:"TransferListed"`
-	NationalTeamID     id.NationalTeam      `xml:"NationalTeamID"`
-	CountryID          id.Country           `xml:"CountryID"`
-	Caps               uint                 `xml:"Caps"`
-	CapsU20            uint                 `xml:"CapsU20"`
-	Cards              uint                 `xml:"Cards"`
-	InjuryLevel        PlayerInjuryLevel    `xml:"InjuryLevel"`
-	StaminaSkill       SkillLevel           `xml:"StaminaSkill"`
-	KeeperSkill        SkillLevel           `xml:"KeeperSkill"`
-	PlaymakerSkill     SkillLevel           `xml:"PlaymakerSkill"`
-	ScorerSkill        SkillLevel           `xml:"ScorerSkill"`
-	PassingSkill       SkillLevel           `xml:"PassingSkill"`
-	WingerSkill        SkillLevel           `xml:"WingerSkill"`
-	DefenderSkill      SkillLevel           `xml:"DefenderSkill"`
-	SetPiecesSkill     SkillLevel           `xml:"SetPiecesSkill"`
-	CategoryID         PlayerCategoryID     `xml:"PlayerCategoryId"`
+	ID          id.Player    `xml:"PlayerID"`
+	FirstName   string       `xml:"FirstName"`
+	NickName    string       `xml:"NickName"`
+	LastName    string       `xml:"LastName"`
+	Number      uint         `xml:"PlayerNumber"`
+	Age         uint         `xml:"Age"`
+	AgeDays     uint         `xml:"AgeDays"`
+	Gender      GenderID     `xml:"GenderID"`
+	ArrivalDate HattrickTime `xml:"ArrivalDate"`
+
+	// Notes the owner has made about the player. Only visible to the owner.
+	OwnerNotes      string     `xml:"OwnerNotes"`
+	TSI             TSI        `xml:"TSI"`
+	Form            SkillLevel `xml:"PlayerForm"`
+	Statement       string     `xml:"Statement"`
+	Experience      SkillLevel `xml:"Experience"`
+	Loyalty         SkillLevel `xml:"Loyalty"`
+	MotherClubBonus bool       `xml:"MotherClubBonus"`
+	Leadership      SkillLevel `xml:"Leadership"`
+
+	// Empty if the player has no owner.
+	Salary Money `xml:"Salary"`
+
+	// Confusingly named: true means the player is in his home country,
+	// false means he's with a team abroad. Empty if the player has no
+	// owner.
+	IsAbroad       bool                 `xml:"IsAbroad"`
+	Agreeability   PlayerAgreeability   `xml:"Agreeability"`
+	Aggressiveness PlayerAggressiveness `xml:"Aggressiveness"`
+	Honesty        PlayerHonesty        `xml:"Honesty"`
+	// LeagueGoals, CupGoals, FriendliesGoals, CareerGoals, CareerHattricks,
+	// MatchesCurrentTeam, and GoalsCurrentTeam are all unavailable while a
+	// match is running.
+	LeagueGoals        uint            `xml:"LeagueGoals"`
+	CupGoals           uint            `xml:"CupGoals"`
+	FriendliesGoals    uint            `xml:"FriendliesGoals"`
+	CareerGoals        uint            `xml:"CareerGoals"`
+	CareerHattricks    uint            `xml:"CareerHattricks"`
+	MatchesCurrentTeam uint            `xml:"MatchesCurrentTeam"`
+	GoalsCurrentTeam   uint            `xml:"GoalsCurrentTeam"`
+	AssistsCurrentTeam uint            `xml:"AssistsCurrentTeam"`
+	CareerAssists      uint            `xml:"CareerAssists"`
+	Specialty          SpecialtyID     `xml:"Specialty"`
+	TransferListed     bool            `xml:"TransferListed"`
+	NationalTeamID     id.NationalTeam `xml:"NationalTeamID"`
+	CountryID          id.Country      `xml:"CountryID"`
+	Caps               uint            `xml:"Caps"`
+	CapsU20            uint            `xml:"CapsU20"`
+
+	// The number of currently accumulated cards. If the player is
+	// suspended, this returns 3 regardless of whether he actually
+	// accumulated 3 bookings or was sent off after 2 bookings in the same
+	// game.
+	Cards          uint              `xml:"Cards"`
+	InjuryLevel    PlayerInjuryLevel `xml:"InjuryLevel"`
+	StaminaSkill   SkillLevel        `xml:"StaminaSkill"`
+	KeeperSkill    SkillLevel        `xml:"KeeperSkill"`
+	PlaymakerSkill SkillLevel        `xml:"PlaymakerSkill"`
+	ScorerSkill    SkillLevel        `xml:"ScorerSkill"`
+	PassingSkill   SkillLevel        `xml:"PassingSkill"`
+	WingerSkill    SkillLevel        `xml:"WingerSkill"`
+	DefenderSkill  SkillLevel        `xml:"DefenderSkill"`
+	SetPiecesSkill SkillLevel        `xml:"SetPiecesSkill"`
+	CategoryID     PlayerCategoryID  `xml:"PlayerCategoryId"`
 
 	// Container for the skills that relate to coach/trainer ability. Only
 	// provided if the player has been made into a trainer, 'has gained trainer
@@ -108,8 +124,9 @@ type Player struct {
 		RatingEndOfGame float64      `xml:"RatingEndOfGame"`
 	} `xml:"LastMatch"`
 
-	// The team the player used to belong to. Only sent for the viewOldies
-	// actionType.
+	// The team that currently owns the player (relevant for the
+	// viewOldies actionType, which lists players who have left this
+	// club). Only sent for the viewOldies actionType.
 	OwningTeam *struct {
 		TeamID     id.Team `xml:"TeamID"`
 		TeamName   string  `xml:"TeamName"`

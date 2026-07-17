@@ -19,19 +19,29 @@ type MatchesXML struct {
 	IsYouth bool `xml:"IsYouth"`
 
 	Team struct {
-		ID        id.Team `xml:"TeamID"`
-		Name      string  `xml:"TeamName"`
-		ShortName string  `xml:"ShortTeamName"`
+		ID id.Team `xml:"TeamID"`
+
+		// The full name of the team.
+		Name string `xml:"TeamName"`
+
+		// Only available when IsYouth is false.
+		ShortName string `xml:"ShortTeamName"`
 
 		League struct {
 			ID   id.League `xml:"LeagueID"`
 			Name string    `xml:"LeagueName"`
 		} `xml:"League"`
 
+		// Data about the team's LeagueLevelUnit ("series"). Empty if the
+		// team is playing a qualification match. Only available when
+		// IsYouth is false.
 		Series struct {
-			ID    id.Series `xml:"LeagueLevelUnitID"`
-			Name  string    `xml:"LeagueLevelUnitName"`
-			Level uint      `xml:"LeagueLevel"`
+			ID   id.Series `xml:"LeagueLevelUnitID"`
+			Name string    `xml:"LeagueLevelUnitName"`
+
+			// The relative level of the LeagueLevelUnit, with 1 indicating
+			// the league's top series.
+			Level uint `xml:"LeagueLevel"`
 		} `xml:"LeagueLevelUnit"`
 
 		Matches []*Match `xml:"MatchList>Match"`
@@ -45,17 +55,20 @@ type Match struct {
 	MatchID id.Match `xml:"MatchID"`
 
 	HomeTeam struct {
+		// Negative for street teams.
 		ID        id.Team `xml:"HomeTeamID"`
 		Name      string  `xml:"HomeTeamName"`
 		ShortName string  `xml:"HomeTeamShortName"`
 	} `xml:"HomeTeam"`
 
 	AwayTeam struct {
+		// Negative for street teams.
 		ID        id.Team `xml:"AwayTeamID"`
 		Name      string  `xml:"AwayTeamName"`
 		ShortName string  `xml:"AwayTeamShortName"`
 	} `xml:"AwayTeam"`
 
+	// The start date and time (kick-off) of the match.
 	MatchDate HattrickTime `xml:"MatchDate"`
 
 	// SourceSystem tells from which system the match is, e.g. hattrick, youth,
@@ -94,9 +107,12 @@ type Match struct {
 	// 0 if MatchType is not a cup match.
 	CupLevelIndex CupLevelIndex `xml:"CupLevelIndex"`
 
-	// Not sent by matchesArchive if the match is still upcoming or ongoing.
+	// The current number of goals for the home team. Not sent by
+	// matchesArchive if the match is still upcoming or ongoing.
 	HomeGoals uint `xml:"HomeGoals"`
-	// Not sent by matchesArchive if the match is still upcoming or ongoing.
+
+	// The current number of goals for the away team. Not sent by
+	// matchesArchive if the match is still upcoming or ongoing.
 	AwayGoals uint `xml:"AwayGoals"`
 
 	// Specifying whether the match is FINISHED, ONGOING or UPCOMING.

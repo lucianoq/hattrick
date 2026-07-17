@@ -18,11 +18,20 @@ type MatchesArchiveXML struct {
 
 	IsYouth bool `xml:"IsYouth"`
 	Team    struct {
-		TeamID         id.Team      `xml:"TeamID"`
-		TeamName       string       `xml:"TeamName"`
+		TeamID id.Team `xml:"TeamID"`
+
+		// The full name of the team.
+		TeamName string `xml:"TeamName"`
+
+		// The oldest date to show matches in the archive from.
 		FirstMatchDate HattrickTime `xml:"FirstMatchDate"`
-		LastMatchDate  HattrickTime `xml:"LastMatchDate"`
-		MatchList      struct {
+
+		// The latest date to show matches in the archive up to.
+		LastMatchDate HattrickTime `xml:"LastMatchDate"`
+
+		MatchList struct {
+			// If more than 50 matches occurred between FirstMatchDate and
+			// LastMatchDate, only the first 50 are returned.
 			Matches []*Match `xml:"Match"`
 		} `xml:"MatchList"`
 	} `xml:"Team"`

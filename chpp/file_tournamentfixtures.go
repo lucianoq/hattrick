@@ -35,10 +35,15 @@ type TournamentFixture struct {
 	MatchDate  HattrickTime `xml:"MatchDate"`
 	MatchType  MatchType    `xml:"MatchType"`
 	MatchRound uint         `xml:"MatchRound"`
-	Group      uint         `xml:"Group"`
-	Status     MatchStatus  `xml:"Status"`
 
-	// Only sent for matches that are finished.
+	// 0 means this is a playoff match. Use the order of those matches to
+	// display the upcoming playoff rounds: the winner of the first match
+	// faces the winner of the second, and so on, with the winner of the
+	// first match becoming the home team.
+	Group  uint        `xml:"Group"`
+	Status MatchStatus `xml:"Status"`
+
+	// 0 until the match is finished.
 	HomeGoals uint `xml:"HomeGoals"`
 	AwayGoals uint `xml:"AwayGoals"`
 

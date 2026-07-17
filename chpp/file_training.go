@@ -43,6 +43,7 @@ type TrainingTeam struct {
 	TeamID   id.Team `xml:"TeamID"`
 	TeamName string  `xml:"TeamName"`
 
+	// The current training level for the team, in percent.
 	TrainingLevel uint `xml:"TrainingLevel"`
 
 	// The goal training level for the team in percent. If the team is
@@ -53,8 +54,11 @@ type TrainingTeam struct {
 		Value     uint `xml:",chardata"`
 	} `xml:"NewTrainingLevel"`
 
-	TrainingType        TrainingType `xml:"TrainingType"`
-	StaminaTrainingPart uint         `xml:"StaminaTrainingPart"`
+	TrainingType TrainingType `xml:"TrainingType"`
+
+	// The current part of the training level, in percent, spent on
+	// stamina training.
+	StaminaTrainingPart uint `xml:"StaminaTrainingPart"`
 
 	LastTrainingTrainingType        TrainingType `xml:"LastTrainingTrainingType"`
 	LastTrainingTrainingLevel       uint         `xml:"LastTrainingTrainingLevel"`
@@ -83,11 +87,15 @@ type TrainingTeam struct {
 		ArrivalDate HattrickTime `xml:"ArrivalDate"`
 	} `xml:"SpecialTraining"`
 
+	// If the team is playing a match, Available is false and the value
+	// is empty; otherwise Available is true.
 	Morale struct {
 		Available bool         `xml:"Available,attr"`
 		Value     TeamSpiritID `xml:",chardata"`
 	} `xml:"Morale"`
 
+	// If the team is playing a match, Available is false and the value
+	// is empty; otherwise Available is true.
 	SelfConfidence struct {
 		Available bool           `xml:"Available,attr"`
 		Value     SelfConfidence `xml:",chardata"`
@@ -109,8 +117,10 @@ type TrainingTeam struct {
 // TrainingLeagueStats is the training-type distribution statistics for a
 // league (or globally, if no league was specified).
 type TrainingLeagueStats struct {
-	LeagueID   id.League `xml:"LeagueID"`
-	LeagueName string    `xml:"LeagueName"`
+	LeagueID id.League `xml:"LeagueID"`
+
+	// Empty for global (all-leagues) stats.
+	LeagueName string `xml:"LeagueName"`
 
 	// NOTE: the CHPP doc's own JSON/markdown dumps are ambiguous here -
 	// they list TrainingStat/NumberOfTeams/FractionOfTeams as if all
