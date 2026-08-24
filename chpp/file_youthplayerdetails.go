@@ -43,8 +43,10 @@ type YouthPlayerDetail struct {
 	ArrivalDate HattrickTime `xml:"ArrivalDate"`
 
 	// Number of days until the player can be promoted to the senior
-	// squad.
-	CanBePromotedIn uint `xml:"CanBePromotedIn"`
+	// squad. Documented as unsigned, but observed negative in practice
+	// (e.g. -27) once a player has been eligible for a while past the
+	// zero point, so this is signed despite the CHPP docs.
+	CanBePromotedIn int `xml:"CanBePromotedIn"`
 
 	// The number (1 to 99) assigned to this player. Only shown to
 	// supporters.

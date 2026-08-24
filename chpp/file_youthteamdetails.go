@@ -16,12 +16,10 @@ type YouthTeamDetailsXML struct {
 	Envelope
 	UserID id.User `xml:"User"`
 
-	// Container for the youth team to which the data applies.
+	// Container for the youth team to which the data applies. ScoutList
+	// (see YouthTeamDetails) lives inside this same element in the
+	// actual response, confirmed via a raw XML capture (2026-08-24).
 	YouthTeam YouthTeamDetails `xml:"YouthTeam"`
-
-	// Container for the list of scouts. Only present when the
-	// showScouts input parameter is set to true.
-	ScoutList []*YouthScout `xml:"ScoutList>Scout"`
 }
 
 // YouthTeamDetails is the full detailed information for a single youth
@@ -82,6 +80,10 @@ type YouthTeamDetails struct {
 	// than today if it can be booked now. If a friendly is already
 	// booked it will be more than 3 weeks into the future.)
 	NextTrainingMatchDate HattrickTime `xml:"NextTrainingMatchDate"`
+
+	// Container for the list of scouts. Only present when the
+	// showScouts input parameter is set to true.
+	ScoutList []*YouthScout `xml:"ScoutList>Scout"`
 }
 
 // YouthScout is a scout hired by a youth team to search for and suggest new

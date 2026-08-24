@@ -18,7 +18,7 @@ func (a *API) GetMyYouthTeam(showScouts bool) (*chpp.YouthTeamDetails, []*chpp.Y
 		return nil, nil, err
 	}
 
-	return &details.YouthTeam, details.ScoutList, nil
+	return &details.YouthTeam, details.YouthTeam.ScoutList, nil
 }
 
 // GetYouthTeam returns the details of the given youth team, and its
@@ -36,5 +36,5 @@ func (a *API) GetYouthTeam(youthTeamID id.YouthTeam, showScouts bool) (*chpp.You
 		return nil, nil, err
 	}
 
-	return &details.YouthTeam, details.ScoutList, nil
+	return &details.YouthTeam, details.YouthTeam.ScoutList, nil
 }

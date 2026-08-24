@@ -390,7 +390,17 @@ func (p *parsed) GetYouthPlayerListXML(values map[string]string) (*chpp.YouthPla
 	return fetchXML[chpp.YouthPlayerListXML](p, chpp.YouthPlayerListAPIFile, chpp.YouthPlayerListAPIVersion, values)
 }
 
-// GetYouthTeamDetailsXML fetches the raw youthTeamDetails CHPP file over HTTP and decodes it into a YouthTeamDetailsXML.
+// GetYouthTeamDetailsXML fetches the raw youthteamdetails CHPP file over
+// HTTP and decodes it into a YouthTeamDetailsXML. Bypasses the generic
+// fetchXML helper: confirmed via a raw XML capture (2026-08-24) that CHPP's
+// response for this file self-identifies as <FileName>youthteam.xml</FileName>,
+// not youthteamdetails.xml like every other file's FileName matches its own
+// query-parameter name - a genuine inconsistency on CHPP's side, not
+// something query parameters can work around.
 func (p *parsed) GetYouthTeamDetailsXML(values map[string]string) (*chpp.YouthTeamDetailsXML, error) {
-	return fetchXML[chpp.YouthTeamDetailsXML](p, chpp.YouthTeamDetailsAPIFile, chpp.YouthTeamDetailsAPIVersion, values)
+	buf, err := p.raw.getRawXML(chpp.YouthTeamDetailsAPIFile, chpp.YouthTeamDetailsAPIVersion, values)
+	if err != nil {
+		return nil, err
+	}
+	return chpp.DecodeXML[chpp.YouthTeamDetailsXML](buf, "youthteam")
 }
