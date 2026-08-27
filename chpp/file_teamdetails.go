@@ -388,9 +388,15 @@ type Team struct {
 // flag is a league flag/pennant awarded to the team for a season, shown on
 // the team's Hattrick page.
 type flag struct {
-	LeagueID    id.League `xml:"LeagueID"`
-	LeagueName  string    `xml:"LeagueName"`
-	CountryCode string    `xml:"CountryCode"`
+	// The live XML tag is "LeagueId" (lowercase d), confirmed against a
+	// live teamdetails 3.9 response (2026-08-27), even though the static
+	// doc says "LeagueID" — the same response uses "LeagueID" for the
+	// team's own <League> block. Go XML tag matching is case-sensitive,
+	// so "LeagueID" here silently left the field at 0.
+	LeagueID id.League `xml:"LeagueId"`
+
+	LeagueName  string `xml:"LeagueName"`
+	CountryCode string `xml:"CountryCode"`
 }
 
 // supportedTeam is a single supporter/supported team relationship, shared
