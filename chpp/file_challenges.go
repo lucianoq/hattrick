@@ -37,12 +37,20 @@ type ChallengesXML struct {
 				IsChallengeable bool `xml:"IsChallengeable"`
 
 				// The globally unique UserID of the opponent.
-				UserID   id.User `xml:"UserId"`
-				TeamID   id.Team `xml:"TeamID"`
-				TeamName string  `xml:"TeamName"`
+				UserID id.User `xml:"UserId"`
 
-				// URL for the opponent's logo.
-				LogoURL string `xml:"LogoUrl"`
+				// The live XML tag is "TeamId" (lowercase d), confirmed
+				// against a live challenges 1.6 actionType=challengeable
+				// response (2026-08-27) — the same doc-vs-live casing trap
+				// as teamdetails' flag LeagueId. With "TeamID" this field
+				// silently decoded to 0.
+				TeamID id.Team `xml:"TeamId"`
+
+				TeamName string `xml:"TeamName"`
+
+				// URL for the opponent's logo. Live tag is "LogoURL"
+				// (confirmed in the same 2026-08-27 response).
+				LogoURL string `xml:"LogoURL"`
 			} `xml:"Opponent"`
 		} `xml:"ChallengeableResult"`
 	} `xml:"Team"`
@@ -54,8 +62,10 @@ type ChallengeByMe struct {
 	// The globally unique identifier for the challenge/offer.
 	TrainingMatchID id.FriendlyMatch `xml:"TrainingMatchID"`
 
-	// The match start time.
-	MatchTime uint `xml:"MatchTime"`
+	// The match start time. The doc claims "unsigned Integer" but the live
+	// XML carries a datetime string like "2026-09-02 06:00:00" (confirmed
+	// against a live challenges 1.6 response, 2026-08-27).
+	MatchTime HattrickTime `xml:"MatchTime"`
 
 	// The match ID for the match created once the challenge has been accepted.
 	MatchID      id.Match     `xml:"MatchID"`
@@ -97,8 +107,10 @@ type OffersByOthers struct {
 	// The globally unique identifier for the challenge/offer.
 	TrainingMatchID id.FriendlyMatch `xml:"TrainingMatchID"`
 
-	// The match start time.
-	MatchTime uint `xml:"MatchTime"`
+	// The match start time. The doc claims "unsigned Integer" but the live
+	// XML carries a datetime string like "2026-09-02 06:00:00" (confirmed
+	// against a live challenges 1.6 response, 2026-08-27).
+	MatchTime HattrickTime `xml:"MatchTime"`
 
 	// The match ID for the match created once the offer has been accepted.
 	MatchID      id.Match     `xml:"MatchID"`
