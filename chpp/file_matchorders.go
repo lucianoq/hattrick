@@ -185,8 +185,9 @@ type PlayerOrder struct {
 
 	OrderType MatchOrderType `xml:"OrderType"`
 
-	// The new position for the (entering or staying) player.
-	NewPositionID MatchRole `xml:"NewPositionId"`
+	// The new position for the (entering or staying) player, or -1 when the
+	// order does not change position (so this is signed, not a MatchRole).
+	NewPositionID int `xml:"NewPositionId"`
 
 	// The new behaviour for the (entering or staying) player.
 	NewPositionBehaviour MatchBehaviourID `xml:"NewPositionBehaviour"`
