@@ -2,16 +2,17 @@ package chpp
 
 import "github.com/lucianoq/hattrick/chpp/id"
 
-// Hattrick string-based json
+// Hattrick matchorders JSON substitution order. ids and criteria are JSON
+// numbers; only orderType is a string, matching the live CHPP endpoint.
 type lineupSubstitutionOrder struct {
-	PlayerIn  string `json:"playerin"`
-	PlayerOut string `json:"playerout"`
-	OrderType string `json:"orderType"`
-	Minute    string `json:"min"`
-	Position  string `json:"pos"`
-	Behaviour string `json:"beh"`
-	Card      string `json:"card"`
-	Standing  string `json:"standing"`
+	PlayerIn  id.Player                 `json:"playerin"`
+	PlayerOut id.Player                 `json:"playerout"`
+	OrderType string                    `json:"orderType"`
+	Minute    LineupMatchMinuteCriteria `json:"min"`
+	Position  LineupPosition            `json:"pos"`
+	Behaviour MatchBehaviourID          `json:"beh"`
+	Card      LineupRedCardCriteria     `json:"card"`
+	Standing  LineupGoalDiffCriteria    `json:"standing"`
 }
 
 // LineupSubstitutionOrder is a single player order (substitution,

@@ -23,9 +23,9 @@ type TransferSearchXML struct {
 // results.
 type TransferSearchResults struct {
 	// The total number of items matching the search, across all pages.
-	// If over 100, Hattrick returns -1 (wraps around as a very large value
-	// since this field is unsigned) as an analogy to "many".
-	ItemCount uint `xml:"ItemCount"`
+	// If over 100, Hattrick returns -1 as an analogy to "many", so this
+	// field is signed.
+	ItemCount int `xml:"ItemCount"`
 
 	PageSize  uint `xml:"PageSize"`
 	PageIndex uint `xml:"PageIndex"`
