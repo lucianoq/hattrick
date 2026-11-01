@@ -7,6 +7,7 @@ package chpp
 import (
 	"encoding/xml"
 	"errors"
+	"strings"
 )
 
 // Envelope holds the fields common to every CHPP response file. Every
@@ -49,7 +50,7 @@ func DecodeXML[T XMLEnvelope](buf []byte, apiFile string) (*T, error) {
 	if e.chppError() != "" {
 		return nil, errors.New(e.chppError())
 	}
-	if e.chppFileName() != apiFile+".xml" {
+	if !strings.EqualFold(e.chppFileName(), apiFile+".xml") {
 		return nil, errors.New("failed to parse the right " + apiFile + " type")
 	}
 

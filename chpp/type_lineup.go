@@ -14,25 +14,26 @@ type lineupPlayerSlot struct {
 	Behaviour MatchBehaviourID `json:"behaviour"`
 }
 
-// Hattrick string-based json
+// Hattrick matchorders JSON. Every id/enum value is a JSON number; only
+// newLineup (settings) and orderType (substitutions) are strings, matching
+// what the live CHPP setmatchorder endpoint accepts.
 type lineup struct {
 	Positions     [14]lineupPlayerSlot      `json:"positions"`
 	Bench         [14]lineupPlayerSlot      `json:"bench"`
 	Kickers       [11]lineupPlayerSlot      `json:"kickers"`
-	Captain       string                    `json:"captain"`
-	SetPieces     string                    `json:"setPieces"`
+	Captain       id.Player                 `json:"captain"`
+	SetPieces     id.Player                 `json:"setPieces"`
 	Settings      lineupSettings            `json:"settings"`
 	Substitutions []lineupSubstitutionOrder `json:"substitutions"`
 }
 
-// Hattrick string-based json
 type lineupSettings struct {
-	Tactic             string `json:"tactic"`
-	SpeechLevel        string `json:"speechLevel"`
-	NewLineup          string `json:"newLineup"`
-	CoachModifier      string `json:"coachModifier"`
-	ManMarkerPlayerID  string `json:"manMarkerPlayerId"`
-	ManMarkingPlayerID string `json:"manMarkingPlayerId"`
+	Tactic             MatchTacticType   `json:"tactic"`
+	SpeechLevel        MatchTeamAttitude `json:"speechLevel"`
+	NewLineup          string            `json:"newLineup"`
+	CoachModifier      CoachModifier     `json:"coachModifier"`
+	ManMarkerPlayerID  id.Player         `json:"manMarkerPlayerId"`
+	ManMarkingPlayerID id.Player         `json:"manMarkingPlayerId"`
 }
 
 // NewLineup returns a string containing the JSON representation of a Lineup,
@@ -114,14 +115,14 @@ func NewLineup(
 	lso := make([]lineupSubstitutionOrder, 0, len(subsOrders))
 	for _, s := range subsOrders {
 		lso = append(lso, lineupSubstitutionOrder{
-			PlayerIn:  s.PlayerIn.String(),
-			PlayerOut: s.PlayerOut.String(),
+			PlayerIn:  s.PlayerIn,
+			PlayerOut: s.PlayerOut,
 			OrderType: s.OrderType.String(),
-			Minute:    s.Minute.String(),
-			Position:  s.Position.String(),
-			Behaviour: s.Behaviour.String(),
-			Card:      s.Card.String(),
-			Standing:  s.Standing.String(),
+			Minute:    s.Minute,
+			Position:  s.Position,
+			Behaviour: s.Behaviour,
+			Card:      s.Card,
+			Standing:  s.Standing,
 		})
 	}
 
@@ -129,15 +130,15 @@ func NewLineup(
 		Positions: positions,
 		Bench:     benchSlots,
 		Kickers:   kickerSlots,
-		Captain:   captain.String(),
-		SetPieces: setPiecesTaker.String(),
+		Captain:   captain,
+		SetPieces: setPiecesTaker,
 		Settings: lineupSettings{
-			Tactic:             tactic.String(),
-			SpeechLevel:        speechLevel.String(),
-			NewLineup:          "", // should always be empty
-			CoachModifier:      coachModifier.String(),
-			ManMarkerPlayerID:  manMarker.String(),
-			ManMarkingPlayerID: manMarking.String(),
+			Tactic:             tactic,
+			SpeechLevel:        speechLevel,
+			NewLineup:          "",
+			CoachModifier:      coachModifier,
+			ManMarkerPlayerID:  manMarker,
+			ManMarkingPlayerID: manMarking,
 		},
 		Substitutions: lso,
 	}
